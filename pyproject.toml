@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "astra_autofocus"
+authors = [
+    {name = "David Degen", email = "ddegen@ethz.ch"},
+]
+description = "My package description"
+readme = "README.rst"
+requires-python = ">=3.11.3"
+keywords = ["one", "two"]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "astropy==5.2.2",
+    "opencv-python",
+    "numpy==1.24.3",
+    "pandas==2.0.1",
+    "scipy==1.9.3",
+    "sqlite3worker==1.1.7",
+]
+version = '0.0.1'
+
+[tool.setuptools.packages.find]
+where = ["scr"]
+
+[options.extras_require]
+visualization = ["dash", "dash_bootstrap_components", "ipython", "matplotlib", "plotly"]
+extended = ["photutils", "pyswarms", "scikit-learn", "statsmodels"]
