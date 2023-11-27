@@ -11,7 +11,7 @@ The `telescope autofocuser` is a package designed to automate the autofocus proc
 The file, `exploration/speculoos_main.py` provides an example of using the Autofocus Telescope System.
 The key components include:
 - The initialisation of the interface with the hardware
-  - `TelescopeSpecs`: Loading facts about the telescope from a `.yaml` file
+  - `TelescopeSpecs`: Loading specs of the telescope from a `.yaml` file (see e.g. `exploration/speculoos.yaml`)
   - `Telescope`: Encapsulating the interface of the telescope.
     - `TelescopePointer`: Interface for pointing the telescope to a specific coordinate in the equatorial coordinate system.
     - `TelescopeFocuser`: Interface for changing the focus position of the telescope.
