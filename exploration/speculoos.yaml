@@ -1,0 +1,28 @@
+telescope:
+  name: SPECULOOS
+  # Source: https://en.wikipedia.org/wiki/Paranal_Observatory
+  coordinates:
+    lat: -24.627222 # Latitude in degrees
+    lon: -70.404167 # Longitude in degrees
+    height: 2635 # Height in meters
+  field_of_view:
+    width: 6 # Width in arcminutes
+    height: 6 # Height in arcminutes
+  pixel_scale:
+    0.35
+  pixel_shape: # i.e. (num_pixels_x_axis, num_pixels_y_axis) == np.flip(image_shape)
+    x: 2000
+    y: 2000
+  focus_range:  # in steps
+    min: 0
+    max: 8000
+  max_airmass:
+    1.05
+  g_mag_range:
+    min: 6
+    max: 10
+  j_mag_range:
+    min: 6
+    max: 10
+gaia_tmass_db_path:
+  /Users/ddegen/Desktop/ETH/Assistent/autofocus/data/gaia_tmass_16_jm_cut.db
