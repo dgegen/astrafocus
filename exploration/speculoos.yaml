@@ -6,8 +6,8 @@ telescope:
     lon: -70.404167 # Longitude in degrees
     height: 2635 # Height in meters
   field_of_view:
-    width: 6 # Width in arcminutes
-    height: 6 # Height in arcminutes
+    width: 11.6666 # Width in arcminutes
+    height: 11.6666 # Height in arcminutes
   pixel_scale:
     0.35
   pixel_shape: # i.e. (num_pixels_x_axis, num_pixels_y_axis) == np.flip(image_shape)
