@@ -16,7 +16,7 @@ The key components include:
     - `TelescopePointer`: Interface for pointing the telescope to a specific coordinate in the equatorial coordinate system.
     - `TelescopeFocuser`: Interface for changing the focus position of the telescope.
 - Targeting
-  - `ZenithNeighbourhoodQuery`: Queries the zenith neighbourhood in a database to find suitable stars for targeting.
+  - `ZenithNeighbourhoodQuery`: Queries the zenith neighbourhood in a database to find a suitable section of the sky for focusing.
 - Focsuing
   - `AnalyticResponseAutofocuser`: Performs the autofocus using an analytic response-based approach.
 
