@@ -18,17 +18,23 @@ The key components include:
 - Targeting
   - `ZenithNeighbourhoodQuery`: Queries the zenith neighbourhood in a database to find a suitable section of the sky for focusing.
 - Focsuing
-  - `AnalyticResponseAutofocuser`: Performs the autofocus using an analytic response-based approach.
+  - `SweepingAutofocuser`: Performs the autofocusing using sweeping through a range of focus positions.
+  - `AnalyticResponseAutofocuser(SweepingAutofocuser)`: Performs the autofocusing utilising the analytic nature of the focus response curve of a given focus measure.
 
 For detailed usage and customization, refer to the source code and docstrings in each module.
 
 ## Installation
 
 To install the package, clone the project and run:
-
+```bash
+python3 -m pip install
+```
+to install from source or
 ```bash
 python -m pip install -e .
 ```
+to install in editable mode.
+For more information, consult the [Python Packaging User Guide](https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-a-local-src-tree).
 
 ### <a name="catalogue"></a>The Gaia-2MASS Local Catalogue
 The targeting procedure requires the `Gaia-2MASS Local Catalogue` which can be downlaoded [here](https://github.com/ppp-one/gaia-tmass-sqlite).
