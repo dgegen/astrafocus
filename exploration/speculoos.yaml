@@ -25,4 +25,4 @@ telescope:
     min: 6
     max: 10
 gaia_tmass_db_path:
-  /Users/ddegen/Desktop/ETH/Assistent/autofocus/data/gaia_tmass_16_jm_cut.db
+  /path/to/gaia_tmass_16_jm_cut.db
