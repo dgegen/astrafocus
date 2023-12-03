@@ -39,6 +39,25 @@ For more information, consult the [Python Packaging User Guide](https://packagin
 ### <a name="catalogue"></a>The Gaia-2MASS Local Catalogue
 The targeting procedure requires the `Gaia-2MASS Local Catalogue` which can be downlaoded [here](https://github.com/ppp-one/gaia-tmass-sqlite).
 
+### Optional Dependencies
+The package supports additional features through optional dependencies.
+You can install these dependencies based on your needs. Choose from the following options:
+```bash
+# To also install visualization tools, including matplotlib, plotly and dash
+python3 -m pip install .[visualization]
+
+# To install packages for more statistics and machine learning, including scikit-learn.
+python3 -m pip install .[extended]
+
+# To install alpyca
+python3 -m pip install .[alpaca]
+```
+`Alpyca` is a [Python 3.7+ API library](https://pypi.org/project/alpyca/)
+for all Astronomy Common Object Model ([ASCOM](https://ascom-standards.org/))
+Alpaca universal interfaces.
+This library is a possible API for communication between this package and the devices required
+for focussing, namely the camera and the focuser.
+
 ## Project Structure
 The project structure includes several key directories:
 - `autofocus`: The main package containing autofocus-related modules.
