@@ -30,6 +30,7 @@ version = '0.0.1'
 [tool.setuptools.packages.find]
 where = ["scr"]
 
-[options.extras_require]
+[project.optional-dependencies]
 visualization = ["dash", "dash_bootstrap_components", "ipython", "matplotlib", "plotly"]
 extended = ["pyswarms", "scikit-learn", "statsmodels"]
+alpaca = ["alpyca"]
