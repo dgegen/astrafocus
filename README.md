@@ -39,7 +39,7 @@ For more information, consult the [Python Packaging User Guide](https://packagin
 ### <a name="catalogue"></a>The Gaia-2MASS Local Catalogue
 The targeting procedure requires the `Gaia-2MASS Local Catalogue` which can be downlaoded [here](https://github.com/ppp-one/gaia-tmass-sqlite).
 
-## Optional Dependencies
+### Optional Dependencies
 The package supports additional features through optional dependencies.
 You can install these dependencies based on your needs. Choose from the following options:
 ```bash
