@@ -48,7 +48,7 @@ class ZenithNeighbourhood:
     """
     def __init__(
         self,
-        observatory_location: Optional[EarthLocation] = None,
+        observatory_location: EarthLocation,
         observation_time: Optional[Time] = None,
         maximal_zenith_angle=DEFAULT_MAXIMAL_ZENITH_ANGLE,
     ):

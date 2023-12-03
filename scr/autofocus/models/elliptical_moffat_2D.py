@@ -53,7 +53,7 @@ class EllipticalMoffat2D(Fittable2DModel):
 
     Examples
     --------
-    from autofocus.load_images import load_fits_from_directory
+    from autofocus.utils.load_fits_from_directory import load_fits_from_directory
     fits_directory = "path_to_fits_files"
     image_data, headers, focus_pos = load_fits_from_directory(fits_directory)
 

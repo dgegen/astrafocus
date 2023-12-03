@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 
 from autofocus.interface.telescope import TelescopeInterface
-from autofocus.interface.telescope_specs import TelescopeSpecs
 from autofocus.utils.logger import configure_logger
 from autofocus.focus_measure_operators import (
     FocusMeasureOperator,
@@ -16,6 +15,62 @@ logger = configure_logger(stream_handler_level=10)  # logging.INFO
 
 
 class AutofocuserBase(ABC):
+    """
+    Abstract base class for autofocusing algorithms.
+
+    Parameters
+    ----------
+    telescope_interface : TelescopeInterface
+        Interface to control the camera and its focuser.
+    focus_measure_operator : FocusMeasureOperator
+        Operator to measure the focus of images.
+    exposure_time : float
+        Exposure time for image acquisition.
+    search_range : Optional[Tuple[int, int]], optional
+        Range of focus positions to search for the best focus (default is None,
+        using the telescope's allowed range).
+    initial_position : Optional[int], optional
+        Initial focus position for the autofocus algorithm (default is None,
+        using the telescope's current position).
+    keep_images : bool, optional
+        Whether to keep images for additional analysis (default is False).
+    secondary_focus_measure_operators : Optional[dict], optional
+        Dictionary of additional focus measure operators for image analysis
+        (default is an empty dictionary).
+
+    Attributes
+    ----------
+    focus_record : pd.DataFrame
+        DataFrame containing focus positions and corresponding focus measures.
+    best_focus_position : int or None
+        Best focus position determined by the autofocus algorithm.
+    _image_record : list
+        List to store images if 'keep_images' is True.
+
+    Methods
+    -------
+    measure_focus(image: np.ndarray) -> float:
+        Measure the focus of a given image using the specified focus measure operator.
+    run():
+        Execute the autofocus algorithm. Handles exceptions and resets the focuser on failure.
+    _run():
+        Abstract method to be implemented by subclasses for the actual autofocus algorithm.
+    reset():
+        Reset the focuser to the initial position.
+    get_focus_record() -> Tuple[np.ndarray, np.ndarray]:
+        Retrieve the focus record as sorted arrays of focus positions and corresponding measures.
+
+    Examples
+    --------
+    # Instantiate an AutofocuserBase instance
+    >>> autofocus_instance = AutofocuserBase(
+    ...     telescope_interface, focus_measure_operator, exposure_time
+    ... )
+
+    # Run the autofocus algorithm
+    >>> autofocus_instance.run()
+    """
+
     def __init__(
         self,
         telescope_interface: TelescopeInterface,
@@ -23,6 +78,8 @@ class AutofocuserBase(ABC):
         exposure_time: float,
         search_range: Optional[Tuple[int, int]] = None,
         initial_position: Optional[int] = None,
+        keep_images: bool = False,
+        secondary_focus_measure_operators: Optional[dict] = None,
     ):
         self.telescope_interface = telescope_interface
         self.focus_measure_operator = focus_measure_operator
@@ -33,23 +90,38 @@ class AutofocuserBase(ABC):
         self._focus_record = pd.DataFrame(columns=["focus_pos", "focus_measure"], dtype=np.float64)
         self.best_focus_position = None
 
+        self.keep_images = keep_images
+        self.secondary_focus_measure_operators = secondary_focus_measure_operators or {}
+        self._image_record = []
+
     @property
     def focus_record(self):
         df = self._focus_record.copy()
         df["focus_pos"] = df["focus_pos"].astype(int)
+
+        if self.keep_images:
+            for name, fm in self.secondary_focus_measure_operators.items():
+                df[name] = np.array([fm.measure_focus(image) for image in self._image_record])
+
         return df
 
     def measure_focus(self, image: np.ndarray) -> float:
+        if self.keep_images:
+            self._image_record.append(image)
         return self.focus_measure_operator(image)
 
-    def run(self):
+    def run(self) -> bool:
+        success = False
         try:
             self._run()
             logger.info("Successfully completed autofocusing.")
+            success = True
         except Exception as e:
             logger.exception(e)
             logger.warning("Error in autofocus algorithm. Resetting focuser to initial position.")
             self.reset()
+
+        return success
 
     @abstractmethod
     def _run(self):
@@ -82,6 +154,74 @@ class AutofocuserBase(ABC):
 
 
 class SweepingAutofocuser(AutofocuserBase):
+    """
+    Autofocuser implementation using a sweeping algorithm.
+
+    Parameters
+    ----------
+    telescope_interface : TelescopeInterface
+        Interface to control the camera and its focuser.
+    exposure_time : float
+        Exposure time for image acquisition.
+    focus_measure_operator : FocusMeasureOperator
+        Operator to measure the focus of images.
+    n_steps : Tuple[int], optional
+        Number of steps for each sweep (default is (10,)).
+        The length of this tuple determines the number of sweeps. The entries specify the number of
+        steps for each sweep.
+    n_exposures : Union[int, np.ndarray], optional
+        Number of exposures at each focus position or an array specifying exposures for each sweep.
+        If an integer is given, the same number of exposures is used for each sweep (default is 1).
+        If an array is given, the length of the array must match the number of sweeps.
+        (default is 1).
+    search_range : Optional[Tuple[int, int]], optional
+        Range of focus positions to search for the best focus (default is None,
+        using the telescope's allowed range).
+    decrease_search_range : bool, optional
+        Whether to decrease the search range after each sweep (default is True).
+    initial_position : Optional[int], optional
+        Initial focus position for the autofocus algorithm (default is None,
+        using the telescope's current position).
+    **kwargs
+        Additional keyword arguments.
+
+    Attributes
+    ----------
+    n_sweeps : int
+        Number of sweeps to perform.
+    n_steps : Tuple[int]
+        Number of steps for each sweep.
+    n_exposures : np.ndarray
+        Number of exposures at each focus position.
+    decrease_search_range : bool
+        Whether to decrease the search range after each sweep.
+
+    Methods
+    -------
+    _run():
+        Execute the sweeping autofocus algorithm.
+    get_initial_direction(min_focus_pos, max_focus_pos) -> int:
+        Determine the initial direction of the sweep.
+    find_best_focus_position():
+        Find and set the best focus position based on the recorded focus measures.
+    _find_best_focus_position(focus_pos, focus_measure) -> Tuple[int, float]:
+        Abstract method to be implemented by subclasses for finding the best focus position.
+    _run_sweep(search_positions, n_exposures):
+        Perform a single sweep across the specified focus positions.
+    update_search_range(min_focus_pos, max_focus_pos) -> Tuple[int, int]:
+        Update the search range after each sweep.
+    integer_linspace(min_focus_pos, max_focus_pos, n_steps) -> np.ndarray:
+        Generate integer-spaced values within the specified range.
+
+    Examples
+    --------
+    # Instantiate a SweepingAutofocuser instance
+    >>> sweeping_autofocuser = SweepingAutofocuser(telescope_interface, exposure_time, focus_measure_operator)
+
+    # Run the sweeping autofocus algorithm
+    >>> sweeping_autofocuser.run()
+    """
+
     def __init__(
         self,
         telescope_interface: TelescopeInterface,
@@ -92,6 +232,7 @@ class SweepingAutofocuser(AutofocuserBase):
         search_range: Optional[Tuple[int, int]] = None,
         decrease_search_range=True,
         initial_position: Optional[int] = None,
+        **kwargs,
     ):
         super().__init__(
             telescope_interface,
@@ -99,6 +240,7 @@ class SweepingAutofocuser(AutofocuserBase):
             exposure_time,
             search_range,
             initial_position,
+            **kwargs,
         )
 
         self.n_sweeps = len(n_steps)
@@ -108,6 +250,11 @@ class SweepingAutofocuser(AutofocuserBase):
             if isinstance(n_exposures, (np.ndarray, list, tuple))
             else np.full(self.n_sweeps, n_exposures, dtype=int)
         )
+        if len(self.n_exposures) != self.n_sweeps:
+            raise ValueError(
+                f"Length of n_exposures ({len(self.n_exposures)}) must match length of n_steps "
+                f"({self.n_sweeps})."
+            )
 
         self._focus_record = pd.DataFrame(
             np.full((np.sum(np.array(n_steps) * self.n_exposures), 2), np.nan),
@@ -224,6 +371,20 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
     """
     Autofocuser that fits a curve to the focus response curve and finds the best focus position.
 
+    Parameters
+    ----------
+    telescope_interface : TelescopeInterface
+        Interface to control the telescope and its focuser.
+    exposure_time : float
+        Exposure time for image acquisition.
+    focus_measure_operator : AnalyticResponseFocusedMeasureOperator
+        Operator to measure the focus of images using an analytic response curve.
+    percent_to_cut : float, optional
+        Percentage of worst-performing focus positions to exclude when updating the search range
+        (default is 50.0).
+    **kwargs
+        Additional keyword arguments.
+
     Examples
     --------
     >>> from autofocus.interface.telescope import TelescopeInterface
@@ -231,7 +392,7 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
     >>> from autofocus.star_size_focus_measure_operators import HFRStarFocusMeasure
     >>> from autofocus.autofocuser import AnalyticResponseAutofocuser
     >>> PATH_TO_FITS = 'path_to_fits'
-    >>> telescope_interface = get_telescope_simulation()
+    >>> telescope_interface = get_telescope_simulation(PATH_TO_FITS)
 
     >>> np.random.seed(42)
     >>> araf = AnalyticResponseAutofocuser(
@@ -278,12 +439,12 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
         self.update_search_range
         self.percent_to_cut = percent_to_cut
 
-    def _find_best_focus_position(self, focus_pos, focus_measure) -> Tuple[int, float]:
-        best_focus_pos, best_focus_val = self.fit_focus_response_curve(focus_pos, focus_measure)
+    def _find_best_focus_position(
+        self, focus_pos: np.ndarray, focus_measure: np.ndarray
+    ) -> Tuple[int, float]:
+        return self.fit_focus_response_curve(focus_pos, focus_measure)
 
-        return best_focus_pos, best_focus_val
-
-    def fit_focus_response_curve(self, focus_pos, focus_measure):
+    def fit_focus_response_curve(self, focus_pos: np.ndarray, focus_measure: np.ndarray):
         optimal_focus_pos = self.focus_measure_operator.fit_focus_response_curve(
             focus_pos, focus_measure
         )
@@ -292,12 +453,11 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
 
         return optimal_focus_pos, best_focus_val
 
-    def get_focus_response_curve_fit(self, focus_pos):
+    def get_focus_response_curve_fit(self, focus_pos: int):
         focus_response_curve_fit = self.focus_measure_operator.get_focus_response_curve_fit(
             focus_pos
         )
         return focus_response_curve_fit
-
 
     def update_search_range(self, min_focus_pos, max_focus_pos) -> Tuple[int, int]:
         """

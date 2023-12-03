@@ -20,7 +20,8 @@ dependencies = [
     "opencv-python",
     "numpy==1.24.3",
     "pandas==2.0.1",
-    "photutils",
+    "photutils>=1.8.0",
+    # "photutils",
     "scipy==1.9.3",
     "sqlite3worker==1.1.7",
 ]
