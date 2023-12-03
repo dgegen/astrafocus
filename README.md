@@ -45,8 +45,10 @@ You can install these dependencies based on your needs. Choose from the followin
 ```bash
 # To also install visualization tools, including matplotlib, plotly and dash
 python3 -m pip install .[visualization]
+
 # To install packages for more statistics and machine learning, including scikit-learn.
 python3 -m pip install .[extended]
+
 # To install alpyca
 python3 -m pip install .[alpaca]
 ```
