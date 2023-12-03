@@ -53,7 +53,7 @@ python3 -m pip install .[alpaca]
 `Alpyca` is a [Python 3.7+ API library](https://pypi.org/project/alpyca/)
 for all Astronomy Common Object Model ([ASCOM](https://ascom-standards.org/))
 Alpaca universal interfaces.
-This library provides a possible API for communication between this package and the devices required
+This library is a possible API for communication between this package and the devices required
 for focussing, namely the camera and the focuser.
 
 ## Project Structure
