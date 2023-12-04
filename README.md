@@ -3,8 +3,13 @@
 ## Overview
 
 The `telescope autofocuser` is a package designed to automate the autofocus process for telescopes. It comprises two main components:
-1. targeting a specific section around the zenith
-2. performing autofocus
+1. **Locate the focus calibration region**: 
+   - Identify an area around the zenith that is suitable for focus calibration, given the chosen
+   focus measurement operator.
+2. **Perform autofocus**: 
+   - Select the focus positions at which exposures should be taken.
+   - Measure the focus of an exposure at a given focus position using a focus measure operator.
+   - Estimate the point of optimal focus given a set of exposures taken at different focus positions.
 
 ## Example Usage
 
@@ -15,10 +20,11 @@ The key components include:
   - `AutofocuserDeviceInterface`: The interface between the API of the devices and this library.
     - `CameraInterface`: Interface for performing exposures.
     - `FocuserInterface`: Interface for changing the focus position of the telescope.
-    - `TelescopeInterface`: Interface for pointing the telescope to a specific coordinate in the 
-    equatorial coordinate system. Implementing this interface is less imperative, as the telescope
-    needs to be oriented only once after the focus calibration region was determined, as
-    target tracking is assumed to be regulated outside of this package.
+    - `TelescopeInterface`: The implementation of this interface is optional, as the telescope
+    only needs to be oriented once after the focus calibration region has been determined 
+    with the targeting class `ZenithNeighbourhoodQuery`, which can be implemented externally.
+    Accordingly, this swaying of the telescope can also be implemented externally. Note that it is
+    currently assumed that the target tracking is controlled outside of this package.
 - Targeting
   - `ZenithNeighbourhoodQuery`: Queries the zenith neighbourhood in a database to find a suitable section of the sky for focusing.
 - Focsuing
