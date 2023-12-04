@@ -1,86 +1,49 @@
 from abc import ABC, abstractmethod
-
-from autofocus.interface.focuser import FocuserInterface
-from autofocus.interface.pointer import PointerInterface
-from autofocus.utils.typing import ImageType
+from astropy.coordinates import SkyCoord
 
 
 class TelescopeInterface(ABC):
     """
-    Abstract base class representing a telescope interface.
-    
-    Parameters
-    ----------
-    focuser : FocuserInterface
-        The telescope focuser.
-    pointer : TelescopePointer
-        The telescope pointer.
-
-    Examples
-    --------
-    >>> from autofocus.interface.focuser import TrivialFocuser
-    >>> from autofocus.interface.pointer import TrivialPointer
-    >>> telescope_focuser = TrivialFocuser(current_position=0, allowed_range=(0, 1000))
-    >>> telescope_pointer = TrivialPointer()
-    >>> telescope_pointer._point_to_alt_az = lambda altitude, azimuth: None
-    >>> telescope_interface = TelescopeInterface(
-        focuser=telescope_focuser, pointer=telescope_pointer
-    )
+    A calss to interface the pointing of the telescope to a specific coordinate
+    in the equatorial coordinate system.
     """
-    def __init__(self, focuser: FocuserInterface, pointer: PointerInterface):
+
+    def point_to(self, coordinates):
         """
-        Initialize the TelescopeFocuser with a current position and allowed range.
+        Point the telescope to a specific coordinate in the equatorial coordinate system.
 
         Parameters
         ----------
-        telescope_focuser : FocuserInterface
-            The telescope focuser.
-        telescope_pointer : TelescopePointer
-            The telescope pointer.
+        coordinates : `~astropy.coordinates.SkyCoord`
+            The ICRS coordinates that should be in the centre of the CCD.
         """
-        self.focuser = focuser
-        self.pointer = pointer
-
-    def take_observation_at(self, focus_position: int, texp: float) -> ImageType:
-        """
-        Take an observation at a specific focus position with a given exposure time.
-
-        Parameters
-        ----------
-        focus_position : int
-            Desired focus position.
-        texp : float
-            Exposure time.
-
-        Returns
-        -------
-        ImageType
-            Resulting image.
-        """        
-        self.focuser.position = focus_position
-        image = self.take_observation(texp=texp)
-
-        return image
-
-    def move_focuser_to_position(self, desired_position):
-        self.focuser.position = desired_position
+        self.validate_arguments(coordinates)
+        self.set_telescope_position(coordinates)
 
     @abstractmethod
-    def take_observation(self, texp: float) -> ImageType:
+    def set_telescope_position(self, coordinates: SkyCoord):
         """
-        Abstract method to take an observation with a specified exposure time.
+        Point the telescope to a specific coordinate in the equatorial coordinate system.
 
         Parameters
         ----------
-        texp : float
-            Exposure time.
-
-        Returns
-        -------
-        ImageType
-            Resulting image.
+        coordinates : `~astropy.coordinates.SkyCoord`
+            The ICRS coordinates that should be in the centre of the CCD.
         """
         pass
 
+    def validate_arguments(self, coordinates: SkyCoord):
+        if not isinstance(coordinates, SkyCoord):
+            raise ValueError("Coordinates must be an instance of astropy.coordinates.SkyCoord")
+
     def __repr__(self) -> str:
-        return f"TelescopeInterface(self.focuser={self.focuser!r})"
+        return f"TelescopeInterface()"
+
+
+class TrivialTelescope(TelescopeInterface):
+    """
+    Trivial implementation to set the telescope position for testing purposes.
+    """
+    @staticmethod
+    def set_telescope_position(coordinates: SkyCoord):
+        pass

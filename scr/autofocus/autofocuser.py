@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Union
 import numpy as np
 import pandas as pd
 
-from autofocus.interface.telescope import TelescopeInterface
+from autofocus.interface.device_manager import AutofocusDeviceManager
 from autofocus.utils.logger import configure_logger
 from autofocus.focus_measure_operators import (
     FocusMeasureOperator,
@@ -20,7 +20,7 @@ class AutofocuserBase(ABC):
 
     Parameters
     ----------
-    telescope_interface : TelescopeInterface
+    autofocus_device_manager : AutofocusDeviceManager
         Interface to control the camera and its focuser.
     focus_measure_operator : FocusMeasureOperator
         Operator to measure the focus of images.
@@ -64,7 +64,7 @@ class AutofocuserBase(ABC):
     --------
     # Instantiate an AutofocuserBase instance
     >>> autofocus_instance = AutofocuserBase(
-    ...     telescope_interface, focus_measure_operator, exposure_time
+    ...     autofocus_device_manager, focus_measure_operator, exposure_time
     ... )
 
     # Run the autofocus algorithm
@@ -73,7 +73,7 @@ class AutofocuserBase(ABC):
 
     def __init__(
         self,
-        telescope_interface: TelescopeInterface,
+        autofocus_device_manager: AutofocusDeviceManager,
         focus_measure_operator: FocusMeasureOperator,
         exposure_time: float,
         search_range: Optional[Tuple[int, int]] = None,
@@ -81,11 +81,11 @@ class AutofocuserBase(ABC):
         keep_images: bool = False,
         secondary_focus_measure_operators: Optional[dict] = None,
     ):
-        self.telescope_interface = telescope_interface
+        self.autofocus_device_manager = autofocus_device_manager
         self.focus_measure_operator = focus_measure_operator
         self.exposure_time = exposure_time
-        self.search_range = search_range or telescope_interface.focuser.allowed_range
-        self.initial_position = initial_position or telescope_interface.focuser.position
+        self.search_range = search_range or autofocus_device_manager.focuser.allowed_range
+        self.initial_position = initial_position or autofocus_device_manager.focuser.position
 
         self._focus_record = pd.DataFrame(columns=["focus_pos", "focus_measure"], dtype=np.float64)
         self.best_focus_position = None
@@ -128,7 +128,7 @@ class AutofocuserBase(ABC):
         pass
 
     def reset(self):
-        self.telescope_interface.move_focuser_to_position(self.initial_position)
+        self.autofocus_device_manager.move_focuser_to_position(self.initial_position)
 
     def get_focus_record(self):
         if self._focus_record.size == 0:
@@ -146,7 +146,7 @@ class AutofocuserBase(ABC):
 
     def __repr__(self) -> str:
         return (
-            f"AutofocuserBase(self.telescope_interface={self.telescope_interface!r}, "
+            f"AutofocuserBase(self.autofocus_device_manager={self.autofocus_device_manager!r}, "
             f"exposure_time={self.exposure_time!r} sec, "
             f"search_range={self.search_range!r}, "
             f"initial_position={self.initial_position!r})"
@@ -159,7 +159,7 @@ class SweepingAutofocuser(AutofocuserBase):
 
     Parameters
     ----------
-    telescope_interface : TelescopeInterface
+    autofocus_device_manager : AutofocusDeviceManager
         Interface to control the camera and its focuser.
     exposure_time : float
         Exposure time for image acquisition.
@@ -216,7 +216,7 @@ class SweepingAutofocuser(AutofocuserBase):
     Examples
     --------
     # Instantiate a SweepingAutofocuser instance
-    >>> sweeping_autofocuser = SweepingAutofocuser(telescope_interface, exposure_time, focus_measure_operator)
+    >>> sweeping_autofocuser = SweepingAutofocuser(autofocus_device_manager, exposure_time, focus_measure_operator)
 
     # Run the sweeping autofocus algorithm
     >>> sweeping_autofocuser.run()
@@ -224,7 +224,7 @@ class SweepingAutofocuser(AutofocuserBase):
 
     def __init__(
         self,
-        telescope_interface: TelescopeInterface,
+        autofocus_device_manager: AutofocusDeviceManager,
         exposure_time: float,
         focus_measure_operator,
         n_steps: Tuple[int] = (10,),
@@ -235,7 +235,7 @@ class SweepingAutofocuser(AutofocuserBase):
         **kwargs,
     ):
         super().__init__(
-            telescope_interface,
+            autofocus_device_manager,
             focus_measure_operator,
             exposure_time,
             search_range,
@@ -306,7 +306,7 @@ class SweepingAutofocuser(AutofocuserBase):
         )
 
         self.best_focus_position = best_focus_pos
-        self.telescope_interface.move_focuser_to_position(best_focus_pos)
+        self.autofocus_device_manager.move_focuser_to_position(best_focus_pos)
 
         logger.info(
             f"Best focus position: {best_focus_pos} with focus measure value: {best_focus_measure:8.3e}"
@@ -324,7 +324,7 @@ class SweepingAutofocuser(AutofocuserBase):
         for ind, focus_position in enumerate(search_positions):
             for exposure in range(n_exposures):
                 # This step must include processing such as hot pixel removal etc.
-                image = self.telescope_interface.take_observation_at(
+                image = self.autofocus_device_manager.perform_exposure_at(
                     focus_position=focus_position, texp=self.exposure_time
                 )
 
@@ -373,7 +373,7 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
 
     Parameters
     ----------
-    telescope_interface : TelescopeInterface
+    autofocus_device_manager : AutofocusDeviceManager
         Interface to control the telescope and its focuser.
     exposure_time : float
         Exposure time for image acquisition.
@@ -387,16 +387,16 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
 
     Examples
     --------
-    >>> from autofocus.interface.telescope import TelescopeInterface
-    >>> from autofocus.interface.simulation import get_telescope_simulation
+    >>> from autofocus.interface.device_manager import AutofocusDeviceManager
+    >>> from autofocus.interface.simulation import ObservationBasedDeviceSimulator
     >>> from autofocus.star_size_focus_measure_operators import HFRStarFocusMeasure
     >>> from autofocus.autofocuser import AnalyticResponseAutofocuser
     >>> PATH_TO_FITS = 'path_to_fits'
-    >>> telescope_interface = get_telescope_simulation(PATH_TO_FITS)
+    >>> autofocus_device_manager = ObservationBasedDeviceSimulator(fits_path=PATH_TO_FITS)
 
     >>> np.random.seed(42)
     >>> araf = AnalyticResponseAutofocuser(
-            telescope_interface=telescope_interface,
+            autofocus_device_manager=autofocus_device_manager,
             exposure_time=3.0,
             focus_measure_operator=HFRStarFocusMeasure,
             n_steps=(30, 10),
@@ -405,7 +405,7 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
             percent_to_cut=60
         )
     >>> araf.run()
-    >>> araf.telescope_interface.total_time
+    >>> araf.autofocus_device_manager.total_time
     >>> araf.focus_record
 
     >>> import matplotlib.pyplot as plt
@@ -422,16 +422,16 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
 
     def __init__(
         self,
-        telescope_interface: TelescopeInterface,
+        autofocus_device_manager: AutofocusDeviceManager,
         exposure_time: float,
         focus_measure_operator: AnalyticResponseFocusedMeasureOperator,
         percent_to_cut: float = 50.0,
         **kwargs,
     ):
-        ref_image = telescope_interface.take_observation(texp=exposure_time)
+        ref_image = autofocus_device_manager.perform_exposure(texp=exposure_time)
 
         super().__init__(
-            telescope_interface=telescope_interface,
+            autofocus_device_manager=autofocus_device_manager,
             exposure_time=exposure_time,
             focus_measure_operator=focus_measure_operator(ref_image=ref_image),
             **kwargs,

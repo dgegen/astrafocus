@@ -13,7 +13,7 @@ class FocuserInterface(ABC):
     position : int
         The current focuser position in steps.
     allowed_range : tuple
-        The range of allowed focuser steps (min_step, max_step).        
+        The range of allowed focuser steps (min_step, max_step).
 
     Methods
     -------
@@ -68,7 +68,7 @@ class FocuserInterface(ABC):
         self.validate_desired_position(new_position)
         self.move_focuser_to_position(new_position)
         self._current_position = new_position
-        
+
 
     def move_by_steps(self, steps_to_move):
         """
@@ -139,7 +139,7 @@ class FocuserInterface(ABC):
             raise ValueError(
                 "max_step must be greater than min_step in the allowed range (min_step, max_step)."
             )
-            
+
     def __repr__(self) -> str:
         return (
             "FocuserInterface("
