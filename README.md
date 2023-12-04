@@ -12,9 +12,13 @@ The file, `exploration/speculoos_main.py` provides an example of using the Autof
 The key components include:
 - The initialisation of the interface with the hardware
   - `TelescopeSpecs`: Loading specs of the telescope from a `.yaml` file (see e.g. `exploration/speculoos.yaml`)
-  - `Telescope`: Encapsulating the interface of the telescope.
-    - `TelescopePointer`: Interface for pointing the telescope to a specific coordinate in the equatorial coordinate system.
-    - `TelescopeFocuser`: Interface for changing the focus position of the telescope.
+  - `AutofocuserDeviceInterface`: The interface between the API of the devices and this library.
+    - `CameraInterface`: Interface for performing exposures.
+    - `FocuserInterface`: Interface for changing the focus position of the telescope.
+    - `TelescopeInterface`: Interface for pointing the telescope to a specific coordinate in the 
+    equatorial coordinate system. Implementing this interface is less imperative, as the telescope
+    needs to be oriented only once after the focus calibration region was determined, as
+    target tracking is assumed to be regulated outside of this package.
 - Targeting
   - `ZenithNeighbourhoodQuery`: Queries the zenith neighbourhood in a database to find a suitable section of the sky for focusing.
 - Focsuing
@@ -61,7 +65,7 @@ for focussing, namely the camera and the focuser.
 ## Project Structure
 The project structure includes several key directories:
 - `autofocus`: The main package containing autofocus-related modules.
-- `interface`: Subpackage with modules for interfacing with telescope components.
+- `interface`: Subpackage with modules for interfacing with the devices through their API components.
 - `models`: Modules defining mathematical models used by some of the autofocus procedures.
 - `sql`: Modules handling database queries of the Gaia-2MASS Local Catalogue (see [above](#catalogue)).
 - `targeting`: Modules related to targeting specific regions in the sky.

@@ -1,62 +1,99 @@
 import time
+from abc import abstractmethod
 from typing import Optional, Tuple
 
 import numpy as np
 
+from autofocus.interface.camera import CameraInterface
 from autofocus.interface.focuser import FocuserInterface
-from autofocus.interface.telescope import TelescopeInterface
-from autofocus.interface.pointer import TrivialPointer
+from autofocus.interface.telescope import TrivialTelescope
+from autofocus.interface.device_manager import AutofocusDeviceManager
 from autofocus.utils.load_fits_from_directory import load_fits_from_directory
 from autofocus.utils.logger import configure_logger
 from autofocus.utils.typing import ImageType
 
-__all__ = ["get_telescope_simulation", "TelescopeSimulation"]
+__all__ = ["ObservationBasedDeviceSimulator"]
 
 logger = configure_logger()
 
 np.random.seed(42)
 
 
-def get_telescope_simulation(
-    path_to_data: str, sleep_flag: bool = False, seconds_per_step: float = 0.5
-):
-    """
-    telescope_interface = get_telescope_simulation()
-    """
-    image_data, headers, focus_pos = load_fits_from_directory(path_to_data)
-    telescope_simulation = TelescopeSimulation(
-        current_position=focus_pos[3],
-        allowed_range=(np.min(focus_pos), np.max(focus_pos)),
-        sleep_flag=sleep_flag,
-        seconds_per_step=seconds_per_step,
-        image_data=image_data,
-        headers=headers,
-        focus_pos=focus_pos,
-    )
-    return telescope_simulation
-
-
-class TelescopeFocuserSimulation(FocuserInterface):
+class FocuserSimulation(FocuserInterface):
     def __init__(
         self,
         current_position,
         allowed_range: Tuple[int, int],
-        focus_pos: np.ndarray,
         seconds_per_step: float = 0.5,
         sleep_flag: bool = False,
     ):
         super().__init__(current_position=current_position, allowed_range=allowed_range)
         self.total_time_moving = 0.0
 
-        # This attribute determines which position the simulator samples from
-        self.position_to_sample = 0
         self.seconds_per_step = seconds_per_step
         self.sleep_flag = sleep_flag
 
+    def move_focuser_to_position(self, desired_position):
+        time_moving = self.seconds_per_step * abs(self.position - desired_position)
+        if self.sleep_flag:
+            time.sleep(time_moving)
+        self.total_time_moving += time_moving
+
+    @property
+    def position_to_sample(self):
+        """
+        The focus position to use when simulating an exposure.
+
+        This attribute is used to account for the fact that some simulators, like the
+        ObservationalFocuserSimulation, sample from set of focus positions, which can be a proper
+        subset of the integers within the allowed range. In these cases, the position to sample
+        from is not necessarily the same as the current position, but might be the closest
+        focus position to the current position that was observed.
+
+        It can further be used to simulate a focuser that is not perfectly accurate, by setting
+        the position to sample from to a different value than the current position.
+
+        If this attribute is not set, it defaults to the current position.
+        """
+        return self.getattr("_position_to_sample", self.position)
+
+    @position_to_sample.setter
+    def position_to_sample(self, value):
+        if self.hasattr("_position_to_sample"):
+            self._position_to_sample = value
+        else:
+            self.position = value
+
+
+class ObservationalFocuserSimulation(FocuserSimulation):
+    """Simulates a focuser based on a set of observations."""
+
+    def __init__(
+        self,
+        focus_pos: np.ndarray,
+        current_position: Optional[int] = None,
+        allowed_range: Optional[Tuple[int, int]] = None,
+        seconds_per_step: float = 0.5,
+        sleep_flag: bool = False,
+    ):
+        if allowed_range is None:
+            allowed_range = (np.min(focus_pos), np.max(focus_pos))
+        if current_position is None:
+            current_position = focus_pos[0]
+
+        super().__init__(
+            current_position=current_position,
+            allowed_range=allowed_range,
+            seconds_per_step=seconds_per_step,
+            sleep_flag=sleep_flag,
+        )
+        # Array of focus positions at which exposures were taken
         self.focus_pos = focus_pos
 
+        # This attribute determines which position the simulator samples from
+        self._position_to_sample = self.position
+
     def move_focuser_to_position(self, desired_position):
-        """ """
         if desired_position not in self.focus_pos:
             left = np.where(self.focus_pos <= desired_position)[0][-1]
             p_bernoulli = (desired_position - self.focus_pos[left]) / (
@@ -68,18 +105,102 @@ class TelescopeFocuserSimulation(FocuserInterface):
         else:
             self.position_to_sample = desired_position
 
-        # Moving the focuser by 10 microns takes about 5 second
-        time_moving = self.seconds_per_step * abs(self.position - desired_position)
-        if self.sleep_flag:
-            time.sleep(time_moving)
-        self.total_time_moving += time_moving
+        super().move_focuser_to_position(self.position_to_sample)
 
 
-class TelescopeSimulation(TelescopeInterface):
+class CameraSimulation(CameraInterface):
     def __init__(
         self,
-        current_position,
-        allowed_range: Tuple[int, int],
+        focuser: FocuserSimulation,
+        sleep_flag: bool = False,
+    ):
+        super().__init__()
+        self.total_time_exposing = 0.0
+        self.sleep_flag = sleep_flag
+
+    def perform_exposure(self, texp: float = 3.0):
+        """Capture an observation at the specified focal position."""
+        image = self.sample_an_observation(
+            desired_position=self.focuser.position_to_sample, texp=texp
+        )
+        if self.sleep_flag:
+            time.sleep(texp)
+        self.total_time_exposing += texp
+        return image
+
+    @abstractmethod
+    def sample_an_observation(self, desired_position: int, texp: float = 3.0):
+        pass
+
+
+class ObservationalCameraSimulation(CameraInterface):
+    """Simulates a camera based on a set of observations.
+
+    This simulation takes observations from a set of image data and associated
+    headers. It can optionally introduce a sleep delay after each observation.
+    The `capture_observation` method captures an image, and the
+    `get_observation_at_position` method selects an observation based on the desired
+    focal position.
+    """
+
+    def __init__(
+        self,
+        image_data: np.ndarray,
+        focuser: np.ndarray,
+        sleep_flag: bool = False,
+    ):
+        super().__init__(focuser=focuser, sleep_flag=sleep_flag)
+        self.image_data = image_data
+
+    def sample_an_observation(self, desired_position: int, texp: float = 3.0):
+        """Get an observation at the specified focal position."""
+        mask = np.where(self.focuser.focus_pos == desired_position)[0]
+
+        return self.image_data[np.random.choice(mask)]
+
+
+class AutofocusDeviceSimulator(AutofocusDeviceManager):
+    def __init__(
+        self,
+        camera: CameraSimulation,
+        focuser: FocuserSimulation,
+        pointer=TrivialTelescope(),
+        sleep_flag: bool = False,
+    ):
+        """
+        Initialize the AutofocusDeviceSimulator with a camera, focuser and pointer.
+        """
+        super().__init__(camera=camera, focuser=focuser, pointer=pointer)
+        self._sleep_flag = sleep_flag
+
+    @property
+    def sleep_flag(self):
+        return self._sleep_flag
+
+    @sleep_flag.setter
+    def sleep_flag(self, value):
+        self._sleep_flag = value
+        self.camera.sleep_flag = value
+        self.focuser.sleep_flag = value
+
+    @property
+    def total_time(self):
+        return self.camera.total_time_exposing + self.focuser.total_time_moving
+
+    @property
+    def total_time_moving(self):
+        return self.focuser.total_time_moving
+
+    @property
+    def total_time_exposing(self):
+        return self.camera.total_time_exposing
+
+
+class ObservationBasedDeviceSimulator(AutofocusDeviceSimulator):
+    def __init__(
+        self,
+        current_position: Optional[int] = None,
+        allowed_range: Optional[Tuple[int, int]] = None,
         sleep_flag: bool = False,
         seconds_per_step: float = 0.5,
         image_data: Optional[list] = None,
@@ -88,7 +209,7 @@ class TelescopeSimulation(TelescopeInterface):
         fits_path: Optional[str] = None,
     ):
         """
-        Initialize the TelescopeSimulation with a current position and allowed range.
+        Initialize the AutofocusDeviceSimulator with a current position and allowed range.
 
         Parameters
         ----------
@@ -99,10 +220,10 @@ class TelescopeSimulation(TelescopeInterface):
 
         Examples
         --------
-        telescope_simulation = TelescopeSimulation(
+        telescope_simulation = AutofocusDeviceSimulator(
             current_position=focus_pos[3], allowed_range=tuple(focus_pos[[0, -1]])
         )
-        image = telescope_simulation.take_observation_at(focus_position=focus_pos[12], texp=3.0)
+        image = telescope_simulation.perform_exposure_at(focus_position=focus_pos[12], texp=3.0)
         """
         # Load data
         if image_data is None or focus_pos is None:
@@ -114,37 +235,18 @@ class TelescopeSimulation(TelescopeInterface):
         self.headers = headers
         self.focus_pos = focus_pos
 
-        telescope_pointer = TrivialPointer()
-        telescope_focuser = TelescopeFocuserSimulation(
+        focuser = ObservationalFocuserSimulation(
+            focus_pos=self.focus_pos,
             current_position=current_position,
             allowed_range=allowed_range,
-            focus_pos=self.focus_pos,
             sleep_flag=sleep_flag,
             seconds_per_step=seconds_per_step,
         )
-        super().__init__(focuser=telescope_focuser, pointer=telescope_pointer)
-        self.total_time_exposing = 0.0
-        self.sleep_flag = sleep_flag
+
+        camera = ObservationalCameraSimulation(
+            image_data=image_data, focuser=focuser, sleep_flag=sleep_flag
+        )
+        super().__init__(camera=camera, focuser=focuser, pointer=None, sleep_flag=sleep_flag)
 
         # start off with something realistic
         self.focuser.position_to_sample = self.focuser.position
-
-    def take_observation(self, texp: float = 3.0):
-        image = self.sample_an_observation(desired_position=self.focuser.position_to_sample)
-        if self.sleep_flag:
-            time.sleep(texp)
-        self.total_time_exposing += texp
-        return image
-
-    @property
-    def total_time(self):
-        return self.total_time_exposing + self.focuser.total_time_moving
-
-    @property
-    def total_time_moving(self):
-        return self.focuser.total_time_moving
-
-    def sample_an_observation(self, desired_position: int, texp: float = 3.0):
-        mask = np.where(self.focus_pos == desired_position)[0]
-
-        return self.image_data[np.random.choice(mask)]
