@@ -3,7 +3,7 @@ requires = ["setuptools", "setuptools-scm", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "astra_autofocus"
+name = "astrafocus"
 authors = [
     {name = "David Degen", email = "ddegen@ethz.ch"},
 ]
@@ -21,7 +21,6 @@ dependencies = [
     "numpy==1.24.3",
     "pandas==2.0.1",
     "photutils>=1.8.0",
-    # "photutils",
     "scipy==1.9.3",
     "sqlite3worker==1.1.7",
 ]
