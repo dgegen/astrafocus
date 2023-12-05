@@ -9,7 +9,12 @@
 name: Publish Python distribution to TestPyPI
 
 on:
-  push
+  push:
+    # Sequence of patterns matched against refs/heads
+    branches:    
+      - main
+    tags:
+      - v*
 
 permissions:
   contents: read
