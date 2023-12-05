@@ -267,6 +267,7 @@ class SweepingAutofocuser(AutofocuserBase):
         min_focus_pos, max_focus_pos = self.search_range
         initial_direction = self.get_initial_direction(min_focus_pos, max_focus_pos)
 
+        success = True
         for sweep in range(self.n_sweeps):
             search_positions = self.integer_linspace(
                 min_focus_pos, max_focus_pos, self.n_steps[sweep]
@@ -274,12 +275,18 @@ class SweepingAutofocuser(AutofocuserBase):
 
             if sweep % 2 == initial_direction:
                 search_positions = np.flip(search_positions)  # Reverse order
+                
+            if not self.autofocus_device_manager.check_conditions():
+                raise ValueError("Observation conditions are not good enough to take exposures.")
 
             logger.info(
                 f"Starting sweep {sweep + 1} of {self.n_sweeps}."
-                f" ({search_positions[0]:6d}, {search_positions[-1]:6d}, {self.n_steps[sweep]:3d})."
+                + f" ({np.min(search_positions)}, {np.max(search_positions)}, "
+                + f"{self.n_steps[sweep]}"
+                + (", reversed" if sweep % 2 == initial_direction else "")
+                + ")."
             )
-            self._run_sweep(search_positions, self.n_exposures[sweep])
+            success = self._run_sweep(search_positions, self.n_exposures[sweep])
 
             if self.decrease_search_range:
                 min_focus_pos, max_focus_pos = self.update_search_range(
@@ -321,9 +328,15 @@ class SweepingAutofocuser(AutofocuserBase):
     def _run_sweep(self, search_positions, n_exposures):
         start_index = np.where(np.isnan(self._focus_record.iloc[:, 0]))[0][0]
 
+        success = True
         for ind, focus_position in enumerate(search_positions):
+            if not self.autofocus_device_manager.check_conditions():
+                raise ValueError("Observation conditions are not good enough to take exposures.")
             for exposure in range(n_exposures):
-                # This step must include processing such as hot pixel removal etc.
+                if not self.autofocus_device_manager.check_conditions():
+                    raise ValueError("Observation conditions are not good enough to take exposures.")
+                
+                # This step should include processing such as hot pixel removal etc.
                 image = self.autofocus_device_manager.perform_exposure_at(
                     focus_position=focus_position, texp=self.exposure_time
                 )
@@ -428,7 +441,7 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
         percent_to_cut: float = 50.0,
         **kwargs,
     ):
-        ref_image = autofocus_device_manager.perform_exposure(texp=exposure_time)
+        ref_image = autofocus_device_manager.camera.perform_exposure(texp=exposure_time)
 
         super().__init__(
             autofocus_device_manager=autofocus_device_manager,

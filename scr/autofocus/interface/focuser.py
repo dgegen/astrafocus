@@ -93,7 +93,11 @@ class FocuserInterface(ABC):
             raise ValueError("All focuser positions must be integers.")
 
         if not self.is_within_range(desired_position):
-            raise ValueError("Moving to the desired position would exceed the allowed range.")
+            min_step, max_step = self.allowed_range
+            raise ValueError(
+                f"Moving to the desired position, {desired_position}, "
+                f"would exceed the allowed range, ({min_step}, {max_step})."
+            )
 
     def is_within_range(self, desired_position):
         """
