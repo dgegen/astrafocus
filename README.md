@@ -1,7 +1,4 @@
 # Telescope autofocuser
-
-## Overview
-
 The `telescope autofocuser` is a package designed to automate the autofocus process for telescopes. It comprises two main components:
 1. **Locate the focus calibration region**: 
    - Identify an area around the zenith that is suitable for focus calibration, given the chosen
@@ -10,6 +7,9 @@ The `telescope autofocuser` is a package designed to automate the autofocus proc
    - Select the focus positions at which exposures should be taken.
    - Measure the focus of an exposure at a given focus position using a focus measure operator.
    - Estimate the point of optimal focus given a set of exposures taken at different focus positions.
+<p align="center">
+   <img src="docs/logo.png" alt="logo image" width="45%" style="margin: 20px;">
+</p>
 
 ## Example Usage
 
