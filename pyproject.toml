@@ -8,9 +8,9 @@ authors = [
     {name = "David Degen", email = "ddegen@ethz.ch"},
 ]
 description = "My package description"
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.11.3"
-keywords = ["one", "two"]
+keywords = ["telescope", "autofocus"]
 license = {text = "MIT"}
 classifiers = [
     "Programming Language :: Python :: 3",
