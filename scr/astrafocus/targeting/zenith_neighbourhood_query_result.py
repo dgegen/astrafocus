@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 from astropy.coordinates import SkyCoord
 
-from autofocus.targeting.zenith_angle_calculator import ZenithAngleCalculator
-from autofocus.targeting.tangential_plane_projector import TangentialPlaneProjector
+from astrafocus.targeting.zenith_angle_calculator import ZenithAngleCalculator
+from astrafocus.targeting.tangential_plane_projector import TangentialPlaneProjector
 
 DEG_TO_RAD = np.pi / 180
 RAD_TO_DEG = 180 / np.pi
@@ -21,8 +21,8 @@ class ZenithNeighbourhoodQueryResult(pd.DataFrame):
 
     Examples
     --------
-    >>> from autofocus.targeting.zenith_neighbourhood import ZenithNeighbourhood
-    >>> from autofocus.targeting.zenith_neighbourhood_query import ZenithNeighbourhoodQuery
+    >>> from astrafocus.targeting.zenith_neighbourhood import ZenithNeighbourhood
+    >>> from astrafocus.targeting.zenith_neighbourhood_query import ZenithNeighbourhoodQuery
 
     # Zenith neighbourhood now
     >>> speculoos_geo_coords = {

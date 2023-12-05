@@ -4,13 +4,13 @@ from typing import Optional, Tuple
 
 import numpy as np
 
-from autofocus.interface.camera import CameraInterface
-from autofocus.interface.focuser import FocuserInterface
-from autofocus.interface.telescope import TrivialTelescope
-from autofocus.interface.device_manager import AutofocusDeviceManager
-from autofocus.utils.load_fits_from_directory import load_fits_from_directory
-from autofocus.utils.logger import configure_logger
-from autofocus.utils.typing import ImageType
+from astrafocus.interface.camera import CameraInterface
+from astrafocus.interface.focuser import FocuserInterface
+from astrafocus.interface.telescope import TrivialTelescope
+from astrafocus.interface.device_manager import AutofocusDeviceManager
+from astrafocus.utils.load_fits_from_directory import load_fits_from_directory
+from astrafocus.utils.logger import configure_logger
+from astrafocus.utils.typing import ImageType
 
 __all__ = ["ObservationBasedDeviceSimulator"]
 

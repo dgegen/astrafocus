@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import numpy.typing as npt
 
-from autofocus.utils.typing import ImageType
+from astrafocus.utils.typing import ImageType
 
 ImageType = npt.NDArray[Union[np.floating, np.integer]]
 

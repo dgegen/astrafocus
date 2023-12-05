@@ -5,7 +5,7 @@ import numpy as np
 import photutils
 from photutils.detection import DAOStarFinder
 
-from autofocus.utils.typing import ImageType
+from astrafocus.utils.typing import ImageType
 
 class StarFinder:
     """

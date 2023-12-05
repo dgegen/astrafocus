@@ -4,8 +4,8 @@ import astropy.units as u
 import numpy as np
 from astropy.coordinates import AltAz, Angle, EarthLocation, Longitude, SkyCoord
 from astropy.time import Time
-from autofocus.interface.telescope_specs import TelescopeSpecs
-from autofocus.utils.logger import configure_logger
+from astrafocus.interface.telescope_specs import TelescopeSpecs
+from astrafocus.utils.logger import configure_logger
 
 __all__ = ["ZenithNeighbourhood"]
 

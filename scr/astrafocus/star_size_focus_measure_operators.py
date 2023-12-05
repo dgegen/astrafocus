@@ -5,13 +5,13 @@ import astropy
 import numpy as np
 import scipy
 
-from autofocus.focus_measure_operators import FocusMeasureOperator, ImageType
-from autofocus.models.elliptical_moffat_2D import EllipticalMoffat2D
-from autofocus.models.half_flux_radius_2D import HalfFluxRadius2D
-from autofocus.star_finder import StarFinder
-from autofocus.star_fitter import StarFitter
-from autofocus.focus_measure_operators import AnalyticResponseFocusedMeasureOperator
-from autofocus.utils.logger import configure_logger
+from astrafocus.focus_measure_operators import FocusMeasureOperator, ImageType
+from astrafocus.models.elliptical_moffat_2D import EllipticalMoffat2D
+from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
+from astrafocus.star_finder import StarFinder
+from astrafocus.star_fitter import StarFitter
+from astrafocus.focus_measure_operators import AnalyticResponseFocusedMeasureOperator
+from astrafocus.utils.logger import configure_logger
 
 logger = configure_logger()
 
@@ -55,7 +55,7 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
 
 class GaussianStarFocusMeasure(StarSizeFocusMeasure):
     """
-    from autofocus.utils.load_fits_from_directory import load_fits_from_directory
+    from astrafocus.utils.load_fits_from_directory import load_fits_from_directory
     fits_directory = "path_to_fits_files"
     image_data, headers, focus_pos = load_fits_from_directory(fits_directory)
 
@@ -130,7 +130,7 @@ class GaussianStarFocusMeasure(StarSizeFocusMeasure):
 
 class HFRStarFocusMeasure(StarSizeFocusMeasure):
     """
-    from autofocus.utils.load_fits_from_directory import load_fits_from_directory
+    from astrafocus.utils.load_fits_from_directory import load_fits_from_directory
     fits_directory = "path_to_fits_files"
     image_data, headers, focus_pos = load_fits_from_directory(fits_directory)
 

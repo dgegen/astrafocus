@@ -4,9 +4,9 @@ from typing import Optional, Tuple, Union
 import numpy as np
 import pandas as pd
 
-from autofocus.interface.device_manager import AutofocusDeviceManager
-from autofocus.utils.logger import configure_logger
-from autofocus.focus_measure_operators import (
+from astrafocus.interface.device_manager import AutofocusDeviceManager
+from astrafocus.utils.logger import configure_logger
+from astrafocus.focus_measure_operators import (
     FocusMeasureOperator,
     AnalyticResponseFocusedMeasureOperator,
 )
@@ -398,10 +398,10 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
 
     Examples
     --------
-    >>> from autofocus.interface.device_manager import AutofocusDeviceManager
-    >>> from autofocus.interface.simulation import ObservationBasedDeviceSimulator
-    >>> from autofocus.star_size_focus_measure_operators import HFRStarFocusMeasure
-    >>> from autofocus.autofocuser import AnalyticResponseAutofocuser
+    >>> from astrafocus.interface.device_manager import AutofocusDeviceManager
+    >>> from astrafocus.interface.simulation import ObservationBasedDeviceSimulator
+    >>> from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure
+    >>> from astrafocus.autofocuser import AnalyticResponseAutofocuser
     >>> PATH_TO_FITS = 'path_to_fits'
     >>> autofocus_device_manager = ObservationBasedDeviceSimulator(fits_path=PATH_TO_FITS)
 

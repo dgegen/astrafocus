@@ -4,7 +4,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from autofocus.utils.logger import configure_logger
+from astrafocus.utils.logger import configure_logger
 
 
 class LocalGaiaDatabaseQuery:
