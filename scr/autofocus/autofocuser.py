@@ -267,7 +267,6 @@ class SweepingAutofocuser(AutofocuserBase):
         min_focus_pos, max_focus_pos = self.search_range
         initial_direction = self.get_initial_direction(min_focus_pos, max_focus_pos)
 
-        success = True
         for sweep in range(self.n_sweeps):
             search_positions = self.integer_linspace(
                 min_focus_pos, max_focus_pos, self.n_steps[sweep]
@@ -286,7 +285,7 @@ class SweepingAutofocuser(AutofocuserBase):
                 + (", reversed" if sweep % 2 == initial_direction else "")
                 + ")."
             )
-            success = self._run_sweep(search_positions, self.n_exposures[sweep])
+            self._run_sweep(search_positions, self.n_exposures[sweep])
 
             if self.decrease_search_range:
                 min_focus_pos, max_focus_pos = self.update_search_range(
@@ -328,7 +327,6 @@ class SweepingAutofocuser(AutofocuserBase):
     def _run_sweep(self, search_positions, n_exposures):
         start_index = np.where(np.isnan(self._focus_record.iloc[:, 0]))[0][0]
 
-        success = True
         for ind, focus_position in enumerate(search_positions):
             if not self.autofocus_device_manager.check_conditions():
                 raise ValueError("Observation conditions are not good enough to take exposures.")
