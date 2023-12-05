@@ -70,8 +70,8 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         repository-url: https://test.pypi.org/legacy/
-        user: __token__
-        password: ${{ secrets.ASTRAFOCUS_PYPI }}
+        # user: __token__
+        # password: ${{ secrets.ASTRAFOCUS_PYPI }}
         
       # with:
         # repository-url: https://test.pypi.org/legacy/
