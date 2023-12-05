@@ -1,5 +1,5 @@
-# Telescope autofocuser
-The `telescope autofocuser` is a package designed to automate the autofocus process for telescopes. It comprises two main components:
+# AstrAFocus
+`AstrAFocus` is a package designed to automate the autofocus (AF) process for telescopes. It comprises two main components:
 1. **Locate the focus calibration region**: 
    - Identify an area around the zenith that is suitable for focus calibration, given the chosen
    focus measurement operator.
@@ -41,7 +41,7 @@ python3 -m pip install
 ```
 to install from source or
 ```bash
-python -m pip install -e .
+python3 -m pip install -e .
 ```
 to install in editable mode.
 For more information, consult the [Python Packaging User Guide](https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-a-local-src-tree).
@@ -70,11 +70,11 @@ for focussing, namely the camera and the focuser.
 
 ## Project Structure
 The project structure includes several key directories:
-- `autofocus`: The main package containing autofocus-related modules.
-- `interface`: Subpackage with modules for interfacing with the devices through their API components.
-- `models`: Modules defining mathematical models used by some of the autofocus procedures.
-- `sql`: Modules handling database queries of the Gaia-2MASS Local Catalogue (see [above](#catalogue)).
-- `targeting`: Modules related to targeting specific regions in the sky.
-- `utils`: General utility modules.
+- `astrafocus`: The main package containing autofocus-related modules.
+   - `interface`: Subpackage with modules for interfacing with the devices through their API components.
+   - `models`: Modules defining mathematical models used by some of the autofocus procedures.
+   - `sql`: Modules handling database queries of the Gaia-2MASS Local Catalogue (see [above](#catalogue)).
+   - `targeting`: Modules related to targeting specific regions in the sky.
+   - `utils`: General utility modules.
 
 May your stars align and your focus be as sharp as a caffeinated owl spotting its prey!
