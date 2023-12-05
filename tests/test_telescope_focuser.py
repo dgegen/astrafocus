@@ -1,6 +1,6 @@
 import unittest
 
-from autofocus.interface.focuser import TrivialFocuser
+from astrafocus.interface.focuser import TrivialFocuser
 
 
 class TestTrivialFocuser(unittest.TestCase):

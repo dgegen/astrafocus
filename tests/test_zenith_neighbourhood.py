@@ -4,7 +4,7 @@ import astropy.units as u
 from astropy.coordinates import EarthLocation
 from astropy.time import Time
 
-from autofocus.targeting.zenith_neighbourhood import ApproximateZenith, ZenithNeighbourhood
+from astrafocus.targeting.zenith_neighbourhood import ApproximateZenith, ZenithNeighbourhood
 
 
 class TestGetZenithICRS(unittest.TestCase):

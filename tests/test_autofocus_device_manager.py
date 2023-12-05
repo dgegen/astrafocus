@@ -1,10 +1,10 @@
 import unittest
 from unittest.mock import MagicMock
 
-from autofocus.interface.camera import TrivialCamera
-from autofocus.interface.device_manager import AutofocusDeviceManager
-from autofocus.interface.focuser import TrivialFocuser
-from autofocus.interface.telescope import TrivialTelescope
+from astrafocus.interface.camera import TrivialCamera
+from astrafocus.interface.device_manager import AutofocusDeviceManager
+from astrafocus.interface.focuser import TrivialFocuser
+from astrafocus.interface.telescope import TrivialTelescope
 
 
 class TestAutofocusDeviceManager(unittest.TestCase):

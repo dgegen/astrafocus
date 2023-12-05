@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from autofocus.interface.camera import CameraInterface, TrivialCamera
-from autofocus.interface.focuser import FocuserInterface, TrivialFocuser
-from autofocus.interface.telescope import TelescopeInterface, TrivialTelescope
-from autofocus.utils.typing import ImageType
+from astrafocus.interface.camera import CameraInterface, TrivialCamera
+from astrafocus.interface.focuser import FocuserInterface, TrivialFocuser
+from astrafocus.interface.telescope import TelescopeInterface, TrivialTelescope
+from astrafocus.utils.typing import ImageType
 
 
 class AutofocusDeviceManager(ABC):
@@ -34,10 +34,10 @@ class AutofocusDeviceManager(ABC):
     Examples
     --------
     # Create a trivial autofocus device manager.
-    >>> from autofocus.interface.device_manager import AutofocusDeviceManager
-    >>> from autofocus.interface.camera import TrivialCamera
-    >>> from autofocus.interface.focuser import TrivialFocuser
-    >>> from autofocus.interface.telescope import TrivialTelescope
+    >>> from astrafocus.interface.device_manager import AutofocusDeviceManager
+    >>> from astrafocus.interface.camera import TrivialCamera
+    >>> from astrafocus.interface.focuser import TrivialFocuser
+    >>> from astrafocus.interface.telescope import TrivialTelescope
     >>> autofocus_device_manager = AutofocusDeviceManager(
         camera=TrivialCamera(),
         focuser=TrivialFocuser(current_position=0, allowed_range=(0, 1000)),

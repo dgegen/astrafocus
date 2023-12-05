@@ -39,7 +39,7 @@ class StarFitter:
     Examples
     --------
     >>> image = image_data[0]
-    >>> from autofocus.star_size_focus_measure_operators import GaussianStarFocusMeasure
+    >>> from astrafocus.star_size_focus_measure_operators import GaussianStarFocusMeasure
     >>> gsfm = GaussianStarFocusMeasure(image, fwhm=2.0, star_find_threshold=8.0)
     >>> gsfm.star_finder.selected_stars
     
@@ -50,7 +50,7 @@ class StarFitter:
     >>> star_fitter.fit_source(image, star=gsfm.star_finder.selected_stars, cutout_size=15)
 
     # Initialise model
-    >>> from autofocus.models.half_flux_radius_2D import HalfFluxRadius2D
+    >>> from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
     >>> star_fitter = StarFitter(HalfFluxRadius2D)
     >>> star_fitter.fit_source(image, star=gsfm.star_finder.selected_stars, cutout_size=15)
     

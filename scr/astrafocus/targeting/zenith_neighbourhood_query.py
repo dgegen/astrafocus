@@ -4,11 +4,11 @@ import numpy as np
 from astropy.coordinates import EarthLocation, Angle
 from astropy.time import Time
 
-from autofocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
-from autofocus.sql.shardwise_query import ShardwiseQuery
-from autofocus.targeting.zenith_neighbourhood import ZenithNeighbourhood
-from autofocus.targeting.zenith_neighbourhood_query_result import ZenithNeighbourhoodQueryResult
-from autofocus.targeting.zenith_angle_calculator import ZenithAngleCalculator
+from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
+from astrafocus.sql.shardwise_query import ShardwiseQuery
+from astrafocus.targeting.zenith_neighbourhood import ZenithNeighbourhood
+from astrafocus.targeting.zenith_neighbourhood_query_result import ZenithNeighbourhoodQueryResult
+from astrafocus.targeting.zenith_angle_calculator import ZenithAngleCalculator
 
 
 class ZenithNeighbourhoodQuery:

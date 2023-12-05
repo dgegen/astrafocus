@@ -6,7 +6,7 @@ from astropy.coordinates import SkyCoord
 from astropy.io import fits
 from astropy.wcs import WCS
 
-from autofocus.interface.telescope_specs import TelescopeSpecs
+from astrafocus.interface.telescope_specs import TelescopeSpecs
 
 
 class TangentialPlaneProjector:

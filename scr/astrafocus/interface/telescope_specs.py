@@ -6,7 +6,7 @@ import yaml
 from astropy import units as u
 from astropy.coordinates import Angle, EarthLocation
 
-from autofocus.targeting.airmass_models import find_airmass_threshold_crossover, plane_parallel_atmosphere
+from astrafocus.targeting.airmass_models import find_airmass_threshold_crossover, plane_parallel_atmosphere
 
 
 class RangeBase(NamedTuple):

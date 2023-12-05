@@ -3,7 +3,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from autofocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
+from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
 
 class ShardwiseQuery(LocalGaiaDatabaseQuery):
     def _validate_shard_declination_array(self, dec):
