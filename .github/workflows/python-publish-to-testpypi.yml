@@ -8,13 +8,15 @@
 
 name: Publish Python distribution to TestPyPI
 
+# on:
+#   push:
+#     # Sequence of patterns matched against refs/heads
+#     branches:    
+#       - main
+#     tags:
+#       - v*
 on:
-  push:
-    # Sequence of patterns matched against refs/heads
-    branches:    
-      - main
-    tags:
-      - v*
+  release
 
 permissions:
   contents: read
