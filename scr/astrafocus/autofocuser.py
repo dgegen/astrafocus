@@ -142,17 +142,22 @@ class AutofocuserBase(ABC):
         self.autofocus_device_manager.move_focuser_to_position(self.initial_position)
 
     def save_focus_record(self):
-        if self.save_path is not None:
-            try:
-                if self.save_path.endswith(".csv"):
-                    self.focus_record.to_csv(self.save_path, index=False)
-                else:
-                    timestr = time.strftime("%Y%m%d-%H%M")
-                    save_path = os.path.join(self.save_path, f"{timestr}_focus_record.csv")
-                    self.focus_record.to_csv(save_path, index=False)
-            except Exception as e:
-                logger.exception(e)
-                logger.warning("Error saving focus record to csv.")
+        if not isinstance(self.save_path, str):
+            if self.save_path is not None:
+                logger.warning("Error saving focus record to csv. Invalid save path.")
+            return None
+
+        try:
+            if self.save_path.endswith(".csv"):
+                save_path = self.save_path
+            else:
+                timestr = time.strftime('%Y-%m-%dT%H:%M:%S')
+                save_path = os.path.join(self.save_path, f"{timestr}_focus_record.csv")
+
+            self.focus_record.to_csv(save_path, index=False)
+        except Exception as e:
+            logger.exception(e)
+            logger.warning("Error saving focus record to csv.")
 
     def get_focus_record(self):
         if self._focus_record.size == 0:

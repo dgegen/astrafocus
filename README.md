@@ -1,5 +1,6 @@
 # AstrAFocus
-`AstrAFocus` is a package designed to automate the autofocus (AF) process for telescopes. It comprises two main components:
+AstrAFocus is a package that provides flexible autofocus (AF) procedures for telescopes.
+The tasks that this package aims to automate fall into two broad categories.
 1. **Locate the focus calibration region**: 
    - Identify an area around the zenith that is suitable for focus calibration, given the chosen
    focus measurement operator.
@@ -30,6 +31,8 @@ The key components include:
 - Focsuing
   - `SweepingAutofocuser`: Performs the autofocusing using sweeping through a range of focus positions.
   - `AnalyticResponseAutofocuser(SweepingAutofocuser)`: Performs the autofocusing utilising the analytic nature of the focus response curve of a given focus measure.
+  - `NonParametricResponseAutofocuser(SweepingAutofocuser)`: Performs the autofocusing using an arbitrary focus measure operator and then applying an extremum estimator from to find the position of maximal focus.
+
 
 For detailed usage and customization, refer to the source code and docstrings in each module.
 
@@ -54,13 +57,16 @@ The package supports additional features through optional dependencies.
 You can install these dependencies based on your needs. Choose from the following options:
 ```bash
 # To also install visualization tools, including matplotlib, plotly and dash
-python3 -m pip install .[visualization]
+python3 -m pip install ".[visualization]"
 
 # To install packages for more statistics and machine learning, including scikit-learn.
-python3 -m pip install .[extended]
+python3 -m pip install ".[extended]"
+
+# To install dash
+python3 -m pip install ".[dash]"
 
 # To install alpyca
-python3 -m pip install .[alpaca]
+python3 -m pip install ".[alpaca]"
 ```
 `Alpyca` is a [Python 3.7+ API library](https://pypi.org/project/alpyca/)
 for all Astronomy Common Object Model ([ASCOM](https://ascom-standards.org/))
