@@ -31,6 +31,7 @@ version = '0.0.2'
 where = ["scr"]
 
 [project.optional-dependencies]
-visualization = ["dash", "dash_bootstrap_components", "ipython", "matplotlib", "plotly"]
+visualization = ["ipython", "matplotlib", "notebook"]
+dash = ["dash", "dash_bootstrap_components", "plotly"]
 extended = ["pyswarms", "scikit-learn"]
 alpaca = ["alpyca"]
