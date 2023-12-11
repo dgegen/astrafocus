@@ -55,11 +55,11 @@ class FocuserSimulation(FocuserInterface):
 
         If this attribute is not set, it defaults to the current position.
         """
-        return self.getattr("_position_to_sample", self.position)
+        return getattr(self, "_position_to_sample", self.position)
 
     @position_to_sample.setter
     def position_to_sample(self, value):
-        if self.hasattr("_position_to_sample"):
+        if hasattr(self, "_position_to_sample"):
             self._position_to_sample = value
         else:
             self.position = value
@@ -115,6 +115,7 @@ class CameraSimulation(CameraInterface):
         sleep_flag: bool = False,
     ):
         super().__init__()
+        self.focuser = focuser
         self.total_time_exposing = 0.0
         self.sleep_flag = sleep_flag
 
@@ -133,7 +134,7 @@ class CameraSimulation(CameraInterface):
         pass
 
 
-class ObservationalCameraSimulation(CameraInterface):
+class ObservationalCameraSimulation(CameraSimulation):
     """Simulates a camera based on a set of observations.
 
     This simulation takes observations from a set of image data and associated
@@ -158,19 +159,27 @@ class ObservationalCameraSimulation(CameraInterface):
 
         return self.image_data[np.random.choice(mask)]
 
+    def perform_exposure(self, texp: float = 3.0):
+        """Capture an observation at the specified focal position."""
+        image = self.sample_an_observation(
+            desired_position=self.focuser.position_to_sample, texp=texp
+        )
+        if self.sleep_flag:
+            time.sleep(texp)
+        self.total_time_exposing += texp
+        return image
+
 
 class AutofocusDeviceSimulator(AutofocusDeviceManager):
     def __init__(
         self,
         camera: CameraSimulation,
         focuser: FocuserSimulation,
-        pointer=TrivialTelescope(),
+        telescope=TrivialTelescope(),
         sleep_flag: bool = False,
     ):
-        """
-        Initialize the AutofocusDeviceSimulator with a camera, focuser and pointer.
-        """
-        super().__init__(camera=camera, focuser=focuser, pointer=pointer)
+        """Initialize the AutofocusDeviceSimulator with a camera, focuser and telescope."""
+        super().__init__(camera=camera, focuser=focuser, telescope=telescope)
         self._sleep_flag = sleep_flag
 
     @property
@@ -246,7 +255,7 @@ class ObservationBasedDeviceSimulator(AutofocusDeviceSimulator):
         camera = ObservationalCameraSimulation(
             image_data=image_data, focuser=focuser, sleep_flag=sleep_flag
         )
-        super().__init__(camera=camera, focuser=focuser, pointer=None, sleep_flag=sleep_flag)
+        super().__init__(camera=camera, focuser=focuser, telescope=None, sleep_flag=sleep_flag)
 
         # start off with something realistic
         self.focuser.position_to_sample = self.focuser.position

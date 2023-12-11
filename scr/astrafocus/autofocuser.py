@@ -1,15 +1,19 @@
-from abc import ABC, abstractmethod, ABCMeta
+import os
+import time
+from abc import ABC, ABCMeta, abstractmethod
 from typing import Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
 
+from astrafocus.focus_measure_operators import (
+    AnalyticResponseFocusedMeasureOperator,
+    FocusMeasureOperator,
+)
+from astrafocus.extremum_estimators import RobustExtremumEstimator, LOWESSExtremumEstimator
 from astrafocus.interface.device_manager import AutofocusDeviceManager
 from astrafocus.utils.logger import configure_logger
-from astrafocus.focus_measure_operators import (
-    FocusMeasureOperator,
-    AnalyticResponseFocusedMeasureOperator,
-)
+
 
 logger = configure_logger(stream_handler_level=10)  # logging.INFO
 
@@ -37,6 +41,10 @@ class AutofocuserBase(ABC):
     secondary_focus_measure_operators : Optional[dict], optional
         Dictionary of additional focus measure operators for image analysis
         (default is an empty dictionary).
+    save_path : Optional[str], optional
+        Path to save focus record to (default is None). If None, the focus record is not saved.
+        If the path ends with '.csv', the focus record is saved with that name. Otherwise, the
+        focus record is saved as a csv file with a timestamp in the specified directory.
 
     Attributes
     ----------
@@ -80,6 +88,7 @@ class AutofocuserBase(ABC):
         initial_position: Optional[int] = None,
         keep_images: bool = False,
         secondary_focus_measure_operators: Optional[dict] = None,
+        save_path: Optional[str] = None,
     ):
         self.autofocus_device_manager = autofocus_device_manager
         self.focus_measure_operator = focus_measure_operator
@@ -93,6 +102,7 @@ class AutofocuserBase(ABC):
         self.keep_images = keep_images
         self.secondary_focus_measure_operators = secondary_focus_measure_operators or {}
         self._image_record = []
+        self.save_path = save_path
 
     @property
     def focus_record(self):
@@ -111,14 +121,15 @@ class AutofocuserBase(ABC):
         return self.focus_measure_operator(image)
 
     def run(self) -> bool:
-        success = False
         try:
             self._run()
             logger.info("Successfully completed autofocusing.")
             success = True
+            self.save_focus_record()
         except Exception as e:
             logger.exception(e)
             logger.warning("Error in autofocus algorithm. Resetting focuser to initial position.")
+            success = False
             self.reset()
 
         return success
@@ -129,6 +140,19 @@ class AutofocuserBase(ABC):
 
     def reset(self):
         self.autofocus_device_manager.move_focuser_to_position(self.initial_position)
+
+    def save_focus_record(self):
+        if self.save_path is not None:
+            try:
+                if self.save_path.endswith(".csv"):
+                    self.focus_record.to_csv(self.save_path, index=False)
+                else:
+                    timestr = time.strftime("%Y%m%d-%H%M")
+                    save_path = os.path.join(self.save_path, f"{timestr}_focus_record.csv")
+                    self.focus_record.to_csv(save_path, index=False)
+            except Exception as e:
+                logger.exception(e)
+                logger.warning("Error saving focus record to csv.")
 
     def get_focus_record(self):
         if self._focus_record.size == 0:
@@ -274,7 +298,7 @@ class SweepingAutofocuser(AutofocuserBase):
 
             if sweep % 2 == initial_direction:
                 search_positions = np.flip(search_positions)  # Reverse order
-                
+
             if not self.autofocus_device_manager.check_conditions():
                 raise ValueError("Observation conditions are not good enough to take exposures.")
 
@@ -332,8 +356,10 @@ class SweepingAutofocuser(AutofocuserBase):
                 raise ValueError("Observation conditions are not good enough to take exposures.")
             for exposure in range(n_exposures):
                 if not self.autofocus_device_manager.check_conditions():
-                    raise ValueError("Observation conditions are not good enough to take exposures.")
-                
+                    raise ValueError(
+                        "Observation conditions are not good enough to take exposures."
+                    )
+
                 # This step should include processing such as hot pixel removal etc.
                 image = self.autofocus_device_manager.perform_exposure_at(
                     focus_position=focus_position, texp=self.exposure_time
@@ -376,6 +402,52 @@ class SweepingAutofocuser(AutofocuserBase):
             np.round(np.linspace(min_focus_pos, max_focus_pos, n_steps)), dtype=int
         )
         return search_positions
+
+
+class NonParametricResponseAutofocuser(SweepingAutofocuser):
+    def __init__(
+        self,
+        autofocus_device_manager,
+        exposure_time,
+        focus_measure_operator,
+        extremum_estimator: RobustExtremumEstimator = LOWESSExtremumEstimator(frac=0.5, it=3),
+        **kwargs,
+    ):
+        super().__init__(autofocus_device_manager, exposure_time, focus_measure_operator, **kwargs)
+        self.extremum_estimator = extremum_estimator
+
+    def _find_best_focus_position(
+        self, focus_pos: np.ndarray, focus_measure: np.ndarray
+    ) -> Tuple[int, float]:
+        focus_pos, focus_measure = self.get_focus_record()
+
+        focus_pos_sorted, focus_measure_sorted = self.extremum_estimator.sort(
+            focus_pos, focus_measure
+        )
+
+        # Use RobustExtremumEstimator to find the best focus position
+        if self.focus_measure_operator.smaller_is_better:
+            best_focus_pos, best_focus_measure_value = self.extremum_estimator.argmin(
+                focus_pos, focus_measure, return_value=True
+            )
+        else:
+            best_focus_pos, best_focus_measure_value = self.extremum_estimator.argmax(
+                focus_pos, focus_measure, return_value=True
+            )
+
+        best_focus_pos = int(np.round(best_focus_pos))
+        best_focus_measure_value = float(best_focus_measure_value)
+
+        return best_focus_pos, best_focus_measure_value
+
+    def __repr__(self) -> str:
+        return (
+            f"NonParametricAutofocuser(self.autofocus_device_manager={self.autofocus_device_manager!r}, "
+            f"exposure_time={self.exposure_time!r} sec, "
+            f"search_range={self.search_range!r}, "
+            f"initial_position={self.initial_position!r}, "
+            f"robust_estimator={self.robust_estimator!r})"
+        )
 
 
 class AnalyticResponseAutofocuser(SweepingAutofocuser):

@@ -14,6 +14,11 @@ class FocusMeasureOperator(ABC):
     """
     Abstract base class for focus measure operators.
 
+    Attributes
+    ----------
+    smaller_is_better : bool
+        A class attribute indicating whether a smaller focus measure is considered better.
+
     Methods
     -------
     __call__(image: np.ndarray, **kwargs) -> float
@@ -30,7 +35,9 @@ class FocusMeasureOperator(ABC):
         Validate the input image for compatibility with focus measure algorithms.
     """
 
-    def __call__(self, image: npt.NDArray, **kwargs) -> float:
+    smaller_is_better = True
+
+    def __call__(self, image: ImageType, **kwargs) -> float:
         """
         Compute the focus measure of the input image.
 
@@ -94,15 +101,26 @@ class AnalyticResponseFocusedMeasureOperator(FocusMeasureOperator):
 
 
 class AutoCorrelationFocusMeasure(FocusMeasureOperator):
+    smaller_is_better = False
+
     def measure_focus(self, image: ImageType, **kwargs) -> float:
         if image.dtype == bool:
             raise ValueError("Bools are not allowed")
         return float(np.sum(image[:-1, :] * image[1:, :]) - np.sum(image[:-2, :] * image[2:, :]))
 
 
-class NormalizedVarianceFocusMeasure(FocusMeasureOperator):
+class BrennerFocusMeasure(FocusMeasureOperator):
+    smaller_is_better = False
+
     def measure_focus(self, image: ImageType, **kwargs) -> float:
-        return -image.var() / image.mean()
+        return float(np.sum(np.abs(image[:-2] - image[2:]) ** 2))
+
+
+class NormalizedVarianceFocusMeasure(FocusMeasureOperator):
+    smaller_is_better = False
+
+    def measure_focus(self, image: ImageType, **kwargs) -> float:
+        return image.var() / image.mean()
 
 
 class FFTFocusMeasure(FocusMeasureOperator):
@@ -111,28 +129,31 @@ class FFTFocusMeasure(FocusMeasureOperator):
     \mathrm{FFT}(x, y) &= R(x, y) \exp\qty(-i\phi(x,y)) \\
     """
 
+    smaller_is_better = False
+
     def measure_focus(self, image: ImageType, **kwargs) -> float:
         f = np.fft.fft2(image)
         mag = np.abs(f)
         phase = np.arctan2(np.imag(f), np.real(f))
-        return -np.sum(np.abs(phase * mag))
+        return np.sum(np.abs(phase * mag))
 
 
 class FFTFocusMeasureTan2022(FocusMeasureOperator):
     """
     \mathrm{FM} &= \norm{\bm{R \phi}}_{1} \\
     \mathrm{FFT}(x, y) &= R(x, y) \exp\qty(-i\phi(x,y)) \\
-    
     """
+
+    smaller_is_better = False
 
     def measure_focus(self, image: ImageType, **kwargs) -> float:
         f = np.fft.fft2(image)
         mag = np.abs(f)
 
-        n_max_y, n_max_x = np.array(image.shape)//2
-        
+        n_max_y, n_max_x = np.array(image.shape) // 2
+
         # average of the high frequency components of the power spectrum
-        beta = np.mean(mag[n_max_y//2:n_max_y, n_max_x//2:n_max_x])
+        beta = np.mean(mag[n_max_y // 2 : n_max_y, n_max_x // 2 : n_max_x])
         fft_without_noise = mag - beta
 
         return np.sum(fft_without_noise[fft_without_noise > 0])
@@ -142,22 +163,27 @@ class FFTPowerFocusMeasure(FocusMeasureOperator):
     """
     \mathrm{FM} &= \norm{\bm{R \phi}}_{1} \\
     \mathrm{FFT}(x, y) &= R(x, y) \exp\qty(-i\phi(x,y)) \\
-    
+
     """
+
+    smaller_is_better = False
 
     def measure_focus(self, image: ImageType, **kwargs) -> float:
         f = np.fft.fft2(image)
         mag = np.abs(f)
 
-        n_max_y, n_max_x = np.array(image.shape)//2
-        
+        n_max_y, n_max_x = np.array(image.shape) // 2
+
         # average of the high frequency components of the power spectrum
-        beta = np.mean(mag[n_max_y//2:n_max_y, n_max_x//2:n_max_x])
+        beta = np.mean(mag[n_max_y // 2 : n_max_y, n_max_x // 2 : n_max_x])
         fft_without_noise = mag - beta
 
         return np.sum(fft_without_noise[fft_without_noise > 0])
 
+
 class AbsoluteGradientFocusMeasure(FocusMeasureOperator):
+    smaller_is_better = False
+
     def measure_focus(self, image: ImageType, **kwargs) -> float:
         return np.sum(np.abs(image[:, 1:] - image[:, :-1])) + np.sum(
             np.abs(image[1:, :] - image[:-1, :])
@@ -165,6 +191,8 @@ class AbsoluteGradientFocusMeasure(FocusMeasureOperator):
 
 
 class SquaredGradientFocusMeasure(FocusMeasureOperator):
+    smaller_is_better = False
+
     def measure_focus(self, image: ImageType, **kwargs) -> float:
         return float(
             np.sum((image[:, 1:] - image[:, :-1]) ** 2)
@@ -173,25 +201,26 @@ class SquaredGradientFocusMeasure(FocusMeasureOperator):
 
 
 class VarianceOfLaplacianFocusMeasure(FocusMeasureOperator):
+    smaller_is_better = False
+
     def measure_focus(self, image: ImageType, **kwargs) -> float:
         return cv2.Laplacian(image, cv2.CV_64F).var()
 
 
 class LaplacianFocusMeasure(FocusMeasureOperator):
+    smaller_is_better = False
+
     def measure_focus(self, image: ImageType, **kwargs) -> float:
         return np.sum(np.abs(cv2.Laplacian(image, cv2.CV_64F)))
 
 
 class TenengradFocusMeasure(FocusMeasureOperator):
+    smaller_is_better = False
+
     def measure_focus(self, image: ImageType, ksize=1, **kwargs) -> float:
         # Compute the gradients in the x and y directions using Sobel operators
         gradient_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=ksize)
         gradient_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=ksize)
         tenengrad_measure = gradient_x**2 + gradient_y**2
 
-        return -np.sum(tenengrad_measure)
-
-
-class BrennerFocusMeasure(FocusMeasureOperator):
-    def measure_focus(self, image: ImageType, **kwargs) -> float:
-        return float(np.sum(np.abs(image[:-2] - image[2:]) ** 2))
+        return np.sum(tenengrad_measure)

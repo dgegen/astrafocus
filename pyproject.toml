@@ -23,6 +23,7 @@ dependencies = [
     "photutils>=1.8.0",
     "scipy==1.9.3",
     "sqlite3worker==1.1.7",
+    "statsmodels",
 ]
 version = '0.0.2'
 
@@ -31,5 +32,5 @@ where = ["scr"]
 
 [project.optional-dependencies]
 visualization = ["dash", "dash_bootstrap_components", "ipython", "matplotlib", "plotly"]
-extended = ["pyswarms", "scikit-learn", "statsmodels"]
+extended = ["pyswarms", "scikit-learn"]
 alpaca = ["alpyca"]

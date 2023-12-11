@@ -1,0 +1,2 @@
+path_to_fits: "/path/to/fits"
+path_to_gaia_tmass_db: "/path/to/gaia_tmass_16_jm_cut.db"
