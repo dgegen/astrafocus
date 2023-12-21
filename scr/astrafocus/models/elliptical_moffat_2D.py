@@ -53,9 +53,9 @@ class EllipticalMoffat2D(Fittable2DModel):
 
     Examples
     --------
-    from astrafocus.utils.load_fits_from_directory import load_fits_from_directory
+    from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory
     fits_directory = "path_to_fits_files"
-    image_data, headers, focus_pos = load_fits_from_directory(fits_directory)
+    image_data, headers, focus_pos = load_fits_with_focus_pos_from_directory(fits_directory)
 
     star_data = StarFitter.get_masked_star(image_data[0], selected_stars[0], cutout_size=15)
 

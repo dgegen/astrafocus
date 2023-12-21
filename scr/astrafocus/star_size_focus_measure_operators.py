@@ -24,6 +24,7 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         fwhm=2.0,
         star_find_threshold=5.0,
         absolute_detection_limit=0.0,
+        cutout_size: int = 15,
         saturation_threshold=None,
     ) -> None:
         self.star_finder = StarFinder(
@@ -34,10 +35,14 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
             saturation_threshold=saturation_threshold,
         )
         self.star_fitter = StarFitter(model)
+        self.cutout_size = cutout_size
         self.optimised_parameters = None
         logger.info(self.star_fitter)
 
-    def measure_focus(self, image: ImageType, cutout_size=15, **kwargs) -> float:
+    def measure_focus(self, image: ImageType, cutout_size: Optional[int] = None, **kwargs) -> float:
+        if cutout_size is None:
+            cutout_size = self.cutout_size
+
         selected_stars = self.star_finder.selected_stars
         star_size_arr = self.star_fitter.calculate_star_sizes_of_selection(
             image,
@@ -49,15 +54,15 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
     def __repr__(self) -> str:
         return (
             f"StarSizeFocusMeasure(self.star_finder={self.star_finder!r}, "
-            f"star_fitter={self.star_fitter!r})"
+            f"star_fitter={self.star_fitter!r}, cutout_size={self.cutout_size!r})"
         )
 
 
 class GaussianStarFocusMeasure(StarSizeFocusMeasure):
     """
-    from astrafocus.utils.load_fits_from_directory import load_fits_from_directory
+    from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory
     fits_directory = "path_to_fits_files"
-    image_data, headers, focus_pos = load_fits_from_directory(fits_directory)
+    image_data, headers, focus_pos = load_fits_with_focus_pos_from_directory(fits_directory)
 
     image = image_data[0]
     gsfm = GaussianStarFocusMeasure(image, fwhm=2.0, star_find_threshold=8.0)
@@ -66,7 +71,7 @@ class GaussianStarFocusMeasure(StarSizeFocusMeasure):
     import matplotlib.pyplot as plt
     fm_vals = [gsfm.measure_focus(image) for image in image_data]
     plt.plot(focus_pos, fm_vals, ls='', marker='.'); plt.show()
-    
+
     plot_focus_response_curve(gsfm, image_data, focus_pos, plot_name='gaussian_star.pdf')
     """
 
@@ -103,7 +108,10 @@ class GaussianStarFocusMeasure(StarSizeFocusMeasure):
     @staticmethod
     def fit_hyperbola(x, y):
         popt, pcov = scipy.optimize.curve_fit(
-            GaussianStarFocusMeasure.hyperbola, x, y, p0=(1, 1, np.mean(x), np.min(y)) # , np.min(y)
+            GaussianStarFocusMeasure.hyperbola,
+            x,
+            y,
+            p0=(1, 1, np.mean(x), np.min(y)),  # , np.min(y)
         )
         return popt, pcov
 
@@ -130,9 +138,9 @@ class GaussianStarFocusMeasure(StarSizeFocusMeasure):
 
 class HFRStarFocusMeasure(StarSizeFocusMeasure):
     """
-    from astrafocus.utils.load_fits_from_directory import load_fits_from_directory
+    from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory
     fits_directory = "path_to_fits_files"
-    image_data, headers, focus_pos = load_fits_from_directory(fits_directory)
+    image_data, headers, focus_pos = load_fits_with_focus_pos_from_directory(fits_directory)
 
 
     image = image_data[0]

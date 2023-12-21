@@ -1,7 +1,7 @@
 import os
 import time
 from abc import ABC, ABCMeta, abstractmethod
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple, Union, Type
 
 import numpy as np
 import pandas as pd
@@ -10,9 +10,11 @@ from astrafocus.focus_measure_operators import (
     AnalyticResponseFocusedMeasureOperator,
     FocusMeasureOperator,
 )
+from astrafocus.star_size_focus_measure_operators import StarSizeFocusMeasure
 from astrafocus.extremum_estimators import RobustExtremumEstimator, LOWESSExtremumEstimator
 from astrafocus.interface.device_manager import AutofocusDeviceManager
 from astrafocus.utils.logger import configure_logger
+from astrafocus.utils.fits import load_fits_from_directory
 
 
 logger = configure_logger(stream_handler_level=10)  # logging.INFO
@@ -103,6 +105,7 @@ class AutofocuserBase(ABC):
         self.secondary_focus_measure_operators = secondary_focus_measure_operators or {}
         self._image_record = []
         self.save_path = save_path
+        self.file_suffix = ".fits"
 
     @property
     def focus_record(self):
@@ -110,9 +113,27 @@ class AutofocuserBase(ABC):
         df["focus_pos"] = df["focus_pos"].astype(int)
 
         if self.keep_images:
-            for name, fm in self.secondary_focus_measure_operators.items():
-                df[name] = np.array([fm.measure_focus(image) for image in self._image_record])
-
+            try:
+                for name, fm in self.secondary_focus_measure_operators.items():
+                    df[name] = np.array([fm.measure_focus(image) for image in self._image_record])
+            except Exception as e:
+                logger.warning(
+                    "Error applying secondary focus measure operators to image record."
+                    " Exception: %s", e
+                )
+        elif self.save_path is not None and len(self.secondary_focus_measure_operators) > 0:
+            try:
+                image_data, _ = load_fits_from_directory(self.save_path, suffix=self.file_suffix)
+                # Discard calibration image, if necessary, assuming file names are sorted by time
+                if len(image_data) == len(df) + 1:
+                    image_data = image_data[1:]
+                for name, fm in self.secondary_focus_measure_operators.items():
+                    df[name] = np.array([fm.measure_focus(image) for image in image_data])
+            except Exception as e:
+                logger.warning(
+                    "Error applying secondary focus measure operators to saved fits."
+                    " Exception: %s", e
+                )
         return df
 
     def measure_focus(self, image: np.ndarray) -> float:
@@ -151,7 +172,7 @@ class AutofocuserBase(ABC):
             if self.save_path.endswith(".csv"):
                 save_path = self.save_path
             else:
-                timestr = time.strftime('%Y-%m-%dT%H:%M:%S')
+                timestr = time.strftime("%Y-%m-%dT%H%M%S")
                 save_path = os.path.join(self.save_path, f"{timestr}_focus_record.csv")
 
             self.focus_record.to_csv(save_path, index=False)
@@ -418,8 +439,8 @@ class NonParametricResponseAutofocuser(SweepingAutofocuser):
         extremum_estimator: RobustExtremumEstimator = LOWESSExtremumEstimator(frac=0.5, it=3),
         **kwargs,
     ):
-        super().__init__(autofocus_device_manager, exposure_time, focus_measure_operator, **kwargs)
         self.extremum_estimator = extremum_estimator
+        super().__init__(autofocus_device_manager, exposure_time, focus_measure_operator, **kwargs)
 
     def _find_best_focus_position(
         self, focus_pos: np.ndarray, focus_measure: np.ndarray
@@ -434,11 +455,11 @@ class NonParametricResponseAutofocuser(SweepingAutofocuser):
         if self.focus_measure_operator.smaller_is_better:
             best_focus_pos, best_focus_measure_value = self.extremum_estimator.argmin(
                 focus_pos, focus_measure, return_value=True
-            )
+            )  # type: ignore
         else:
             best_focus_pos, best_focus_measure_value = self.extremum_estimator.argmax(
                 focus_pos, focus_measure, return_value=True
-            )
+            )  # type: ignore
 
         best_focus_pos = int(np.round(best_focus_pos))
         best_focus_measure_value = float(best_focus_measure_value)
@@ -451,7 +472,7 @@ class NonParametricResponseAutofocuser(SweepingAutofocuser):
             f"exposure_time={self.exposure_time!r} sec, "
             f"search_range={self.search_range!r}, "
             f"initial_position={self.initial_position!r}, "
-            f"robust_estimator={self.robust_estimator!r})"
+            f"robust_estimator={self.extremum_estimator!r})"
         )
 
 
@@ -512,19 +533,31 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
         self,
         autofocus_device_manager: AutofocusDeviceManager,
         exposure_time: float,
-        focus_measure_operator: AnalyticResponseFocusedMeasureOperator,
+        focus_measure_operator: Type[AnalyticResponseFocusedMeasureOperator],
         percent_to_cut: float = 50.0,
+        focus_measure_operator_kwargs: Optional[dict] = None,
         **kwargs,
     ):
-        ref_image = autofocus_device_manager.camera.perform_exposure(texp=exposure_time)
+        if not issubclass(focus_measure_operator, AnalyticResponseFocusedMeasureOperator):
+            raise ValueError(
+                "The focus measure operator must be a subclass of "
+                "AnalyticResponseFocusedMeasureOperator. It should not be an instant."
+            )
+
+        if focus_measure_operator_kwargs is None:
+            focus_measure_operator_kwargs = {}
+
+        if issubclass(focus_measure_operator, StarSizeFocusMeasure):
+            ref_image = autofocus_device_manager.camera.perform_exposure(texp=exposure_time)
+            focus_measure_operator_kwargs["ref_image"] = ref_image
 
         super().__init__(
             autofocus_device_manager=autofocus_device_manager,
             exposure_time=exposure_time,
-            focus_measure_operator=focus_measure_operator(ref_image=ref_image),
+            focus_measure_operator=focus_measure_operator(**focus_measure_operator_kwargs),
             **kwargs,
         )
-        self.update_search_range
+
         self.percent_to_cut = percent_to_cut
 
     def _find_best_focus_position(

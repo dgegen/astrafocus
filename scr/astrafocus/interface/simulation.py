@@ -1,16 +1,19 @@
+import os
 import time
 from abc import abstractmethod
+from datetime import datetime
 from typing import Optional, Tuple
 
 import numpy as np
 
 from astrafocus.interface.camera import CameraInterface
+from astrafocus.interface.device_manager import AutofocusDeviceManager
 from astrafocus.interface.focuser import FocuserInterface
 from astrafocus.interface.telescope import TrivialTelescope
-from astrafocus.interface.device_manager import AutofocusDeviceManager
-from astrafocus.utils.load_fits_from_directory import load_fits_from_directory
+from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory
 from astrafocus.utils.logger import configure_logger
 from astrafocus.utils.typing import ImageType
+from astropy.io import fits
 
 __all__ = ["ObservationBasedDeviceSimulator"]
 
@@ -147,11 +150,13 @@ class ObservationalCameraSimulation(CameraSimulation):
     def __init__(
         self,
         image_data: np.ndarray,
-        focuser: np.ndarray,
+        focuser: ObservationalFocuserSimulation,
         sleep_flag: bool = False,
+        save_path: Optional[str] = None,
     ):
         super().__init__(focuser=focuser, sleep_flag=sleep_flag)
         self.image_data = image_data
+        self.save_path = save_path
 
     def sample_an_observation(self, desired_position: int, texp: float = 3.0):
         """Get an observation at the specified focal position."""
@@ -167,6 +172,11 @@ class ObservationalCameraSimulation(CameraSimulation):
         if self.sleep_flag:
             time.sleep(texp)
         self.total_time_exposing += texp
+
+        if self.save_path is not None:
+            file_name = f"{datetime.now().strftime('%Y-%m-%dT%H%M%S%f')}.fits"
+            fits.writeto(os.path.join(self.save_path, file_name), image, overwrite=True)
+
         return image
 
 
@@ -216,6 +226,7 @@ class ObservationBasedDeviceSimulator(AutofocusDeviceSimulator):
         headers: Optional[list[ImageType]] = None,
         focus_pos: Optional[np.ndarray] = None,
         fits_path: Optional[str] = None,
+        save_path: Optional[str] = None,
     ):
         """
         Initialize the AutofocusDeviceSimulator with a current position and allowed range.
@@ -238,7 +249,7 @@ class ObservationBasedDeviceSimulator(AutofocusDeviceSimulator):
         if image_data is None or focus_pos is None:
             if fits_path is None:
                 raise ValueError("Either provide image_data, headers and focus_pos or fits_path")
-            image_data, headers, focus_pos = load_fits_from_directory(fits_path)
+            image_data, headers, focus_pos = load_fits_with_focus_pos_from_directory(fits_path)
 
         self.image_data = image_data
         self.headers = headers
@@ -253,7 +264,7 @@ class ObservationBasedDeviceSimulator(AutofocusDeviceSimulator):
         )
 
         camera = ObservationalCameraSimulation(
-            image_data=image_data, focuser=focuser, sleep_flag=sleep_flag
+            image_data=image_data, focuser=focuser, sleep_flag=sleep_flag, save_path=save_path
         )
         super().__init__(camera=camera, focuser=focuser, telescope=None, sleep_flag=sleep_flag)
 
