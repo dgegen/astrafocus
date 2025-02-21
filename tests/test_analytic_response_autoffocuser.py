@@ -1,12 +1,9 @@
-import os
 import unittest
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from astrafocus.autofocuser import AnalyticResponseAutofocuser
 from astrafocus.focus_measure_operators import FFTFocusMeasureTan2022
-from astrafocus.interface.device_manager import AutofocusDeviceManager
 from astrafocus.interface.simulation import ObservationBasedDeviceSimulator
 from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure
 
@@ -41,4 +38,6 @@ class TestAutofocuser(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    config = load_config()
+    if "path_to_fits" in config:
+        unittest.main()

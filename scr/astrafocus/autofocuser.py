@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import time
 from abc import ABC, ABCMeta, abstractmethod
 from typing import Optional, Tuple, Union, Type
@@ -104,7 +105,7 @@ class AutofocuserBase(ABC):
         self.keep_images = keep_images
         self.secondary_focus_measure_operators = secondary_focus_measure_operators or {}
         self._image_record = []
-        self.save_path = save_path
+        self.save_path = save_path if isinstance(save_path, (str|None)) else str(save_path)
         self.file_suffix = ".fits"
 
     @property

@@ -16,13 +16,13 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
-    "astropy==5.2.2",
+    "astropy",
     "opencv-python",
-    "numpy==1.24.3",
-    "pandas==2.0.1",
-    "photutils>=1.8.0",
-    "scipy==1.9.3",
-    "sqlite3worker==1.1.7",
+    "numpy",
+    "pandas",
+    "photutils",
+    "scipy",
+    "sqlite3worker",
     "statsmodels",
 ]
 version = '0.0.3'
@@ -35,3 +35,7 @@ visualization = ["ipython", "matplotlib", "notebook"]
 dash = ["dash", "dash_bootstrap_components", "plotly"]
 extended = ["pyswarms", "scikit-learn"]
 alpaca = ["alpyca"]
+test = [
+    "cabaret",
+    "matplotlib",
+]

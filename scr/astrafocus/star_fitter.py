@@ -42,7 +42,7 @@ class StarFitter:
     >>> from astrafocus.star_size_focus_measure_operators import GaussianStarFocusMeasure
     >>> gsfm = GaussianStarFocusMeasure(image, fwhm=2.0, star_find_threshold=8.0)
     >>> gsfm.star_finder.selected_stars
-    
+
     # initialise with a model from astropy.modeling.models,
     >>> star_fitter = StarFitter(models.Gaussian2D)
     >>> star_fitter.fit(star_data)
@@ -53,12 +53,12 @@ class StarFitter:
     >>> from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
     >>> star_fitter = StarFitter(HalfFluxRadius2D)
     >>> star_fitter.fit_source(image, star=gsfm.star_finder.selected_stars, cutout_size=15)
-    
-    
+
+
     >>> star_data = star_fitter.get_masked_star(image, gsfm.star_finder.selected_stars, cutout_size=15)
     >>> plt.imshow(star_data); plt.show()
     plt.imshow(star_fitter._result(*np.indices(star_data.shape))); plt.show()
-    >>> 
+    >>>
     """
 
     def __init__(
@@ -77,7 +77,7 @@ class StarFitter:
         model : astropy.modeling.core._ModelMeta
             An astropy model like model to use for fitting.
             Commonly, models.Gaussian2D, models.Moffat2D, or models.Ring2D.
-            This package further contains autofocus.models.EllipticMoffat2D and 
+            This package further contains autofocus.models.EllipticMoffat2D and
             autofocus.models.HalfFluxRadius2D.
         """
         self.scale_factor = scale_factor
@@ -90,14 +90,18 @@ class StarFitter:
         if self._result is not None:
             return self._result
         else:
-            raise ValueError("No results available. The object has not been fitted yet.")
+            raise ValueError(
+                "No results available. The object has not been fitted yet."
+            )
 
     @property
     def parameter_dict(self):
         if self._result is not None:
             return dict(zip(self._result.param_names, self._result.parameters))
         else:
-            raise ValueError("No results available. The object has not been fitted yet.")
+            raise ValueError(
+                "No results available. The object has not been fitted yet."
+            )
 
     def calculate_star_sizes_of_selection(
         self, images, selected_stars, cutout_size, *args, **kwargs
@@ -111,7 +115,9 @@ class StarFitter:
         star_sizes = np.zeros((len(images), len(selected_stars)))
         for i_star, star in enumerate(selected_stars):
             star_sizes[:, i_star] = [
-                self.fit_source(image, star, cutout_size=cutout_size, *args, **kwargs).star_size
+                self.fit_source(
+                    image, star, cutout_size=cutout_size, *args, **kwargs
+                ).star_size
                 for image in images
             ]
 
@@ -172,7 +178,9 @@ class StarFitter:
                 "R_0",
             ]:
                 setattr(
-                    self._result, param_name, getattr(self._result, param_name) / self.scale_factor
+                    self._result,
+                    param_name,
+                    getattr(self._result, param_name) / self.scale_factor,
                 )
 
     @staticmethod
@@ -202,10 +210,18 @@ class StarFitter:
         elif hasattr(result, "R_0"):  # for HalfFLuxRadius
             return 2 * result.R_0 / self.scale_factor
         else:
-            raise AttributeError("Focus measure calculation is not supported for this model type.")
+            raise AttributeError(
+                "Focus measure calculation is not supported for this model type."
+            )
 
     def integrate_source(
-        self, image, star, cutout_size=15, fitter=fitting.LevMarLSQFitter(), *args, **kwargs
+        self,
+        image,
+        star,
+        cutout_size=15,
+        fitter=fitting.LevMarLSQFitter(),
+        *args,
+        **kwargs,
     ):
         star_data = self.get_masked_star(image, star, cutout_size)
         self.fit(star_data, fitter=fitter, *args, **kwargs)
@@ -239,9 +255,9 @@ class StarFitter:
         init = dict()
         for param_name in parameters:
             if param_name in ["x_mean", "x_0"]:
-                init[param_name] =  star_data.shape[1]//2
+                init[param_name] = star_data.shape[1] // 2
             elif param_name in ["y_mean", "y_0"]:
-                init[param_name] = star_data.shape[0]//2
+                init[param_name] = star_data.shape[0] // 2
             elif param_name in ["x_stddev", "sigma_x"]:
                 init[param_name] = expected_star_size
             elif param_name in ["y_stddev", "sigma_y"]:
@@ -249,7 +265,7 @@ class StarFitter:
             elif param_name in ["R_0"]:
                 init[param_name] = expected_star_size
             elif param_name in ["amplitude"]:
-                init[param_name] = 0.9*np.max(star_data)
+                init[param_name] = 0.9 * np.max(star_data)
 
         return init
 
@@ -258,5 +274,5 @@ class StarFitter:
         return (
             f"StarFitter(model={model!r}, "
             f"scale_factor={self.scale_factor}, "
-            "fitter={self._fitter.__class__.__name__})"
+            f"fitter={self._fitter.__class__.__name__})"
         )

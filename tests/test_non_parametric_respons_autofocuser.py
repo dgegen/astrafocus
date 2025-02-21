@@ -1,14 +1,11 @@
-import os
 import unittest
 
-import matplotlib.pyplot as plt
 from astrafocus.autofocuser import NonParametricResponseAutofocuser
 from astrafocus.extremum_estimators import LOWESSExtremumEstimator
 from astrafocus.focus_measure_operators import (
     FFTFocusMeasureTan2022,
     NormalizedVarianceFocusMeasure,
 )
-from astrafocus.interface.device_manager import AutofocusDeviceManager
 from astrafocus.interface.simulation import ObservationBasedDeviceSimulator
 from utils import load_config
 
