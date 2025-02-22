@@ -1,5 +1,4 @@
 from typing import Optional
-import logging
 
 import astropy
 import numpy as np
@@ -7,7 +6,10 @@ import photutils
 from photutils.detection import DAOStarFinder
 
 from astrafocus.utils.typing import ImageType
+from astrafocus.utils.logger import configure_logger
 
+
+logger = configure_logger(stream_handler_level=10)
 
 class StarFinder:
     """
@@ -82,6 +84,7 @@ class StarFinder:
         #     sources = StarFinder.find_sources(ref_image, fwhm, threshold/2, std, background, peakmax)
         # else:
         #     sources.sort("flux", reverse=True)
+        logger.info(f"Number of sources above threshold {len(sources)}")
 
         try:
             sources.sort("flux", reverse=True)
