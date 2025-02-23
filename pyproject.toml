@@ -25,7 +25,7 @@ dependencies = [
     "sqlite3worker",
     "statsmodels",
 ]
-version = '0.0.3'
+version = '0.0.4'
 
 [tool.setuptools.packages.find]
 where = ["scr"]
