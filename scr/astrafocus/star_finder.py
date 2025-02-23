@@ -11,6 +11,7 @@ from astrafocus.utils.logger import configure_logger
 
 logger = configure_logger(stream_handler_level=10)
 
+
 class StarFinder:
     """
     Examples
@@ -84,6 +85,11 @@ class StarFinder:
         #     sources = StarFinder.find_sources(ref_image, fwhm, threshold/2, std, background, peakmax)
         # else:
         #     sources.sort("flux", reverse=True)
+        if not sources:
+            raise ValueError(
+                f"No sources found in StarFinder: {ref_image.std()}, {fwhm}, {threshold}."
+                "Decrease threshold and check the image."
+            )
         logger.info(f"Number of sources above threshold {len(sources)}")
 
         try:
