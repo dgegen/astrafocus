@@ -1,7 +1,6 @@
 import os
-from pathlib import Path
 import time
-from abc import ABC, ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from typing import Optional, Tuple, Union, Type
 
 import numpy as np
@@ -105,7 +104,7 @@ class AutofocuserBase(ABC):
         self.keep_images = keep_images
         self.secondary_focus_measure_operators = secondary_focus_measure_operators or {}
         self._image_record = []
-        self.save_path = save_path if isinstance(save_path, (str|None)) else str(save_path)
+        self.save_path = save_path if isinstance(save_path, (str | None)) else str(save_path)
         self.file_suffix = ".fits"
 
     @property
@@ -119,8 +118,8 @@ class AutofocuserBase(ABC):
                     df[name] = np.array([fm.measure_focus(image) for image in self._image_record])
             except Exception as e:
                 logger.warning(
-                    "Error applying secondary focus measure operators to image record."
-                    " Exception: %s", e
+                    "Error applying secondary focus measure operators to image record." " Exception: %s",
+                    e,
                 )
         elif self.save_path is not None and len(self.secondary_focus_measure_operators) > 0:
             try:
@@ -132,8 +131,8 @@ class AutofocuserBase(ABC):
                     df[name] = np.array([fm.measure_focus(image) for image in image_data])
             except Exception as e:
                 logger.warning(
-                    "Error applying secondary focus measure operators to saved fits."
-                    " Exception: %s", e
+                    "Error applying secondary focus measure operators to saved fits." " Exception: %s",
+                    e,
                 )
         return df
 
@@ -181,13 +180,32 @@ class AutofocuserBase(ABC):
             logger.exception(e)
             logger.warning("Error saving focus record to csv.")
 
+    def save_focus_log(self):
+        if not isinstance(self.save_path, str):
+            if self.save_path is not None:
+                logger.warning("Error saving focus record to csv. Invalid save path.")
+            return None
+
+        try:
+            if self.save_path.endswith(".csv"):
+                save_path = self.save_path.replace(".csv", "_focus_log.txt")
+            else:
+                timestr = time.strftime("%Y-%m-%dT%H%M%S")
+                save_path = os.path.join(self.save_path, f"{timestr}_focus_log.txt")
+
+            with open(save_path, "w") as f:
+                f.write(f"Best focus position: {self.best_focus_position}\n")
+                f.write(f"Autofocuser: {self}\n")
+
+        except Exception as e:
+            logger.exception(e)
+            logger.warning("Error saving focus record to csv.")
+
     def get_focus_record(self):
         if self._focus_record.size == 0:
             raise ValueError("Focus record is empty. Run the autofocus algorithm first.")
 
-        focus_pos = self._focus_record.focus_pos[~np.isnan(self._focus_record.focus_pos)].to_numpy(
-            int
-        )
+        focus_pos = self._focus_record.focus_pos[~np.isnan(self._focus_record.focus_pos)].to_numpy(int)
         focus_measure = self._focus_record.focus_measure[
             ~np.isnan(self._focus_record.focus_measure)
         ].to_numpy()
@@ -319,9 +337,7 @@ class SweepingAutofocuser(AutofocuserBase):
         initial_direction = self.get_initial_direction(min_focus_pos, max_focus_pos)
 
         for sweep in range(self.n_sweeps):
-            search_positions = self.integer_linspace(
-                min_focus_pos, max_focus_pos, self.n_steps[sweep]
-            )
+            search_positions = self.integer_linspace(min_focus_pos, max_focus_pos, self.n_steps[sweep])
 
             if sweep % 2 == initial_direction:
                 search_positions = np.flip(search_positions)  # Reverse order
@@ -339,9 +355,7 @@ class SweepingAutofocuser(AutofocuserBase):
             self._run_sweep(search_positions, self.n_exposures[sweep])
 
             if self.decrease_search_range:
-                min_focus_pos, max_focus_pos = self.update_search_range(
-                    min_focus_pos, max_focus_pos
-                )
+                min_focus_pos, max_focus_pos = self.update_search_range(min_focus_pos, max_focus_pos)
 
         self.find_best_focus_position()
 
@@ -349,8 +363,7 @@ class SweepingAutofocuser(AutofocuserBase):
         """Move upward if initial position is closer to min_focus_pos than max_focus_pos."""
         initial_direction = (
             1
-            if np.abs(self.initial_position - min_focus_pos)
-            < np.abs(self.initial_position - max_focus_pos)
+            if np.abs(self.initial_position - min_focus_pos) < np.abs(self.initial_position - max_focus_pos)
             else 0
         )
         return initial_direction
@@ -358,9 +371,7 @@ class SweepingAutofocuser(AutofocuserBase):
     def find_best_focus_position(self):
         focus_pos, focus_measure = self.get_focus_record()
 
-        best_focus_pos, best_focus_measure = self._find_best_focus_position(
-            focus_pos, focus_measure
-        )
+        best_focus_pos, best_focus_measure = self._find_best_focus_position(focus_pos, focus_measure)
 
         self.best_focus_position = best_focus_pos
         self.autofocus_device_manager.move_focuser_to_position(best_focus_pos)
@@ -383,9 +394,7 @@ class SweepingAutofocuser(AutofocuserBase):
                 raise ValueError("Observation conditions are not good enough to take exposures.")
             for exposure in range(n_exposures):
                 if not self.autofocus_device_manager.check_conditions():
-                    raise ValueError(
-                        "Observation conditions are not good enough to take exposures."
-                    )
+                    raise ValueError("Observation conditions are not good enough to take exposures.")
 
                 # This step should include processing such as hot pixel removal etc.
                 image = self.autofocus_device_manager.perform_exposure_at(
@@ -393,9 +402,7 @@ class SweepingAutofocuser(AutofocuserBase):
                 )
 
                 fm_value = self.measure_focus(image)
-                logger.debug(
-                    f"Obtained measure value: {fm_value:8.3e} at focus position: {focus_position}"
-                )
+                logger.debug(f"Obtained measure value: {fm_value:8.3e} at focus position: {focus_position}")
 
                 # Save to record
                 df_index = start_index + ind * n_exposures + exposure
@@ -409,9 +416,13 @@ class SweepingAutofocuser(AutofocuserBase):
                 ]
             )
             if mean_fm_value < 1e3:
-                logger.info(f"{focus_position:6d} | {mean_fm_value:8.3f}")
+                logger.info(
+                    f"Focus Position: {focus_position:6d} | Mean Focus Measure: {mean_fm_value:8.3f}"
+                )
             else:
-                logger.info(f"{focus_position:6d} | {mean_fm_value:8.3e}")
+                logger.info(
+                    f"Focus Position: {focus_position:6d} | Mean Focus Measure: {mean_fm_value:8.3e}"
+                )
 
     def update_search_range(self, min_focus_pos, max_focus_pos):
         return min_focus_pos, max_focus_pos
@@ -425,10 +436,19 @@ class SweepingAutofocuser(AutofocuserBase):
         >>> integer_linspace(0, 1, 4)
         array([0, 0, 1, 1])
         """
-        search_positions = np.array(
-            np.round(np.linspace(min_focus_pos, max_focus_pos, n_steps)), dtype=int
-        )
+        search_positions = np.array(np.round(np.linspace(min_focus_pos, max_focus_pos, n_steps)), dtype=int)
         return search_positions
+
+    def __repr__(self) -> str:
+        return (
+            f"SweepingAutofocuser(self.autofocus_device_manager={self.autofocus_device_manager!r}, "
+            f"exposure_time={self.exposure_time!r} sec, "
+            f"search_range={self.search_range!r}, "
+            f"initial_position={self.initial_position!r}, "
+            f"n_steps={self.n_steps!r}, "
+            f"n_exposures={self.n_exposures!r}, "
+            f"decrease_search_range={self.decrease_search_range!r})"
+        )
 
 
 class NonParametricResponseAutofocuser(SweepingAutofocuser):
@@ -448,9 +468,7 @@ class NonParametricResponseAutofocuser(SweepingAutofocuser):
     ) -> Tuple[int, float]:
         focus_pos, focus_measure = self.get_focus_record()
 
-        focus_pos_sorted, focus_measure_sorted = self.extremum_estimator.sort(
-            focus_pos, focus_measure
-        )
+        focus_pos_sorted, focus_measure_sorted = self.extremum_estimator.sort(focus_pos, focus_measure)
 
         # Use RobustExtremumEstimator to find the best focus position
         if self.focus_measure_operator.smaller_is_better:
@@ -567,18 +585,14 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
         return self.fit_focus_response_curve(focus_pos, focus_measure)
 
     def fit_focus_response_curve(self, focus_pos: np.ndarray, focus_measure: np.ndarray):
-        optimal_focus_pos = self.focus_measure_operator.fit_focus_response_curve(
-            focus_pos, focus_measure
-        )
+        optimal_focus_pos = self.focus_measure_operator.fit_focus_response_curve(focus_pos, focus_measure)
         optimal_focus_pos = int(np.round(optimal_focus_pos))
         best_focus_val = self.focus_measure_operator.get_focus_response_curve_fit(optimal_focus_pos)
 
         return optimal_focus_pos, best_focus_val
 
     def get_focus_response_curve_fit(self, focus_pos: int):
-        focus_response_curve_fit = self.focus_measure_operator.get_focus_response_curve_fit(
-            focus_pos
-        )
+        focus_response_curve_fit = self.focus_measure_operator.get_focus_response_curve_fit(focus_pos)
         return focus_response_curve_fit
 
     def update_search_range(self, min_focus_pos, max_focus_pos) -> Tuple[int, int]:
@@ -616,3 +630,13 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
             f"({new_min_focus_pos}, {new_max_focus_pos})."
         )
         return new_min_focus_pos, new_max_focus_pos
+
+    def __repr__(self) -> str:
+        return (
+            f"AnalyticResponseAutofocuser(self.autofocus_device_manager={self.autofocus_device_manager!r}, "
+            f"exposure_time={self.exposure_time!r} sec, "
+            f"search_range={self.search_range!r}, "
+            f"initial_position={self.initial_position!r}, "
+            f"focus_measure_operator={self.focus_measure_operator!r}, "
+            f"percent_to_cut={self.percent_to_cut!r})"
+        )
