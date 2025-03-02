@@ -43,9 +43,7 @@ class StarFinder:
 
     def select_target_stars(self, potential_targets):
         # This could be achieved with peakmax
-        selected_stars = potential_targets[
-            potential_targets["peak"] <= self.saturation_threshold
-        ]
+        selected_stars = potential_targets[potential_targets["peak"] <= self.saturation_threshold]
 
         return selected_stars
 
@@ -53,9 +51,7 @@ class StarFinder:
         return self.find_sources(
             self.ref_image,
             fwhm=self.fwhm,
-            threshold=np.maximum(
-                self.absolute_detection_limit, self.star_find_threshold
-            ),
+            threshold=np.maximum(self.absolute_detection_limit, self.star_find_threshold),
             std=self.ref_std,
             background=self.ref_background,
         )
@@ -75,9 +71,7 @@ class StarFinder:
             mean, median, std = astropy.stats.sigma_clipped_stats(ref_image, sigma=3.0)
             background = median
 
-        daofind = DAOStarFinder(
-            fwhm=fwhm, threshold=std * threshold, brightest=None, peakmax=None
-        )
+        daofind = DAOStarFinder(fwhm=fwhm, threshold=std * threshold, brightest=None, peakmax=None)
         sources = daofind(ref_image - background)
 
         # TODO make more robust
@@ -95,8 +89,25 @@ class StarFinder:
         try:
             sources.sort("flux", reverse=True)
         except Exception as exc:
-            raise ValueError(
-                f"In StarFinder: {ref_image.std()}, {fwhm}, {threshold}. {exc}"
-            )
+            raise ValueError(f"In StarFinder: {ref_image.std()}, {fwhm}, {threshold}. {exc}")
 
         return sources
+
+    def __repr__(self):
+        return (
+            "StarFinder("
+            f"ref_image={self.ref_image}, "
+            f"fwhm={self.fwhm}, "
+            f"star_find_threshold={self.star_find_threshold}, "
+            f"absolute_detection_limit={self.absolute_detection_limit}, "
+            f"saturation_threshold={self.saturation_threshold})"
+        )
+
+    def __str__(self):
+        return (
+            "StarFinder("
+            f"fwhm={self.fwhm}, "
+            f"star_find_threshold={self.star_find_threshold}, "
+            f"absolute_detection_limit={self.absolute_detection_limit}, "
+            f"saturation_threshold={self.saturation_threshold})"
+        )
