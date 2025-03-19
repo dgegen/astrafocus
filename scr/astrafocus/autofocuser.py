@@ -296,7 +296,7 @@ class SweepingAutofocuser(AutofocuserBase):
         autofocus_device_manager: AutofocusDeviceManager,
         exposure_time: float,
         focus_measure_operator,
-        n_steps: Tuple[int] = (10,),
+        n_steps: Tuple[int] | int = (10,),
         n_exposures: Union[int, np.ndarray] = 1,
         search_range: Optional[Tuple[int, int]] = None,
         decrease_search_range=True,
@@ -311,9 +311,8 @@ class SweepingAutofocuser(AutofocuserBase):
             initial_position,
             **kwargs,
         )
-
-        self.n_sweeps = len(n_steps)
-        self.n_steps = n_steps
+        self.n_steps = tuple(n_steps) if hasattr(n_steps, '__iter__') else (n_steps,)
+        self.n_sweeps = len(self.n_steps)
         self.n_exposures = (
             np.array(n_exposures, dtype=int)
             if isinstance(n_exposures, (np.ndarray, list, tuple))

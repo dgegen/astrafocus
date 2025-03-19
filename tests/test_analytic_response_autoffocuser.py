@@ -36,6 +36,26 @@ class TestAutofocuser(unittest.TestCase):
         self.assertIsNotNone(df)
         self.assertIsInstance(df, pd.DataFrame)
 
+    def test_autofocuser_single_sweep(self):
+        ARAF = AnalyticResponseAutofocuser(
+            autofocus_device_manager=self.TELESCOPE_INTERFACE,
+            exposure_time=3.0,
+            focus_measure_operator=HFRStarFocusMeasure,
+            n_steps=20,
+            n_exposures=1,
+            decrease_search_range=True,
+            percent_to_cut=40,
+            keep_images=True,
+            secondary_focus_measure_operators={"FFT": FFTFocusMeasureTan2022()},
+        )
+
+        ARAF.run()
+        df = ARAF.focus_record
+
+        # Add assertions based on your expectations
+        self.assertIsNotNone(df)
+        self.assertIsInstance(df, pd.DataFrame)
+
 
 if __name__ == "__main__":
     config = load_config()
