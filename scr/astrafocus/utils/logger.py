@@ -1,16 +1,12 @@
 import logging
-import time
 
-def configure_logger():
-    logging.basicConfig(
-        format='%(levelname)s,%(asctime)s.%(msecs)03d,%(process)d,%(name)s,(%(filename)s:%(lineno)d),%(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-        level=logging.INFO
-    )
-    
-    logging.Formatter.converter = time.gmtime
 
-    return logging.getLogger(__name__)
+def get_logger():
+    """Get the logger instance configured by the get_logger function."""
+    logger = logging.getLogger("astrafocus")
+    logger.setLevel(logging.INFO)
+
+    return logger
 
 
 def configure_logger(
@@ -55,15 +51,10 @@ def configure_logger(
     >>> logger.debug('This is a debug message.')
 
     """
-    # Create a logger
-    logger = logging.getLogger(__name__)  # Gets python log_name
-    logger.setLevel(logging.INFO)
+    logger = get_logger()
 
     # Create a formatter
-
-    stream_formatter = logging.Formatter(
-        "%(asctime)s :: %(levelname)-8s :: %(message)s", datefmt="%H:%M:%S"
-    )
+    stream_formatter = logging.Formatter("%(asctime)s :: %(levelname)-8s :: %(message)s", datefmt="%H:%M:%S")
     log_file_formatter = logging.Formatter(
         "%(asctime)s :: %(name)-8s, %(levelname)s , %(module)s:%(lineno)d :: %(message)s"
     )
@@ -171,7 +162,7 @@ class CustomFormatter(logging.Formatter):
 
 
 if __name__ == "__main__":
-    # Call the setup_logger function to set up the logger
+    # Call the configure_logger function to set up the logger
     logger = configure_logger()
 
     # Start logging

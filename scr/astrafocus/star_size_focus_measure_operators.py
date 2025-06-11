@@ -11,9 +11,9 @@ from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
 from astrafocus.star_finder import StarFinder
 from astrafocus.star_fitter import StarFitter
 from astrafocus.focus_measure_operators import AnalyticResponseFocusedMeasureOperator
-from astrafocus.utils.logger import configure_logger
+from astrafocus.utils.logger import get_logger
 
-logger = configure_logger()
+logger = get_logger()
 
 
 class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):

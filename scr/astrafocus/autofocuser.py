@@ -13,11 +13,11 @@ from astrafocus.focus_measure_operators import (
 from astrafocus.star_size_focus_measure_operators import StarSizeFocusMeasure
 from astrafocus.extremum_estimators import RobustExtremumEstimator, LOWESSExtremumEstimator
 from astrafocus.interface.device_manager import AutofocusDeviceManager
-from astrafocus.utils.logger import configure_logger
+from astrafocus.utils.logger import get_logger
 from astrafocus.utils.fits import load_fits_from_directory
 
 
-logger = configure_logger(stream_handler_level=10)  # logging.INFO
+logger = get_logger()
 
 
 class AutofocuserBase(ABC):

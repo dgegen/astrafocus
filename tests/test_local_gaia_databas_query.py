@@ -51,8 +51,6 @@ class TestLocalGaiaDatabaseQuery(unittest.TestCase):
         config = load_config()
         self.db_path = config["path_to_gaia_tmass_db"]
 
-        self.logger = logging.getLogger(__name__)
-
     def tearDown(self):
         try:
             # Clean up the test database
@@ -63,7 +61,7 @@ class TestLocalGaiaDatabaseQuery(unittest.TestCase):
 
     def test_determine_relevant_shards(self):
         # Test _determine_relevant_shards method
-        query_obj = LocalGaiaDatabaseQuery(self.db_path, logger=self.logger)
+        query_obj = LocalGaiaDatabaseQuery(self.db_path)
         shards = query_obj._determine_relevant_shards(10, 20)
         self.assertEqual(
             shards,
@@ -83,14 +81,14 @@ class TestLocalGaiaDatabaseQuery(unittest.TestCase):
 
     def test_sql_query_of_shard(self):
         # Test _sql_query_of_shard method
-        query_obj = LocalGaiaDatabaseQuery(self.db_path, logger=self.logger)
+        query_obj = LocalGaiaDatabaseQuery(self.db_path)
         query_obj._connect_to_database()
         df = query_obj._sql_query_of_shard("20_21", 20, 21, 23, 23.5)
         query_obj._close_database_connection()
         self.assertIsInstance(df, pd.DataFrame)
 
     def test_query(self):
-        query_obj = LocalGaiaDatabaseQuery(self.db_path, logger=self.logger)
+        query_obj = LocalGaiaDatabaseQuery(self.db_path)
         df = query_obj(20, 22.2, 23, 23.5)
         self.assertIsInstance(df, pd.DataFrame)
 

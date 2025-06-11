@@ -11,13 +11,11 @@ from astrafocus.interface.device_manager import AutofocusDeviceManager
 from astrafocus.interface.focuser import FocuserInterface
 from astrafocus.interface.telescope import TrivialTelescope
 from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory
-from astrafocus.utils.logger import configure_logger
 from astrafocus.utils.typing import ImageType
 from astropy.io import fits
 
 __all__ = ["ObservationBasedDeviceSimulator"]
 
-logger = configure_logger()
 
 np.random.seed(42)
 

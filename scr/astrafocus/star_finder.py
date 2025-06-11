@@ -5,11 +5,10 @@ import numpy as np
 import photutils
 from photutils.detection import DAOStarFinder
 
+from astrafocus.utils.logger import get_logger
 from astrafocus.utils.typing import ImageType
-from astrafocus.utils.logger import configure_logger
 
-
-logger = configure_logger(stream_handler_level=10)
+logger = get_logger()
 
 
 class StarFinder:
@@ -23,7 +22,7 @@ class StarFinder:
         self,
         ref_image: ImageType,
         fwhm: float = 2.0,
-        star_find_threshold: float = 5.0,
+        star_find_threshold: float = 3.0,
         absolute_detection_limit: float = 0.0,
         saturation_threshold: Optional[float] = None,
     ) -> None:
@@ -71,7 +70,7 @@ class StarFinder:
             mean, median, std = astropy.stats.sigma_clipped_stats(ref_image, sigma=3.0)
             background = median
 
-        daofind = DAOStarFinder(fwhm=fwhm, threshold=std * threshold, brightest=None, peakmax=None)
+        daofind = DAOStarFinder(fwhm=fwhm, threshold=std * threshold, brightest=None, peakmax=peakmax)
         sources = daofind(ref_image - background)
 
         # TODO make more robust

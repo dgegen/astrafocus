@@ -27,15 +27,21 @@ dependencies = [
 ]
 version = '0.0.4'
 
+[project.urls]
+"Homepage" = "https://github.com/dgegen/astrafocus"
+"Source" = "https://github.com/dgegen/astrafocus"
+"Bug Tracker" = "https://github.com/dgegen/astrafocus/issues"
+
 [tool.setuptools.packages.find]
 where = ["scr"]
 
 [project.optional-dependencies]
 visualization = ["ipython", "matplotlib", "notebook"]
 dash = ["dash", "dash_bootstrap_components", "plotly"]
-extended = ["pyswarms", "scikit-learn"]
+extended = ["scikit-learn"]
 alpaca = ["alpyca"]
-test = [
+dev = [
     "cabaret",
     "matplotlib",
+    "ruff",
 ]
