@@ -9,6 +9,12 @@
 name: Upload Python Package to PyPI
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   release:
     types: [published]
 
@@ -28,12 +34,14 @@ jobs:
       with:
         python-version: "3.x"
 
-    - name: Install pypa/build
-      run: >-
-        python3 -m
-        pip install
-        setuptools build wheel
-        --user
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install pytest setuptools build wheel
+
+    - name: Run tests
+      run: |
+        pytest tests
 
     - name: Build a binary wheel and a source tarball
       run: python3 -m build

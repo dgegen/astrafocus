@@ -118,7 +118,7 @@ class AutofocuserBase(ABC):
                     df[name] = np.array([fm.measure_focus(image) for image in self._image_record])
             except Exception as e:
                 logger.warning(
-                    "Error applying secondary focus measure operators to image record." " Exception: %s",
+                    "Error applying secondary focus measure operators to image record. Exception: %s",
                     e,
                 )
         elif self.save_path is not None and len(self.secondary_focus_measure_operators) > 0:
@@ -131,7 +131,7 @@ class AutofocuserBase(ABC):
                     df[name] = np.array([fm.measure_focus(image) for image in image_data])
             except Exception as e:
                 logger.warning(
-                    "Error applying secondary focus measure operators to saved fits." " Exception: %s",
+                    "Error applying secondary focus measure operators to saved fits. Exception: %s",
                     e,
                 )
         return df
@@ -311,7 +311,7 @@ class SweepingAutofocuser(AutofocuserBase):
             initial_position,
             **kwargs,
         )
-        self.n_steps = tuple(n_steps) if hasattr(n_steps, '__iter__') else (n_steps,)
+        self.n_steps = tuple(n_steps) if hasattr(n_steps, "__iter__") else (n_steps,)
         self.n_sweeps = len(self.n_steps)
         self.n_exposures = (
             np.array(n_exposures, dtype=int)
@@ -486,11 +486,21 @@ class NonParametricResponseAutofocuser(SweepingAutofocuser):
 
     def __repr__(self) -> str:
         return (
-            f"NonParametricAutofocuser(self.autofocus_device_manager={self.autofocus_device_manager!r}, "
+            "NonParametricAutofocuser("
+            f"self.autofocus_device_manager={self.autofocus_device_manager!r}, "
             f"exposure_time={self.exposure_time!r} sec, "
             f"search_range={self.search_range!r}, "
             f"initial_position={self.initial_position!r}, "
             f"robust_estimator={self.extremum_estimator!r})"
+        )
+
+    def __str__(self) -> str:
+        return (
+            "NonParametricResponseAutofocuser("
+            f"exposure_time={self.exposure_time!r} sec, "
+            f"search_range={self.search_range}, "
+            f"initial_position={self.initial_position}, "
+            f"robust_estimator={self.extremum_estimator})"
         )
 
 
@@ -632,10 +642,21 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
 
     def __repr__(self) -> str:
         return (
-            f"AnalyticResponseAutofocuser(self.autofocus_device_manager={self.autofocus_device_manager!r}, "
+            "AnalyticResponseAutofocuser("
+            f"self.autofocus_device_manager={self.autofocus_device_manager!r}, "
             f"exposure_time={self.exposure_time!r} sec, "
             f"search_range={self.search_range!r}, "
             f"initial_position={self.initial_position!r}, "
             f"focus_measure_operator={self.focus_measure_operator!r}, "
             f"percent_to_cut={self.percent_to_cut!r})"
+        )
+
+    def __str__(self) -> str:
+        return (
+            "AnalyticResponseAutofocuser("
+            f"exposure_time={self.exposure_time!r}, "
+            f"focus_measure_operator={self.focus_measure_operator}, "
+            f"search_range={self.search_range}, "
+            f"initial_position={self.initial_position}, "
+            f"percent_to_cut={self.percent_to_cut})"
         )

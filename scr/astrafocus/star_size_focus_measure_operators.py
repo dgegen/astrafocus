@@ -37,7 +37,6 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         self.star_fitter = StarFitter(model)
         self.cutout_size = cutout_size
         self.optimised_parameters = None
-        logger.info(self.star_fitter)
 
     def measure_focus(self, image: ImageType, cutout_size: Optional[int] = None, **kwargs) -> float:
         if cutout_size is None:
@@ -55,6 +54,12 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         return (
             f"StarSizeFocusMeasure(self.star_finder={self.star_finder!r}, "
             f"star_fitter={self.star_fitter!r}, cutout_size={self.cutout_size!r})"
+        )
+
+    def __str__(self) -> str:
+        return (
+            f"StarSizeFocusMeasure(star_finder={self.star_finder}, "
+            f"star_fitter={self.star_fitter}, cutout_size={self.cutout_size})"
         )
 
 

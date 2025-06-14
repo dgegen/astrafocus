@@ -50,9 +50,10 @@ class StarFinder:
         return self.find_sources(
             self.ref_image,
             fwhm=self.fwhm,
-            threshold=np.maximum(self.absolute_detection_limit, self.star_find_threshold),
+            threshold=self.star_find_threshold,
             std=self.ref_std,
             background=self.ref_background,
+            absolute_detection_limit=self.absolute_detection_limit,
         )
 
     @staticmethod
@@ -63,6 +64,7 @@ class StarFinder:
         std=None,
         background=None,
         peakmax=None,
+        absolute_detection_limit: float = 0.0,
     ):
         """Detect and locate stars in the reference image"""
         if std is None or background is None:
@@ -70,25 +72,51 @@ class StarFinder:
             mean, median, std = astropy.stats.sigma_clipped_stats(ref_image, sigma=3.0)
             background = median
 
-        daofind = DAOStarFinder(fwhm=fwhm, threshold=std * threshold, brightest=None, peakmax=peakmax)
-        sources = daofind(ref_image - background)
+        sources = StarFinder._dao_star_finder(
+            cleaned_image=ref_image - background,
+            fwhm=fwhm,
+            threshold=np.maximum(absolute_detection_limit, std * threshold),
+            brightest=None,
+            peakmax=peakmax,
+        )
 
-        # TODO make more robust
-        # if sources is None and threshold > 1e-1:
-        #     sources = StarFinder.find_sources(ref_image, fwhm, threshold/2, std, background, peakmax)
-        # else:
-        #     sources.sort("flux", reverse=True)
-        if not sources:
+        while sources is None and threshold > 0.1:
+            threshold /= 2
+            logger.warning(
+                f"No sources found in StarFinder: {ref_image.std()}, "
+                f"{fwhm}, {threshold}. Decreasing threshold and retrying."
+            )
+            sources = StarFinder._dao_star_finder(
+                cleaned_image=ref_image - background,
+                fwhm=fwhm,
+                threshold=np.maximum(absolute_detection_limit, std * threshold),
+                brightest=None,
+                peakmax=peakmax,
+            )
+        if sources is None:
             raise ValueError(
                 f"No sources found in StarFinder: {ref_image.std()}, {fwhm}, {threshold}."
                 "Decrease threshold and check the image."
             )
-        logger.info(f"Number of sources above threshold {len(sources)}")
 
         try:
             sources.sort("flux", reverse=True)
         except Exception as exc:
             raise ValueError(f"In StarFinder: {ref_image.std()}, {fwhm}, {threshold}. {exc}")
+
+        logger.info(f"Number of sources above threshold ({threshold}) {len(sources)}")
+
+        return sources
+
+    @staticmethod
+    def _dao_star_finder(cleaned_image, fwhm, threshold, brightest=None, peakmax=None):
+        daofind = DAOStarFinder(
+            fwhm=fwhm,
+            threshold=threshold,
+            brightest=brightest,
+            peakmax=peakmax,
+        )
+        sources = daofind(cleaned_image)
 
         return sources
 
