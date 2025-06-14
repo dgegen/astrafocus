@@ -2,7 +2,6 @@ from typing import Optional
 
 import astropy
 import numpy as np
-import photutils
 from photutils.detection import DAOStarFinder
 
 from astrafocus.utils.logger import get_logger
@@ -104,7 +103,7 @@ class StarFinder:
         except Exception as exc:
             raise ValueError(f"In StarFinder: {ref_image.std()}, {fwhm}, {threshold}. {exc}")
 
-        logger.info(f"Number of sources above threshold ({threshold}) {len(sources)}")
+        logger.info(f"Number of sources above threshold the threshold of {threshold} is {len(sources)}")
 
         return sources
 

@@ -43,6 +43,8 @@ class AutofocuserBase(ABC):
     secondary_focus_measure_operators : Optional[dict], optional
         Dictionary of additional focus measure operators for image analysis
         (default is an empty dictionary).
+    search_range_is_relative : bool, optional
+        Whether the search range is relative to the initial position (default is False).
     save_path : Optional[str], optional
         Path to save focus record to (default is None). If None, the focus record is not saved.
         If the path ends with '.csv', the focus record is saved with that name. Otherwise, the
@@ -90,12 +92,13 @@ class AutofocuserBase(ABC):
         initial_position: Optional[int] = None,
         keep_images: bool = False,
         secondary_focus_measure_operators: Optional[dict] = None,
+        search_range_is_relative: bool = False,
         save_path: Optional[str] = None,
     ):
         self.autofocus_device_manager = autofocus_device_manager
         self.focus_measure_operator = focus_measure_operator
         self.exposure_time = exposure_time
-        self.search_range = search_range or autofocus_device_manager.focuser.allowed_range
+        self.search_range = search_range
         self.initial_position = initial_position or autofocus_device_manager.focuser.position
 
         self._focus_record = pd.DataFrame(columns=["focus_pos", "focus_measure"], dtype=np.float64)
@@ -106,6 +109,7 @@ class AutofocuserBase(ABC):
         self._image_record = []
         self.save_path = save_path if isinstance(save_path, (str | None)) else str(save_path)
         self.file_suffix = ".fits"
+        self._set_search_range(search_range_is_relative)
 
     @property
     def focus_record(self):
@@ -212,6 +216,36 @@ class AutofocuserBase(ABC):
         sort_ind = np.argsort(focus_pos)
 
         return focus_pos[sort_ind], focus_measure[sort_ind]
+
+    def _set_search_range(self, search_range_is_relative: bool):
+        allowed_range = self.autofocus_device_manager.focuser.allowed_range
+        search_range = self.search_range
+        if search_range is None:
+            self.search_range = allowed_range
+            return
+
+        if isinstance(search_range, (int, float)) and search_range_is_relative:
+            search_range = (-search_range, search_range)
+
+        try:
+            if not isinstance(search_range, tuple):
+                search_range = tuple(search_range)
+        except TypeError:
+            raise ValueError("Search_range must be a tuple or list of length 2.")
+        if len(search_range) != 2:
+            raise ValueError("Search_range must be a tuple or list of length 2.")
+
+        if search_range_is_relative:
+            search_range = (
+                self.initial_position - abs(search_range[0]),
+                self.initial_position + abs(search_range[1]),
+            )
+
+        search_range = (
+            max(search_range[0], allowed_range[0]),
+            min(search_range[1], allowed_range[1]),
+        )
+        self.search_range = search_range
 
     def __repr__(self) -> str:
         return (
