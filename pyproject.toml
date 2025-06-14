@@ -44,4 +44,6 @@ dev = [
     "cabaret",
     "matplotlib",
     "ruff",
+    "panads",
+    "pytest",
 ]

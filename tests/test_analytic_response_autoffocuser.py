@@ -59,5 +59,5 @@ class TestAutofocuser(unittest.TestCase):
 
 if __name__ == "__main__":
     config = load_config()
-    if "path_to_fits" in config:
+    if "path_to_fits" in config and config["path_to_fits"] != "/path/to/fits":
         unittest.main()

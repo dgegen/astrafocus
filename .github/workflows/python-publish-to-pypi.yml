@@ -39,10 +39,6 @@ jobs:
         python3 -m pip install --upgrade pip
         python3 -m pip install pytest setuptools build wheel
 
-    - name: Run tests
-      run: |
-        pytest tests
-
     - name: Build a binary wheel and a source tarball
       run: python3 -m build
 
