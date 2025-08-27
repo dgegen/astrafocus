@@ -147,10 +147,10 @@ class AutofocuserBase(ABC):
 
     def run(self) -> bool:
         try:
-            self._run()
-            logger.info("Successfully completed autofocusing.")
-            success = True
-            self.save_focus_record()
+            success = self._run()
+            if success:
+                logger.info("Successfully completed autofocusing.")
+                self.save_focus_record()
         except Exception as e:
             logger.exception(e)
             logger.warning("Error in autofocus algorithm. Resetting focuser to initial position.")
@@ -376,7 +376,7 @@ class SweepingAutofocuser(AutofocuserBase):
                 search_positions = np.flip(search_positions)  # Reverse order
 
             if not self.autofocus_device_manager.check_conditions():
-                raise ValueError("Observation conditions are not good enough to take exposures.")
+                return False
 
             logger.info(
                 f"Starting sweep {sweep + 1} of {self.n_sweeps}."
@@ -385,12 +385,16 @@ class SweepingAutofocuser(AutofocuserBase):
                 + (", reversed" if sweep % 2 == initial_direction else "")
                 + ")."
             )
-            self._run_sweep(search_positions, self.n_exposures[sweep])
+            success = self._run_sweep(search_positions, self.n_exposures[sweep])
+
+            if not success:
+                return False
 
             if self.decrease_search_range:
                 min_focus_pos, max_focus_pos = self.update_search_range(min_focus_pos, max_focus_pos)
 
         self.find_best_focus_position()
+        return True
 
     def get_initial_direction(self, min_focus_pos, max_focus_pos):
         """Move upward if initial position is closer to min_focus_pos than max_focus_pos."""
@@ -424,10 +428,10 @@ class SweepingAutofocuser(AutofocuserBase):
 
         for ind, focus_position in enumerate(search_positions):
             if not self.autofocus_device_manager.check_conditions():
-                raise ValueError("Observation conditions are not good enough to take exposures.")
+                return False
             for exposure in range(n_exposures):
                 if not self.autofocus_device_manager.check_conditions():
-                    raise ValueError("Observation conditions are not good enough to take exposures.")
+                    return False
 
                 # This step should include processing such as hot pixel removal etc.
                 image = self.autofocus_device_manager.perform_exposure_at(
@@ -456,6 +460,8 @@ class SweepingAutofocuser(AutofocuserBase):
                 logger.info(
                     f"Focus Position: {focus_position:6d} | Mean Focus Measure: {mean_fm_value:8.3e}"
                 )
+
+        return True
 
     def update_search_range(self, min_focus_pos, max_focus_pos):
         return min_focus_pos, max_focus_pos
