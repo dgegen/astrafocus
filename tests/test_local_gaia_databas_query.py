@@ -1,12 +1,11 @@
 import os.path
-import unittest
 import sqlite3
+import unittest
+
 import pandas as pd
-
-from astrafocus.sql.local_gaia_database_query import QueryInputValidator
-from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
-
 from utils import ConfigTests
+
+from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery, QueryInputValidator
 
 CONFIG = ConfigTests().get()
 

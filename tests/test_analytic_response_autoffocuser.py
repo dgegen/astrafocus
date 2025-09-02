@@ -1,14 +1,12 @@
 import unittest
 
 import pandas as pd
+from utils import ConfigTests
 
 from astrafocus.autofocuser import AnalyticResponseAutofocuser
 from astrafocus.focus_measure_operators import FFTFocusMeasureTan2022
 from astrafocus.interface.simulation import ObservationBasedDeviceSimulator
 from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure
-
-from utils import ConfigTests
-
 
 CONFIG = ConfigTests().get()
 

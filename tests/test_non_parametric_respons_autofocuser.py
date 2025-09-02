@@ -1,5 +1,7 @@
 import unittest
 
+from utils import ConfigTests
+
 from astrafocus.autofocuser import NonParametricResponseAutofocuser
 from astrafocus.extremum_estimators import LOWESSExtremumEstimator
 from astrafocus.focus_measure_operators import (
@@ -7,7 +9,6 @@ from astrafocus.focus_measure_operators import (
     NormalizedVarianceFocusMeasure,
 )
 from astrafocus.interface.simulation import ObservationBasedDeviceSimulator
-from utils import ConfigTests
 
 CONFIG = ConfigTests().get()
 

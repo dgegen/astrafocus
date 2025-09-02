@@ -1,8 +1,8 @@
 import logging
-from shutil import copyfile
 from pathlib import Path
-import yaml
+from shutil import copyfile
 
+import yaml
 
 __all__ = ["ConfigTests"]
 
@@ -35,10 +35,10 @@ class ConfigTests:
         if not self._cabaret_config_path.exists():
             self._initialise_with_default_config_cabaret()
 
-        with open(self._config_path, "r", encoding="utf-8") as f:
+        with open(self._config_path, encoding="utf-8") as f:
             config = yaml.safe_load(f)
 
-        with open(self._cabaret_config_path, "r", encoding="utf-8") as f:
+        with open(self._cabaret_config_path, encoding="utf-8") as f:
             config["cabaret"] = yaml.safe_load(f)
 
         for key, value in config.items():
