@@ -5,7 +5,10 @@ import numpy as np
 import yaml
 from astropy.coordinates import Angle, EarthLocation
 
-from astrafocus.targeting.airmass_models import find_airmass_threshold_crossover, plane_parallel_atmosphere
+from astrafocus.targeting.airmass_models import (
+    find_airmass_threshold_crossover,
+    plane_parallel_atmosphere,
+)
 
 
 class RangeBase(NamedTuple):
@@ -72,10 +75,10 @@ class TelescopeSpecs:
         g_mag_range: dict,
         j_mag_range: dict,
         gaia_tmass_db_path: str | None,
-        **kwargs
+        **kwargs,
     ):
         self.name = name
-        self.pixel_shape = PixelShape(pixel_shape['x'], pixel_shape['y'])
+        self.pixel_shape = PixelShape(pixel_shape["x"], pixel_shape["y"])
         self.pixel_scale = pixel_scale
         self.observatory_location = observatory_location
         self.focus_range = FocusRange(min=focus_range["min"], max=focus_range["max"])
@@ -86,7 +89,7 @@ class TelescopeSpecs:
         self.gaia_tmass_db_path = gaia_tmass_db_path
 
     @classmethod
-    def load_from_dict(cls, config_dict, gaia_tmass_db_path=None) -> 'TelescopeSpecs':
+    def load_from_dict(cls, config_dict, gaia_tmass_db_path=None) -> "TelescopeSpecs":
         """
         Load telescope configuration from a dictionary.
 
@@ -96,10 +99,17 @@ class TelescopeSpecs:
             Dictionary containing telescope configuration.
         gaia_tmass_db_path : Optional[str], optional
             Path to the Gaia-Tycho-2 mass database (default is None).
-        """        
+        """
         properties = [
-            "name", "pixel_shape", "pixel_scale", "observatory_location", "focus_range",
-            "max_airmass", "g_mag_range", "j_mag_range", "gaia_tmass_db_path"
+            "name",
+            "pixel_shape",
+            "pixel_scale",
+            "observatory_location",
+            "focus_range",
+            "max_airmass",
+            "g_mag_range",
+            "j_mag_range",
+            "gaia_tmass_db_path",
         ]
         if not all(key in config_dict for key in properties):
             raise ValueError(
@@ -140,7 +150,7 @@ class TelescopeSpecs:
         )
 
     @classmethod
-    def load_telescope_config(cls, file_path) -> 'TelescopeSpecs':
+    def load_telescope_config(cls, file_path) -> "TelescopeSpecs":
         """
         Load telescope configuration from a YAML file.
 

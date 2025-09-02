@@ -13,6 +13,7 @@ class Catchtime:
 
     Catchtime.mean(f, N_sample=10, x=x)
     """
+
     def __init__(self, verbose=True):
         self.verbose = verbose
 

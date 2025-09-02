@@ -68,7 +68,6 @@ class FocuserInterface(ABC):
         self.move_focuser_to_position(new_position)
         self._current_position = new_position
 
-
     def move_by_steps(self, steps_to_move):
         """
         Move the focuser relative to the current position by n steps.
@@ -134,9 +133,7 @@ class FocuserInterface(ABC):
             raise ValueError("The boundaries of the allowed range must be integers.")
 
         if not len(self.allowed_range) == 2:
-            raise ValueError(
-                "The allowed range should consist of two integers (min_step, max_step)."
-            )
+            raise ValueError("The allowed range should consist of two integers (min_step, max_step).")
 
         if not (self.allowed_range[0] < self.allowed_range[1]):
             raise ValueError(
@@ -144,17 +141,14 @@ class FocuserInterface(ABC):
             )
 
     def __repr__(self) -> str:
-        return (
-            "FocuserInterface("
-            f"current_position={self.position!r}, allowed_range={self.allowed_range!r}"
-            ")"
-        )
+        return f"FocuserInterface(current_position={self.position!r}, allowed_range={self.allowed_range!r})"
 
 
 class TrivialFocuser(FocuserInterface):
     """
     Trivial implementation to set the telescope focuser for testing purposes.
     """
+
     def __init__(self, current_position, allowed_range=tuple[int, int]):
         super().__init__(current_position=current_position, allowed_range=allowed_range)
 

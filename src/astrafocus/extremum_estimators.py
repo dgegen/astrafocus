@@ -22,6 +22,7 @@ Methods
 - `estimate_robust_signal(x, y)`: Abstract method to be implemented by subclasses for specific
   extremum estimation techniques. Returns the x and y values of a smoothed version of the curve.
 """
+
 from abc import ABC, abstractmethod
 
 import numpy as np
@@ -30,9 +31,7 @@ import statsmodels.api as sm
 
 
 class RobustExtremumEstimator(ABC):
-    def argmin(
-        self, x: np.ndarray, y: np.ndarray, return_value=True
-    ) -> float | tuple[float, float]:
+    def argmin(self, x: np.ndarray, y: np.ndarray, return_value=True) -> float | tuple[float, float]:
         """
         Returns the x-value corresponding to the minimum estimated noise-resistant y-value.
 
@@ -58,9 +57,7 @@ class RobustExtremumEstimator(ABC):
         else:
             return x_prime[index_min]
 
-    def argmax(
-        self, x: np.ndarray, y: np.ndarray, return_value=True
-    ) -> float | tuple[float, float]:
+    def argmax(self, x: np.ndarray, y: np.ndarray, return_value=True) -> float | tuple[float, float]:
         """
         Returns the x-value corresponding to the maximum estimated noise-resistant y-value.
 

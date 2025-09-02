@@ -11,7 +11,8 @@ from astrafocus.interface.device_manager import AutofocusDeviceManager
 from astrafocus.interface.focuser import FocuserInterface
 from astrafocus.interface.telescope import TelescopeInterface
 
-__all__ = ['AlpacaAutofocusDeviceManager']
+__all__ = ["AlpacaAutofocusDeviceManager"]
+
 
 class AlpacaCamera(CameraInterface):
     def __init__(self, alpaca_camera: alpaca.camera.Camera):
@@ -49,7 +50,7 @@ class AlpacaTelescope(TelescopeInterface):
         start_time = time.time()
         while self.alpaca_telescope.Slewing is True:
             if time.time() - start_time > hard_timeout:
-                raise TimeoutError('Slew timeout')
+                raise TimeoutError("Slew timeout")
 
             time.sleep(1)
 

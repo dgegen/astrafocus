@@ -41,15 +41,17 @@ class HalfFluxRadius2D(Disk2D):
     def optimize_hfr(high_res_image, distances, hfr):
         def hfr_function(hfr_tmp):
             return np.abs(
-                np.sum(high_res_image[distances > hfr_tmp])
-                - np.sum(high_res_image[distances <= hfr_tmp])
+                np.sum(high_res_image[distances > hfr_tmp]) - np.sum(high_res_image[distances <= hfr_tmp])
             )
 
         def hfr_minimise(hfr_tmp):
             return hfr_function(hfr_tmp) / hfr_function(hfr)
 
         res = scipy.optimize.minimize(
-            hfr_minimise, x0=hfr, options={"eps": 10}, bounds=scipy.optimize.Bounds(0, 2 * hfr)
+            hfr_minimise,
+            x0=hfr,
+            options={"eps": 10},
+            bounds=scipy.optimize.Bounds(0, 2 * hfr),
         )
         hfr = res.x
         return hfr

@@ -1,4 +1,3 @@
-
 import astropy
 import numpy as np
 from photutils.detection import DAOStarFinder

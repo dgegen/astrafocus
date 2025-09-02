@@ -86,9 +86,7 @@ class EllipticalMoffat2D(Fittable2DModel):
     alpha = Parameter(default=1, description="Power index of the Moffat model")
     theta = Parameter(
         default=0.0,
-        description=(
-            "Rotation angle either as a " "float (in radians) or a " "|Quantity| angle (optional)"
-        ),
+        description=("Rotation angle either as a float (in radians) or a |Quantity| angle (optional)"),
     )
 
     @property
@@ -118,9 +116,7 @@ class EllipticalMoffat2D(Fittable2DModel):
         dx = dx_ * np.cos(theta) + dy_ * np.sin(theta)
         dy = -dx_ * np.sin(theta) + dy_ * np.cos(theta)
 
-        return background + amplitude * np.power(
-            1 + (dx / sigma_x) ** 2 + (dy / sigma_y) ** 2, -alpha
-        )
+        return background + amplitude * np.power(1 + (dx / sigma_x) ** 2 + (dy / sigma_y) ** 2, -alpha)
 
     @staticmethod
     def fit_deriv(x, y, amplitude, background, x_0, y_0, sigma_x, sigma_y, alpha, theta):
@@ -152,19 +148,12 @@ class EllipticalMoffat2D(Fittable2DModel):
             * alpha
             * inner_derivative
             * (
-                (
-                    (dy_ * np.cos(theta) - dx_ * np.sin(theta))
-                    * (dx_ * np.cos(theta) - dy_ * np.sin(theta))
-                )
+                ((dy_ * np.cos(theta) - dx_ * np.sin(theta)) * (dx_ * np.cos(theta) - dy_ * np.sin(theta)))
                 * (1 / sigma_x**2 - 1 / sigma_y**2)(
-                    (dy_ * np.cos(theta) - dx_ * np.sin(theta))
-                    * (dx_ * np.cos(theta) - dy_ * np.sin(theta))
+                    (dy_ * np.cos(theta) - dx_ * np.sin(theta)) * (dx_ * np.cos(theta) - dy_ * np.sin(theta))
                 )
                 / sigma_x**2
-                - (
-                    (dy_ * np.cos(theta) - dx_ * np.sin(theta))
-                    * (dx_ * np.cos(theta) - dy_ * np.sin(theta))
-                )
+                - ((dy_ * np.cos(theta) - dx_ * np.sin(theta)) * (dx_ * np.cos(theta) - dy_ * np.sin(theta)))
                 / sigma_x**2
             )
         )

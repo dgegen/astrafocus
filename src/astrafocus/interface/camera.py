@@ -14,7 +14,7 @@ class CameraInterface(ABC):
     """
 
     @abstractmethod
-    def perform_exposure(self, texp: float) -> ImageType | None: # type: ignore
+    def perform_exposure(self, texp: float) -> ImageType | None:  # type: ignore
         """
         Abstract method to take an observation with a specified exposure time.
 

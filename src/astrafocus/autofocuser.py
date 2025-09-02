@@ -5,7 +5,10 @@ from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
 
-from astrafocus.extremum_estimators import LOWESSExtremumEstimator, RobustExtremumEstimator
+from astrafocus.extremum_estimators import (
+    LOWESSExtremumEstimator,
+    RobustExtremumEstimator,
+)
 from astrafocus.focus_measure_operators import (
     AnalyticResponseFocusedMeasureOperator,
     FocusMeasureOperator,

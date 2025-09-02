@@ -121,9 +121,7 @@ class CameraSimulation(CameraInterface):
 
     def perform_exposure(self, texp: float = 3.0):
         """Capture an observation at the specified focal position."""
-        image = self.sample_an_observation(
-            desired_position=self.focuser.position_to_sample, texp=texp
-        )
+        image = self.sample_an_observation(desired_position=self.focuser.position_to_sample, texp=texp)
         if self.sleep_flag:
             time.sleep(texp)
         self.total_time_exposing += texp
@@ -163,9 +161,7 @@ class ObservationalCameraSimulation(CameraSimulation):
 
     def perform_exposure(self, texp: float = 3.0):
         """Capture an observation at the specified focal position."""
-        image = self.sample_an_observation(
-            desired_position=self.focuser.position_to_sample, texp=texp
-        )
+        image = self.sample_an_observation(desired_position=self.focuser.position_to_sample, texp=texp)
         if self.sleep_flag:
             time.sleep(texp)
         self.total_time_exposing += texp
@@ -262,7 +258,10 @@ class ObservationBasedDeviceSimulator(AutofocusDeviceSimulator):
         )
 
         camera = ObservationalCameraSimulation(
-            image_data=image_data, focuser=focuser, sleep_flag=sleep_flag, save_path=save_path
+            image_data=image_data,
+            focuser=focuser,
+            sleep_flag=sleep_flag,
+            save_path=save_path,
         )
         super().__init__(camera=camera, focuser=focuser, telescope=None, sleep_flag=sleep_flag)
 

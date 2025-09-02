@@ -288,8 +288,8 @@ class LocalGaiaDatabaseQuery:
         max_j_m: float | None = None,
     ):
         """
-        Execute an SQL query on a specific shard within specific declination 
-        and right ascension ranges.        
+        Execute an SQL query on a specific shard within specific declination
+        and right ascension ranges.
         """
         query = self._generate_query(
             shard_id,

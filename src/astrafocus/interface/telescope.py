@@ -45,6 +45,7 @@ class TrivialTelescope(TelescopeInterface):
     """
     Trivial implementation to set the telescope position for testing purposes.
     """
+
     @staticmethod
     def set_telescope_position(coordinates: SkyCoord):
         pass

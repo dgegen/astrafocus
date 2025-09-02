@@ -1,4 +1,3 @@
-
 import astropy
 import cv2
 import numpy as np
@@ -89,22 +88,16 @@ class StarFitter:
         if self._result is not None:
             return self._result
         else:
-            raise ValueError(
-                "No results available. The object has not been fitted yet."
-            )
+            raise ValueError("No results available. The object has not been fitted yet.")
 
     @property
     def parameter_dict(self):
         if self._result is not None:
             return dict(zip(self._result.param_names, self._result.parameters))
         else:
-            raise ValueError(
-                "No results available. The object has not been fitted yet."
-            )
+            raise ValueError("No results available. The object has not been fitted yet.")
 
-    def calculate_star_sizes_of_selection(
-        self, images, selected_stars, cutout_size, *args, **kwargs
-    ):
+    def calculate_star_sizes_of_selection(self, images, selected_stars, cutout_size, *args, **kwargs):
         """ """
         if isinstance(images, np.ndarray) and images.ndim == 2:
             images = [images]
@@ -114,9 +107,7 @@ class StarFitter:
         star_sizes = np.zeros((len(images), len(selected_stars)))
         for i_star, star in enumerate(selected_stars):
             star_sizes[:, i_star] = [
-                self.fit_source(
-                    image, star, cutout_size=cutout_size, *args, **kwargs
-                ).star_size
+                self.fit_source(image, star, cutout_size=cutout_size, *args, **kwargs).star_size
                 for image in images
             ]
 
@@ -209,9 +200,7 @@ class StarFitter:
         elif hasattr(result, "R_0"):  # for HalfFLuxRadius
             return 2 * result.R_0 / self.scale_factor
         else:
-            raise AttributeError(
-                "Focus measure calculation is not supported for this model type."
-            )
+            raise AttributeError("Focus measure calculation is not supported for this model type.")
 
     def integrate_source(
         self,

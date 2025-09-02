@@ -10,7 +10,6 @@ logger = get_logger()
 
 
 class ShardwiseQuery(LocalGaiaDatabaseQuery):
-
     def querry_with_shard_array(
         self,
         dec_arr,

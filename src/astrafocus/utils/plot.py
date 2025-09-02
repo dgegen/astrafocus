@@ -1,6 +1,3 @@
-
-
-
 def set_size(
     text_width: float | str = "paper",
     fraction: float = 1.0,

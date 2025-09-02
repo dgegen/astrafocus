@@ -1,4 +1,3 @@
-
 import astropy.units as u
 import numpy as np
 from astropy.coordinates import SkyCoord
@@ -22,12 +21,10 @@ class TangentialPlaneProjector:
     def __init__(self, df, wcs, mask_first=False) -> None:
         self.df = df
         self.wcs = wcs
-        self.sky_coords = SkyCoord(
-            ra=self.df.ra.to_numpy() * u.deg, dec=self.df.dec.to_numpy() * u.deg
-        )
+        self.sky_coords = SkyCoord(ra=self.df.ra.to_numpy() * u.deg, dec=self.df.dec.to_numpy() * u.deg)
 
         self.mask_first = mask_first
-        
+
         self.x_max = np.ceil(wcs.pixel_shape[0])
         self.y_max = np.ceil(wcs.pixel_shape[1])
 
@@ -59,7 +56,7 @@ class TangentialPlaneProjector:
         )
 
         return on_ccd_mask
-    
+
     def num_stars_in_mask(self, centre):
         self.wcs.wcs.crval = [centre.ra.deg, centre.dec.deg]
         mask = self.get_mask()
@@ -182,7 +179,7 @@ class TangentialPlaneProjector:
 
     def __repr__(self) -> str:
         return f"TangentialPlaneProjector(df={self.df!r}, wcs={self.wcs!r})"
-    
+
     def flatten_on_sky(self, central_star: SkyCoord):
-        coords_on_sky = (self.project(central_star) - self.wcs.wcs.crpix)*self.wcs.wcs.cdelt        
+        coords_on_sky = (self.project(central_star) - self.wcs.wcs.crpix) * self.wcs.wcs.cdelt
         return coords_on_sky

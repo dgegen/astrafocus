@@ -61,10 +61,11 @@ class ZenithNeighbourhoodQueryResult(pd.DataFrame):
             Masked result based on magnitude ranges.
         """
         mask = np.bitwise_and(
-            self["phot_g_mean_mag"].between(*g_mag_range), self["j_m"].between(*j_mag_range)
+            self["phot_g_mean_mag"].between(*g_mag_range),
+            self["j_m"].between(*j_mag_range),
         )
         return ZenithNeighbourhoodQueryResult(self[mask].reset_index(drop=True))
-    
+
     def get_sky_coord_of_select_star(self, ind):
         return SkyCoord(**self[["ra", "dec"]].iloc[ind].to_dict(), unit="deg", frame="icrs")
 
@@ -77,9 +78,7 @@ class ZenithNeighbourhoodQueryResult(pd.DataFrame):
         zenith_neighbourhood : ZenithNeighbourhood
             Zenith neighbourhood object.
         """
-        ZenithAngleCalculator.add_zenith_angle_and_cartesian_coordinates(
-            self, zenith_neighbourhood.zenith
-        )
+        ZenithAngleCalculator.add_zenith_angle_and_cartesian_coordinates(self, zenith_neighbourhood.zenith)
 
     def add_cartesian_coordinates(self):
         """Add Cartesian coordinates to the DataFrame."""

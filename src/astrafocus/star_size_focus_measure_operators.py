@@ -1,9 +1,11 @@
-
 import astropy
 import numpy as np
 import scipy
 
-from astrafocus.focus_measure_operators import AnalyticResponseFocusedMeasureOperator, ImageType
+from astrafocus.focus_measure_operators import (
+    AnalyticResponseFocusedMeasureOperator,
+    ImageType,
+)
 from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
 from astrafocus.star_finder import StarFinder
 from astrafocus.star_fitter import StarFitter

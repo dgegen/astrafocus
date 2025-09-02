@@ -37,6 +37,7 @@ Sources
 -------
 https://en.wikipedia.org/wiki/Air_mass_(astronomy)
 """
+
 from collections.abc import Callable
 
 import numpy as np
@@ -133,7 +134,8 @@ def zenith_angle(altitude):
 
 
 def find_airmass_threshold_crossover(
-    airmass_threshold: float | None = 1.2, airmass_model: Callable=plane_parallel_atmosphere
+    airmass_threshold: float | None = 1.2,
+    airmass_model: Callable = plane_parallel_atmosphere,
 ):
     """
     Find the zenith angle cutoff based on an airmass model and a threshold value.

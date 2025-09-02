@@ -6,7 +6,9 @@ from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
 from astrafocus.sql.shardwise_query import ShardwiseQuery
 from astrafocus.targeting.zenith_angle_calculator import ZenithAngleCalculator
 from astrafocus.targeting.zenith_neighbourhood import ZenithNeighbourhood
-from astrafocus.targeting.zenith_neighbourhood_query_result import ZenithNeighbourhoodQueryResult
+from astrafocus.targeting.zenith_neighbourhood_query_result import (
+    ZenithNeighbourhoodQueryResult,
+)
 from astrafocus.utils.logger import get_logger
 
 logger = get_logger()
@@ -257,7 +259,11 @@ class ZenithNeighbourhoodQuery:
 
     @classmethod
     def from_telescope_specs(
-        cls, telescope_specs, observation_time=None, maximal_zenith_angle=None, db_path=None
+        cls,
+        telescope_specs,
+        observation_time=None,
+        maximal_zenith_angle=None,
+        db_path=None,
     ) -> "ZenithNeighbourhoodQuery":
         """
         Create an instance of the ZenithNeighbourhoodQuery class from an instance of the

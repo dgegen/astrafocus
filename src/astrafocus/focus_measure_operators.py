@@ -181,9 +181,7 @@ class AbsoluteGradientFocusMeasure(FocusMeasureOperator):
     smaller_is_better = False
 
     def measure_focus(self, image: ImageType, **kwargs) -> float:
-        return np.sum(np.abs(image[:, 1:] - image[:, :-1])) + np.sum(
-            np.abs(image[1:, :] - image[:-1, :])
-        )
+        return np.sum(np.abs(image[:, 1:] - image[:, :-1])) + np.sum(np.abs(image[1:, :] - image[:-1, :]))
 
 
 class SquaredGradientFocusMeasure(FocusMeasureOperator):
@@ -191,8 +189,7 @@ class SquaredGradientFocusMeasure(FocusMeasureOperator):
 
     def measure_focus(self, image: ImageType, **kwargs) -> float:
         return float(
-            np.sum((image[:, 1:] - image[:, :-1]) ** 2)
-            + np.sum((image[1:, :] - image[:-1, :]) ** 2)
+            np.sum((image[:, 1:] - image[:, :-1]) ** 2) + np.sum((image[1:, :] - image[:-1, :]) ** 2)
         )
 
 

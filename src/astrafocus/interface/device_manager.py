@@ -89,7 +89,7 @@ class AutofocusDeviceManager(ABC):
 
     def move_focuser_to_position(self, desired_position):
         self.focuser.position = desired_position
-    
+
     def check_conditions(self) -> bool:
         return True
 

@@ -1,4 +1,3 @@
-
 import astropy.units as u
 import numpy as np
 from astropy.coordinates import AltAz, Angle, EarthLocation, Longitude, SkyCoord
@@ -80,7 +79,10 @@ class ZenithNeighbourhood:
         self.validate_observation_time()
 
         self.zenith = HorizontalCoordinates(
-            obstime=self.observation_time, location=self.location, alt=90 * u.deg, az=0 * u.deg
+            obstime=self.observation_time,
+            location=self.location,
+            alt=90 * u.deg,
+            az=0 * u.deg,
         )
 
         self.east = HorizontalCoordinates(
@@ -280,7 +282,10 @@ class ZenithNeighbourhood:
 
     @classmethod
     def from_telescope_specs(
-        cls, telescope_specs: TelescopeSpecs, observation_time=None, maximal_zenith_angle=None
+        cls,
+        telescope_specs: TelescopeSpecs,
+        observation_time=None,
+        maximal_zenith_angle=None,
     ):
         logger.info(f"Initialising from config of telescope {telescope_specs.name}.")
         return cls(
