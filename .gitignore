@@ -187,3 +187,5 @@ Thumbs.db
 *.cubin
 *.fatbin
 
+
+*config*.yaml

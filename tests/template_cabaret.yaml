@@ -1,0 +1,24 @@
+camera:
+  name: "gaia-camera-simulated"    # Name of the camera
+  width: 1024                      # Width in pixels
+  height: 1024                     # Height in pixels
+  bin_x: 1                         # Binning factor in x
+  bin_y: 1                         # Binning factor in y
+  pitch: 5                         # Pixel pitch in microns
+  plate_scale: null                # Arcsec/pixel (calculated from pitch+telescope if None)
+  max_adu: 65535                   # Maximum ADU value (2^16 - 1)
+  well_depth: 65535                # Well depth in electrons (2^16 - 1)
+  bias: 300                        # Bias in ADU
+  gain: 1.0                        # Gain in e-/ADU
+  read_noise: 6.2                  # Read noise in e-
+  dark_current: 0.2                # Dark current in e-/s
+  average_quantum_efficiency: 0.8  # Average quantum efficiency (fraction)
+
+telescope:
+  focal_length: 8.0                # Focal length in meters
+  diameter: 1.0                    # Diameter in meters
+  collecting_area: null            # Collecting area in m² (calculated from diameter if None)
+
+site:
+  sky_background: 150              # Sky background for I+z band in Paranal, e-/m²/arcsec²/s
+  seeing: 1.3                      # Seeing in arcseconds

@@ -1,12 +1,14 @@
+import os.path
 import unittest
-import logging
 import sqlite3
 import pandas as pd
 
 from astrafocus.sql.local_gaia_database_query import QueryInputValidator
 from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
 
-from utils import load_config
+from utils import ConfigTests
+
+CONFIG = ConfigTests().get()
 
 
 class TestQueryInputValidator(unittest.TestCase):
@@ -48,8 +50,13 @@ class TestQueryInputValidator(unittest.TestCase):
 
 class TestLocalGaiaDatabaseQuery(unittest.TestCase):
     def setUp(self):
-        config = load_config()
+        config = CONFIG
         self.db_path = config["path_to_gaia_tmass_db"]
+        # don't run this if the db path is not set or the file does not exist
+        if not self.db_path or not os.path.isfile(self.db_path):
+            self.skipTest(
+                "No path to Gaia-Tmass database provided in config or file does not exist."
+            )
 
     def tearDown(self):
         try:

@@ -9,11 +9,14 @@ authors = [
 ]
 description = "My package description"
 readme = "README.md"
-requires-python = ">=3.11.3"
+requires-python = ">=3.11"
 keywords = ["telescope", "autofocus"]
 license = {text = "MIT"}
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",        
 ]
 dependencies = [
     "astropy",
@@ -25,7 +28,7 @@ dependencies = [
     "sqlite3worker",
     "statsmodels",
 ]
-version = '0.0.5'
+version = '0.1.0'
 
 [project.urls]
 "Homepage" = "https://github.com/dgegen/astrafocus"
@@ -33,7 +36,7 @@ version = '0.0.5'
 "Bug Tracker" = "https://github.com/dgegen/astrafocus/issues"
 
 [tool.setuptools.packages.find]
-where = ["scr"]
+where = ["src"]
 
 [project.optional-dependencies]
 visualization = ["ipython", "matplotlib", "notebook"]
@@ -44,6 +47,16 @@ dev = [
     "cabaret",
     "matplotlib",
     "ruff",
-    "panads",
     "pytest",
 ]
+test = ["pytest", "cabaret"]
+
+[tool.ruff]
+line-length = 109
+exclude = ["*.yaml"]
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = ["E", "F", "I001", "UP"]
+
