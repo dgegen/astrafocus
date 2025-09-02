@@ -1,5 +1,3 @@
-from typing import Optional, Tuple
-
 import astropy
 import numpy as np
 from autofocus.autofocuser import AnalyticResponseAutofocuser
@@ -28,7 +26,7 @@ class TelescopePointer(PointerInterface):
 
 
 class TelescopeFocuser(FocuserInterface):
-    def __init__(self, allowed_range: Tuple[int, int] = TELESCOPE_SPECS.focus_range):
+    def __init__(self, allowed_range: tuple[int, int] = TELESCOPE_SPECS.focus_range):
         current_position = self.get_current_position()
         super().__init__(current_position=current_position, allowed_range=allowed_range)
 
@@ -59,8 +57,8 @@ class Telescope(TelescopeInterface):
 def focus_speculoos(
     observation_time: astropy.time.Time = None,
     maximal_zenith_angle: astropy.coordinates.Angle = None,
-    g_mag_range: Optional[Tuple[float, float]] = None,
-    j_mag_range: Optional[Tuple[float, float]] = None,
+    g_mag_range: tuple[float, float] | None = None,
+    j_mag_range: tuple[float, float] | None = None,
 ):
     """
     # Should we consider adding 30 seconds of buffer into the future

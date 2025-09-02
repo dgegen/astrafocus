@@ -1,62 +1,61 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm", "wheel"]
 build-backend = "setuptools.build_meta"
+requires = ["setuptools", "setuptools-scm", "wheel"]
 
 [project]
-name = "astrafocus"
 authors = [
-    {name = "David Degen", email = "ddegen@ethz.ch"},
+  {email = "ddegen@ethz.ch", name = "David Degen"}
 ]
-description = "My package description"
-readme = "README.md"
-requires-python = ">=3.11"
-keywords = ["telescope", "autofocus"]
-license = {text = "MIT"}
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
-    "Operating System :: OS Independent",
-    "Intended Audience :: Developers",        
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Developers"
 ]
 dependencies = [
-    "astropy",
-    "opencv-python",
-    "numpy",
-    "pandas",
-    "photutils",
-    "scipy",
-    "sqlite3worker",
-    "statsmodels",
+  "astropy",
+  "opencv-python",
+  "numpy",
+  "pandas",
+  "photutils",
+  "scipy",
+  "sqlite3worker",
+  "statsmodels"
 ]
+description = "My package description"
+keywords = ["telescope", "autofocus"]
+license = {text = "MIT"}
+name = "astrafocus"
+readme = "README.md"
+requires-python = ">=3.11"
 version = '0.1.0'
 
+[project.optional-dependencies]
+alpaca = ["alpyca"]
+dash = ["dash", "dash_bootstrap_components", "plotly"]
+dev = [
+  "cabaret",
+  "matplotlib",
+  "ruff",
+  "pytest"
+]
+extended = ["scikit-learn"]
+test = ["pytest", "cabaret"]
+visualization = ["ipython", "matplotlib", "notebook"]
+
 [project.urls]
+"Bug Tracker" = "https://github.com/dgegen/astrafocus/issues"
 "Homepage" = "https://github.com/dgegen/astrafocus"
 "Source" = "https://github.com/dgegen/astrafocus"
-"Bug Tracker" = "https://github.com/dgegen/astrafocus/issues"
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[project.optional-dependencies]
-visualization = ["ipython", "matplotlib", "notebook"]
-dash = ["dash", "dash_bootstrap_components", "plotly"]
-extended = ["scikit-learn"]
-alpaca = ["alpyca"]
-dev = [
-    "cabaret",
-    "matplotlib",
-    "ruff",
-    "pytest",
-]
-test = ["pytest", "cabaret"]
 
 [tool.ruff]
-line-length = 109
 exclude = ["*.yaml"]
 extend-include = ["*.ipynb"]
+line-length = 109
 
 [tool.ruff.lint]
 fixable = ["ALL"]
 select = ["E", "F", "I001", "UP"]
 
+[tool.setuptools.packages.find]
+where = ["src"]
