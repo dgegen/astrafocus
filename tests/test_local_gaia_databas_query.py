@@ -54,9 +54,7 @@ class TestLocalGaiaDatabaseQuery(unittest.TestCase):
         self.db_path = config["path_to_gaia_tmass_db"]
         # don't run this if the db path is not set or the file does not exist
         if not self.db_path or not os.path.isfile(self.db_path):
-            self.skipTest(
-                "No path to Gaia-Tmass database provided in config or file does not exist."
-            )
+            self.skipTest("No path to Gaia-Tmass database provided in config or file does not exist.")
 
     def tearDown(self):
         try:

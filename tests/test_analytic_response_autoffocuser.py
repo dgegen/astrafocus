@@ -12,15 +12,14 @@ from utils import ConfigTests
 
 CONFIG = ConfigTests().get()
 
+
 class TestAutofocuser(unittest.TestCase):
     def setUp(self):
         config = CONFIG
         path_to_fits = config["path_to_fits"]
         if path_to_fits is None:
             self.skipTest("No path to fits files provided in config.")
-        self.TELESCOPE_INTERFACE = ObservationBasedDeviceSimulator(
-            fits_path=path_to_fits
-        )
+        self.TELESCOPE_INTERFACE = ObservationBasedDeviceSimulator(fits_path=path_to_fits)
 
     def test_autofocuser(self):
         ARAF = AnalyticResponseAutofocuser(

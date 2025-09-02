@@ -9,7 +9,6 @@ __all__ = ["ConfigTests"]
 CONFIG_DIR = Path(__file__).parent
 
 
-
 class ConfigTests:
     """Class that parses the YAML config."""
 
@@ -32,39 +31,35 @@ class ConfigTests:
 
         if not self._config_path.exists():
             self._initialise_with_default_config()
-        
+
         if not self._cabaret_config_path.exists():
             self._initialise_with_default_config_cabaret()
 
         with open(self._config_path, "r", encoding="utf-8") as f:
             config = yaml.safe_load(f)
-            
+
         with open(self._cabaret_config_path, "r", encoding="utf-8") as f:
-            config['cabaret'] = yaml.safe_load(f)
-        
+            config["cabaret"] = yaml.safe_load(f)
+
         for key, value in config.items():
             if isinstance(value, str) and value.startswith("/path/to/"):
                 config[key] = None
                 logging.info(f"Config key '{key}' set to None as it contains a placeholder path.")
-        
+
         return config
 
     def _initialise_with_default_config(self):
         """Copy default config to config.yaml if not present"""
         if not self._DEFAULT_PATH.exists():
-            raise FileNotFoundError(
-                f"Default config not found at {self._DEFAULT_PATH!s}"
-            )
+            raise FileNotFoundError(f"Default config not found at {self._DEFAULT_PATH!s}")
 
         copyfile(self._DEFAULT_PATH, self._config_path)
-        
+
     def _initialise_with_default_config_cabaret(self):
         """Copy default cabaret config to config_cabaret.yaml if not present"""
         if not self._DEFAULT_CABARET_PATH.exists():
-            raise FileNotFoundError(
-                f"Default cabaret config not found at {self._DEFAULT_CABARET_PATH!s}"
-            )
-    
+            raise FileNotFoundError(f"Default cabaret config not found at {self._DEFAULT_CABARET_PATH!s}")
+
         copyfile(self._DEFAULT_CABARET_PATH, self._cabaret_config_path)
 
     def __getitem__(self, key):

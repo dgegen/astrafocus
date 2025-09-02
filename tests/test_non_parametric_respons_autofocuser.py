@@ -30,9 +30,7 @@ class TestNonParametricResponseAutofocuser(unittest.TestCase):
             decrease_search_range=True,
             keep_images=True,
             extremum_estimator=LOWESSExtremumEstimator(frac=0.5, it=3),
-            secondary_focus_measure_operators={
-                "normalized_variance": NormalizedVarianceFocusMeasure()
-            },
+            secondary_focus_measure_operators={"normalized_variance": NormalizedVarianceFocusMeasure()},
         )
 
         NPRAF.run()
