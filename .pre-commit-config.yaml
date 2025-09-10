@@ -10,12 +10,12 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.11
     hooks:
-      - id: ruff-format # formatter
-        args: [ --config=pyproject.toml ]
-        types_or: [python, pyi, jupyter, toml]
       - id: ruff-check # linter
         types_or: [python, pyi, jupyter, toml]
         args: [ --fix,  --config=pyproject.toml ]
+      - id: ruff-format # formatter
+        args: [ --config=pyproject.toml ]
+        types_or: [python, pyi, jupyter, toml]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0  # Use the latest stable version
     hooks:
