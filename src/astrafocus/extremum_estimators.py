@@ -27,8 +27,9 @@ from abc import ABC, abstractmethod
 from enum import Enum
 
 import numpy as np
-import scipy
-import statsmodels.api as sm
+from scipy.interpolate import RBFInterpolator, UnivariateSpline
+from scipy.ndimage import median_filter
+from statsmodels.nonparametric.smoothers_lowess import lowess
 
 from astrafocus.utils.logger import get_logger
 
@@ -41,7 +42,6 @@ class RobustExtremumEstimator(ABC):
 
         if "name" not in cls.__dict__:
             name = cls.__name__.replace("ExtremumEstimator", "").replace("_", " ")
-            # Add spaces before capital letters except if there is multiple capital letters in a row, then only add one space between the second last and last capital letter
             name = "".join(
                 [
                     f" {c}"
@@ -151,7 +151,7 @@ class MedianFilterExtremumEstimation(RobustExtremumEstimator):
         Tuple[np.ndarray, np.ndarray]
             Tuple of x and y values of the smoothed curve.
         """
-        estimated_values = scipy.ndimage.median_filter(y, size=self.size)
+        estimated_values = median_filter(y, size=self.size)
         return x, estimated_values
 
 
@@ -176,8 +176,8 @@ class LOWESSExtremumEstimator(RobustExtremumEstimator):
         Tuple[np.ndarray, np.ndarray]
             Tuple of x and y values of the smoothed curve.
         """
-        lowess = sm.nonparametric.lowess(endog=y, exog=x, frac=self.frac, it=self.it)
-        return lowess[:, 0], lowess[:, 1]
+        lowess_vals = lowess(endog=y, exog=x, frac=self.frac, it=self.it)
+        return lowess_vals[:, 0], lowess_vals[:, 1]
 
 
 class SplineExtremumEstimator(RobustExtremumEstimator):
@@ -201,7 +201,7 @@ class SplineExtremumEstimator(RobustExtremumEstimator):
             Tuple of x and y values of the smoothed curve.
         """
         x_fine = np.linspace(x.min(), x.max(), 100)
-        spline = scipy.interpolate.UnivariateSpline(x, y, k=self.k)
+        spline = UnivariateSpline(x, y, k=self.k)
 
         estimated_values = spline(x_fine)
         return x_fine, estimated_values
@@ -230,9 +230,7 @@ class RBFExtremumEstimator(RobustExtremumEstimator):
         """
         x_fine = np.linspace(x.min(), x.max(), 100)
 
-        rbf_interp = scipy.interpolate.RBFInterpolator(
-            x.reshape(-1, 1), y, kernel=self.kernel, smoothing=self.smoothing
-        )
+        rbf_interp = RBFInterpolator(x.reshape(-1, 1), y, kernel=self.kernel, smoothing=self.smoothing)
         estimated_values = rbf_interp(x_fine.reshape(-1, 1))
 
         return x_fine, estimated_values

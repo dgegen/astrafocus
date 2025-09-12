@@ -146,7 +146,7 @@ def find_airmass_threshold_crossover(
         The threshold value, above which the airmass is considered too high.
     airmass_model : Callable
         A callable function that takes zenith angles and returns airmass values.
-        
+
 
     Returns
     -------

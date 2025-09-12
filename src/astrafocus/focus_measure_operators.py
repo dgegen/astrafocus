@@ -39,9 +39,8 @@ class FocusMeasureOperator(ABC):
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
 
-        if 'name' not in cls.__dict__:
+        if "name" not in cls.__dict__:
             name = cls.__name__.replace("FocusMeasure", "").replace("_", " ").replace("Star", "")
-            # Add spaces before capital letters except if there is multiple capital letters in a row, then only add one space between the second last and last capital letter
             name = "".join(
                 [
                     f" {c}"

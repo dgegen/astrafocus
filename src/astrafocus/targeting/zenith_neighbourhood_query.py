@@ -1,13 +1,14 @@
-from typing import Callable
+from collections.abc import Callable
+
 import numpy as np
 from astropy.coordinates import Angle, EarthLocation
 from astropy.time import Time
 
 from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
 from astrafocus.sql.shardwise_query import ShardwiseQuery
+from astrafocus.targeting.airmass_models import find_airmass_threshold_crossover, plane_parallel_atmosphere
 from astrafocus.targeting.zenith_angle_calculator import ZenithAngleCalculator
 from astrafocus.targeting.zenith_neighbourhood import ZenithNeighbourhood
-from astrafocus.targeting.airmass_models import find_airmass_threshold_crossover, plane_parallel_atmosphere
 from astrafocus.targeting.zenith_neighbourhood_query_result import (
     ZenithNeighbourhoodQueryResult,
 )
