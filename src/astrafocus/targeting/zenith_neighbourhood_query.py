@@ -1,3 +1,4 @@
+from typing import Callable
 import numpy as np
 from astropy.coordinates import Angle, EarthLocation
 from astropy.time import Time
@@ -6,6 +7,7 @@ from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
 from astrafocus.sql.shardwise_query import ShardwiseQuery
 from astrafocus.targeting.zenith_angle_calculator import ZenithAngleCalculator
 from astrafocus.targeting.zenith_neighbourhood import ZenithNeighbourhood
+from astrafocus.targeting.airmass_models import find_airmass_threshold_crossover, plane_parallel_atmosphere
 from astrafocus.targeting.zenith_neighbourhood_query_result import (
     ZenithNeighbourhoodQueryResult,
 )
@@ -337,4 +339,13 @@ class ZenithNeighbourhoodQuery:
                 maximal_zenith_angle=maximal_zenith_angle,
             ),
             maximal_number_of_stars=maximal_number_of_stars,
+        )
+
+    @staticmethod
+    def find_airmass_threshold_crossover(
+        airmass_threshold: float | None = 1.2,
+        airmass_model: Callable = plane_parallel_atmosphere,
+    ):
+        return find_airmass_threshold_crossover(
+            airmass_threshold=airmass_threshold, airmass_model=airmass_model
         )

@@ -24,13 +24,47 @@ Methods
 """
 
 from abc import ABC, abstractmethod
+from enum import Enum
 
 import numpy as np
 import scipy
 import statsmodels.api as sm
 
+from astrafocus.utils.logger import get_logger
+
+logger = get_logger()
+
 
 class RobustExtremumEstimator(ABC):
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+
+        if "name" not in cls.__dict__:
+            name = cls.__name__.replace("ExtremumEstimator", "").replace("_", " ")
+            # Add spaces before capital letters except if there is multiple capital letters in a row, then only add one space between the second last and last capital letter
+            name = "".join(
+                [
+                    f" {c}"
+                    if c.isupper()
+                    and i > 0
+                    and (
+                        not name[i - 1].isupper()
+                        or (i + 2 < len(name) and name[i - 1].isupper() and name[i + 1].islower())
+                    )
+                    else c
+                    for i, c in enumerate(name)
+                ]
+            )
+            # Separate numbers from letters
+            name = "".join(
+                [
+                    f" {c}" if c.isdigit() and i > 0 and not name[i - 1].isdigit() else c
+                    for i, c in enumerate(name)
+                ]
+            )
+
+            cls.name = name.strip()
+
     def argmin(self, x: np.ndarray, y: np.ndarray, return_value=True) -> float | tuple[float, float]:
         """
         Returns the x-value corresponding to the minimum estimated noise-resistant y-value.
@@ -202,3 +236,36 @@ class RBFExtremumEstimator(RobustExtremumEstimator):
         estimated_values = rbf_interp(x_fine.reshape(-1, 1))
 
         return x_fine, estimated_values
+
+
+class ExtremumEstimators(Enum):
+    """Enum mapping string keys to extremum estimator classes.
+
+    Examples
+    --------
+    >>> from astrafocus.extremum_estimators import ExtremumEstimators
+    >>> ExtremumEstimators.list()
+    >>> ExtremumEstimators.lowess
+    >>> ExtremumEstimators.from_name("spline")  # Get the class by fuzzy matching
+    """
+
+    median = MedianFilterExtremumEstimation
+    lowess = LOWESSExtremumEstimator
+    spline = SplineExtremumEstimator
+    rbf = RBFExtremumEstimator
+
+    @classmethod
+    def from_name(cls, key: str):
+        """Get an ExtremumEstimator by fuzzy matching the key. Returns lowess if not found."""
+        key = key.lower()
+        for member in cls:
+            if key in member.name.lower():
+                return member.value
+
+        logger.warning(f"Extremum estimator '{key}' not found. Using 'lowess' instead.")
+        return cls.lowess.value
+
+    @classmethod
+    def list(cls):
+        """List all available extremum estimators."""
+        return [member.name.lower() for member in cls]

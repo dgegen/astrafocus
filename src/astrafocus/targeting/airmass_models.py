@@ -25,7 +25,7 @@ Example Usage
 >>> import airmass_models
 
 >>> cutoff = airmass_models.find_airmass_threshold_crossover(
-    airmass_threshold=1.2, airmass_models.plane_parallel_atmosphere
+    airmass_threshold=1.2, airmass_models=airmass_models.plane_parallel_atmosphere
 )
 >>> zenith = airmass_models.zenith_angle(altitude)
 
@@ -142,10 +142,11 @@ def find_airmass_threshold_crossover(
 
     Parameters
     ----------
-    airmass_model : Callable
-        A callable function that takes zenith angles and returns airmass values.
     airmass_threshold : float, optional
         The threshold value, above which the airmass is considered too high.
+    airmass_model : Callable
+        A callable function that takes zenith angles and returns airmass values.
+        
 
     Returns
     -------
@@ -158,7 +159,9 @@ def find_airmass_threshold_crossover(
 
     Examples
     --------
-    >>> find_airmass_threshold_crossover(airmass_threshold=1.2, airmass_model=plane_parallel_atmosphere)
+    >>> find_airmass_threshold_crossover(
+    ... airmass_threshold=1.2, airmass_model=plane_parallel_atmosphere
+    ... )
     0.5846852994181003
     """
     zenith_angles = np.linspace(0, 90, 181) * np.pi / 180

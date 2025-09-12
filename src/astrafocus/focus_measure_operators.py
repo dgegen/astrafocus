@@ -15,6 +15,9 @@ class FocusMeasureOperator(ABC):
     smaller_is_better : bool
         A class attribute indicating whether a smaller focus measure is considered better.
 
+    name : str
+        A class attribute representing the name of the focus measure operator.
+
     Methods
     -------
     __call__(image: np.ndarray, **kwargs) -> float
@@ -32,6 +35,35 @@ class FocusMeasureOperator(ABC):
     """
 
     smaller_is_better = True
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+
+        if 'name' not in cls.__dict__:
+            name = cls.__name__.replace("FocusMeasure", "").replace("_", " ").replace("Star", "")
+            # Add spaces before capital letters except if there is multiple capital letters in a row, then only add one space between the second last and last capital letter
+            name = "".join(
+                [
+                    f" {c}"
+                    if c.isupper()
+                    and i > 0
+                    and (
+                        not name[i - 1].isupper()
+                        or (i + 2 < len(name) and name[i - 1].isupper() and name[i + 1].islower())
+                    )
+                    else c
+                    for i, c in enumerate(name)
+                ]
+            )
+            # Separate numbers from letters
+            name = "".join(
+                [
+                    f" {c}" if c.isdigit() and i > 0 and not name[i - 1].isdigit() else c
+                    for i, c in enumerate(name)
+                ]
+            )
+
+            cls.name = name.strip()
 
     def __call__(self, image: ImageType, **kwargs) -> float:
         """
@@ -119,7 +151,7 @@ class NormalizedVarianceFocusMeasure(FocusMeasureOperator):
         return image.var() / image.mean()
 
 
-class FFTFocusMeasure(FocusMeasureOperator):
+class FFTPhaseMagnitudeProductFocusMeasure(FocusMeasureOperator):
     r"""
     \mathrm{FM} &= \norm{\bm{R \phi}}_{1} \\
     \mathrm{FFT}(x, y) &= R(x, y) \exp\qty(-i\phi(x,y)) \\
