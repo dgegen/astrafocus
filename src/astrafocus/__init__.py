@@ -78,4 +78,4 @@ class FocusMeasureOperatorRegistry:
     @classmethod
     def list(cls):
         """List all available focus measure operators."""
-        return
+        return list(cls._operators.keys())
