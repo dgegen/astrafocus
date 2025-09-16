@@ -5,10 +5,12 @@ from astropy.modeling.models import Disk2D
 
 class HalfFluxRadius2D(Disk2D):
     """
-    hfr_2D = HalfFluxRadius2D()
-    star_data=np.random.uniform(size=(20, 20))
-    x, y = np.indices(star_data.shape)
-    hfr_2D.fit(star_data, x, y, scale_factor=5)
+    Examples
+    --------
+    >>> hfr_2D = HalfFluxRadius2D()
+    >>> star_data=np.random.uniform(size=(20, 20))
+    >>> x, y = np.indices(star_data.shape)
+    >>> hfr_2D.fit(star_data, x, y, scale_factor=5)
     """
 
     def __init__(self, amplitude=1, x_0=0, y_0=0, R_0=1, scale_factor=1, **kwargs):

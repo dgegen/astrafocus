@@ -46,34 +46,31 @@ class EllipticalMoffat2D(Fittable2DModel):
 
     .. math::
 
-        f(x, y) = B + A \\left(1 + amplitude * \\frac{\\left(x - x_{0}\\right)^{2} +
+        f(x, y) = B + A \\left(1 + \\mathrm{amplitude} \\cdot \\frac{\\left(x - x_{0}\\right)^{2} +
         \\left(y - y_{0}\\right)^{2}}{\\gamma^{2}}\\right)^{- \\alpha}
 
     Examples
     --------
-    from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory
-    fits_directory = "path_to_fits_files"
-    image_data, headers, focus_pos = load_fits_with_focus_pos_from_directory(fits_directory)
+    >>> from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory
+    >>> fits_directory = "path_to_fits_files"
+    >>> image_data, headers, focus_pos = load_fits_with_focus_pos_from_directory(fits_directory)
+    >>> star_data = StarFitter.get_masked_star(image_data[0], selected_stars[0], cutout_size=15)
+    >>> model = EllipticalMoffat2D(
+    ...     amplitude=np.max(star_data),
+    ...     background=np.median(star_data),
+    ...     x_0=star_data.shape[1]/2,
+    ...     y_0=star_data.shape[0]/2,
+    ... )
+    >>> fitter = fitting.LevMarLSQFitter()
+    >>> y, x = np.indices(star_data.shape)
+    >>> fit = fitter(model, x, y, star_data, estimate_jacobian=False)
 
-    star_data = StarFitter.get_masked_star(image_data[0], selected_stars[0], cutout_size=15)
-
-    model = EllipticalMoffat2D(
-        amplitude=np.max(star_data),
-        background=np.median(star_data),
-        x_0=star_data.shape[1]/2,
-        y_0=star_data.shape[0]/2,
-    )
-    fitter = fitting.LevMarLSQFitter()
-
-    y, x = np.indices(star_data.shape)
-    fit = fitter(model, x, y, star_data, estimate_jacobian=False)
-
-    fig, ax = plt.subplots(figsize=(6.69, 4.14))
-    ax.set_xlabel('Column pixel')
-    ax.set_ylabel('Row pixel')
-    ax.imshow(star_data, origin="lower")
-    ax.contour(fit(*np.indices(star_data.shape)), colors="red")
-    plt.show()
+    >>> fig, ax = plt.subplots(figsize=(6.69, 4.14))
+    >>> ax.set_xlabel('Column pixel')
+    >>> ax.set_ylabel('Row pixel')
+    >>> ax.imshow(star_data, origin="lower")
+    >>> ax.contour(fit(*np.indices(star_data.shape)), colors="red")
+    >>> plt.show()
 
     """
 

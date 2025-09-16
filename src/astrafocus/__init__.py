@@ -1,7 +1,5 @@
-from enum import Enum
-
 from astrafocus.autofocuser import AnalyticResponseAutofocuser, NonParametricResponseAutofocuser
-from astrafocus.extremum_estimators import ExtremumEstimators
+from astrafocus.extremum_estimators import ExtremumEstimatorRegistry
 from astrafocus.focus_measure_operators import (
     AbsoluteGradientFocusMeasure,
     AutoCorrelationFocusMeasure,
@@ -26,47 +24,58 @@ logger = get_logger()
 __all__ = [
     "AnalyticResponseAutofocuser",
     "NonParametricResponseAutofocuser",
-    "FocusMeasureOperators",
-    "ExtremumEstimators",
+    "FocusMeasureOperatorRegistry",
+    "ExtremumEstimatorRegistry",
 ]
 
 
-class FocusMeasureOperators(Enum):
-    """Enum mapping string keys to focus measure operator classes.
+class FocusMeasureOperatorRegistry:
+    """Registry mapping string keys to focus measure operator classes.
 
     Examples
     --------
-    >>> from astrafocus import FocusMeasureOperators
-    >>> FocusMeasureOperators.list()
-    >>> FocusMeasureOperators.hdr
-    >>> FocusMeasureOperators.from_name("fft")  # Get the class by fuzzy matching
+    >>> from astrafocus import FocusMeasureOperatorRegistry
+    >>> FocusMeasureOperatorRegistry.list()
+    >>> FocusMeasureOperatorRegistry.from_name("fft")
     """
 
-    hfr = HFRStarFocusMeasure
-    gauss = GaussianStarFocusMeasure
-    fft = FFTFocusMeasureTan2022
-    fft_power = FFTPowerFocusMeasure
-    fft_phase_magnitude_product = FFTPhaseMagnitudeProductFocusMeasure
-    normalized_variance = NormalizedVarianceFocusMeasure
-    brenner = BrennerFocusMeasure
-    tenengrad = TenengradFocusMeasure
-    laplacian = LaplacianFocusMeasure
-    variance_laplacian = VarianceOfLaplacianFocusMeasure
-    absolute_gradient = AbsoluteGradientFocusMeasure
-    squared_gradient = SquaredGradientFocusMeasure
-    auto_correlation = AutoCorrelationFocusMeasure
+    _operators = {
+        "hfr": HFRStarFocusMeasure,
+        "gauss": GaussianStarFocusMeasure,
+        "fft": FFTFocusMeasureTan2022,
+        "fft_power": FFTPowerFocusMeasure,
+        "fft_phase_magnitude_product": FFTPhaseMagnitudeProductFocusMeasure,
+        "normalized_variance": NormalizedVarianceFocusMeasure,
+        "brenner": BrennerFocusMeasure,
+        "tenengrad": TenengradFocusMeasure,
+        "laplacian": LaplacianFocusMeasure,
+        "variance_laplacian": VarianceOfLaplacianFocusMeasure,
+        "absolute_gradient": AbsoluteGradientFocusMeasure,
+        "squared_gradient": SquaredGradientFocusMeasure,
+        "auto_correlation": AutoCorrelationFocusMeasure,
+    }
+
+    @classmethod
+    def get(cls, key: str, default=HFRStarFocusMeasure):
+        """Get a focus measure operator class by fuzzy matching the key. Returns hfr if not found."""
+        return cls._operators.get(key, default)
 
     @classmethod
     def from_name(cls, key: str):
-        """Get a FocusMeasureOperatorType by fuzzy matching the key. Returns hfr if not found."""
-        key = key.lower()
-        for member in cls:
-            if key in member.name.lower():
-                return member.value
-
+        """Get a focus measure operator class by fuzzy matching the key. Returns hfr if not found."""
+        key = key.lower().replace("-", "_").replace(" ", "_")
+        # Exact match
+        if key in cls._operators:
+            return cls._operators[key]
+        # Fuzzy match
+        words = key.split("_")
+        for name, operator in cls._operators.items():
+            if any(word in name for word in words):
+                return operator
         logger.warning(f"Focus measure operator '{key}' not found. Using 'hfr' instead.")
-        return cls.hfr.value
+        return cls._operators["hfr"]
 
     @classmethod
     def list(cls):
-        return [member.name for member in cls]
+        """List all available focus measure operators."""
+        return

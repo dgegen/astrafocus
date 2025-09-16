@@ -24,7 +24,6 @@ Methods
 """
 
 from abc import ABC, abstractmethod
-from enum import Enum
 
 import numpy as np
 from scipy.interpolate import RBFInterpolator, UnivariateSpline
@@ -37,6 +36,29 @@ logger = get_logger()
 
 
 class RobustExtremumEstimator(ABC):
+    registry = {}
+
+    """Abstract base class for robust extremum estimation.
+
+    This class provides methods to estimate the minimum or maximum values in a set of measurements
+    using various techniques. Subclasses must implement the `estimate_robust_signal` method.
+
+    Attributes
+    ----------
+    name : str
+        The name of the extremum estimator, derived from the class name if not explicitly set.
+
+    Examples
+    --------
+    >>> from astrafocus.extremum_estimators import MedianFilterExtremumEstimation
+    >>> estimator = MedianFilterExtremumEstimation(size=2)
+    >>> y = np.array([10, 11, 8, 5, 4, 6, 9, 11, 11])
+    >>> x = np.arange(len(y))
+    >>> x_min, y_min = estimator.argmin(x, y)
+    >>> print(f"{x_min}, {y_min}")
+    4, 5
+    """
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
 
@@ -130,10 +152,24 @@ class RobustExtremumEstimator(ABC):
         sorted_indices = np.argsort(x)
         return x[sorted_indices], y[sorted_indices]
 
+    def unknown_kwargs(self, kwargs: dict):
+        if kwargs:
+            attributes = {
+                key: getattr(self, key)
+                for key in dir(self)
+                if not callable(getattr(self, key)) and not key.startswith("_") and not key == "name"
+            }
+            unknown_keys = ", ".join(kwargs.keys())
+            logger.warning(
+                f"Unknown kwargs ({unknown_keys}) passed to astrafocus.extremum_estimators."
+                f"{self.__class__.__name__}. Falling back to {attributes}."
+            )
+
 
 class MedianFilterExtremumEstimation(RobustExtremumEstimator):
-    def __init__(self, size=10):
+    def __init__(self, size=10, **kwargs):
         self.size = size
+        self.unknown_kwargs(kwargs)
 
     def estimate_robust_signal(self, x, y):
         """
@@ -156,9 +192,10 @@ class MedianFilterExtremumEstimation(RobustExtremumEstimator):
 
 
 class LOWESSExtremumEstimator(RobustExtremumEstimator):
-    def __init__(self, frac=0.5, it=3):
+    def __init__(self, frac=0.5, it=3, **kwargs):
         self.frac = frac
         self.it = it
+        self.unknown_kwargs(kwargs)
 
     def estimate_robust_signal(self, x, y):
         """
@@ -181,8 +218,9 @@ class LOWESSExtremumEstimator(RobustExtremumEstimator):
 
 
 class SplineExtremumEstimator(RobustExtremumEstimator):
-    def __init__(self, k=2):
+    def __init__(self, k=2, **kwargs):
         self.k = k
+        self.unknown_kwargs(kwargs)
 
     def estimate_robust_signal(self, x, y):
         """
@@ -208,9 +246,10 @@ class SplineExtremumEstimator(RobustExtremumEstimator):
 
 
 class RBFExtremumEstimator(RobustExtremumEstimator):
-    def __init__(self, kernel="linear", smoothing=20):
+    def __init__(self, kernel="linear", smoothing=20, **kwargs):
         self.kernel = kernel
         self.smoothing = smoothing
+        self.unknown_kwargs(kwargs)
 
     def estimate_robust_signal(self, x, y):
         """
@@ -236,34 +275,44 @@ class RBFExtremumEstimator(RobustExtremumEstimator):
         return x_fine, estimated_values
 
 
-class ExtremumEstimators(Enum):
-    """Enum mapping string keys to extremum estimator classes.
+class ExtremumEstimatorRegistry:
+    """Dictionary mapping string keys to extremum estimator classes.
 
     Examples
     --------
     >>> from astrafocus.extremum_estimators import ExtremumEstimators
     >>> ExtremumEstimators.list()
-    >>> ExtremumEstimators.lowess
     >>> ExtremumEstimators.from_name("spline")  # Get the class by fuzzy matching
     """
 
-    median = MedianFilterExtremumEstimation
-    lowess = LOWESSExtremumEstimator
-    spline = SplineExtremumEstimator
-    rbf = RBFExtremumEstimator
+    _estimators = {
+        "lowess": LOWESSExtremumEstimator,
+        "median": MedianFilterExtremumEstimation,
+        "rbf": RBFExtremumEstimator,
+        "spline": SplineExtremumEstimator,
+    }
+
+    @classmethod
+    def get(cls, key: str, default=LOWESSExtremumEstimator):
+        """Get a focus measure operator class by fuzzy matching the key. Returns hfr if not found."""
+        return cls._estimators.get(key, default)
 
     @classmethod
     def from_name(cls, key: str):
         """Get an ExtremumEstimator by fuzzy matching the key. Returns lowess if not found."""
-        key = key.lower()
-        for member in cls:
-            if key in member.name.lower():
-                return member.value
-
+        key = key.lower().replace("-", "_").replace(" ", "_")
+        # Exact match
+        if key in cls._estimators:
+            return cls._estimators[key]
+        # Fuzzy match
+        words = key.split("_")
+        for name, operator in cls._estimators.items():
+            if any(word in name for word in words):
+                return operator
         logger.warning(f"Extremum estimator '{key}' not found. Using 'lowess' instead.")
-        return cls.lowess.value
+        return cls._estimators["hfr"]
 
     @classmethod
     def list(cls):
         """List all available extremum estimators."""
-        return [member.name.lower() for member in cls]
+        return list(cls._estimators.keys())

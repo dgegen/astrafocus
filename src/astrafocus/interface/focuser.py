@@ -42,7 +42,7 @@ class FocuserInterface(ABC):
             )
 
     @abstractmethod
-    def move_focuser_to_position(self, new_position):
+    def move_focuser_to_position(self, new_position: int):
         pass
 
     @property
@@ -50,7 +50,7 @@ class FocuserInterface(ABC):
         return self._current_position
 
     @position.setter
-    def position(self, new_position):
+    def position(self, new_position: int):
         """
         Set the current focuser position.
 
@@ -68,7 +68,7 @@ class FocuserInterface(ABC):
         self.move_focuser_to_position(new_position)
         self._current_position = new_position
 
-    def move_by_steps(self, steps_to_move):
+    def move_by_steps(self, steps_to_move: int):
         """
         Move the focuser relative to the current position by n steps.
 
@@ -86,7 +86,7 @@ class FocuserInterface(ABC):
         self.validate_desired_position(desired_position)
         self._current_position = desired_position
 
-    def validate_desired_position(self, desired_position):
+    def validate_desired_position(self, desired_position: int):
         if not isinstance(desired_position, int | np.integer):
             raise ValueError("All focuser positions must be integers.")
 
@@ -97,7 +97,7 @@ class FocuserInterface(ABC):
                 f"would exceed the allowed range, ({min_step}, {max_step})."
             )
 
-    def is_within_range(self, desired_position):
+    def is_within_range(self, desired_position: int):
         """
         Check whether a desired focuser position is within the allowed range.
 
@@ -152,5 +152,5 @@ class TrivialFocuser(FocuserInterface):
     def __init__(self, current_position, allowed_range=tuple[int, int]):
         super().__init__(current_position=current_position, allowed_range=allowed_range)
 
-    def move_focuser_to_position(self, new_position):
+    def move_focuser_to_position(self, new_position: int):
         pass

@@ -1,6 +1,5 @@
 import time
 
-import alpaca
 import alpaca.camera
 import alpaca.focuser
 import alpaca.telescope

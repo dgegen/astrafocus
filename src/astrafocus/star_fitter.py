@@ -74,7 +74,7 @@ class StarFitter:
             Fitted model
         model : astropy.modeling.core._ModelMeta
             An astropy model like model to use for fitting.
-            Commonly, models.Gaussian2D, models.Moffat2D, or models.Ring2D.
+            Commonly, models.Gaussian2D, models.EllipticMoffat2D, or models.Ring2D.
             This package further contains autofocus.models.EllipticMoffat2D and
             autofocus.models.HalfFluxRadius2D.
         """

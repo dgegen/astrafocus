@@ -32,7 +32,8 @@ class AutofocusDeviceManager(ABC):
 
     Examples
     --------
-    # Create a trivial autofocus device manager.
+    Create a trivial autofocus device manager.
+
     >>> from astrafocus.interface.device_manager import AutofocusDeviceManager
     >>> from astrafocus.interface.camera import TrivialCamera
     >>> from astrafocus.interface.focuser import TrivialFocuser
@@ -87,7 +88,7 @@ class AutofocusDeviceManager(ABC):
 
         return image
 
-    def move_focuser_to_position(self, desired_position):
+    def move_focuser_to_position(self, desired_position: int):
         self.focuser.position = desired_position
 
     def check_conditions(self) -> bool:

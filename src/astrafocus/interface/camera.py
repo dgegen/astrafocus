@@ -14,7 +14,7 @@ class CameraInterface(ABC):
     """
 
     @abstractmethod
-    def perform_exposure(self, texp: float) -> ImageType | None:  # type: ignore
+    def perform_exposure(self, texp: float) -> ImageType:
         """
         Abstract method to take an observation with a specified exposure time.
 
@@ -39,7 +39,7 @@ class TrivialCamera(CameraInterface):
     A trivial camera interface for testing purposes.
     """
 
-    def perform_exposure(self, texp: float) -> ImageType:
+    def perform_exposure(self, texp: float) -> ImageType | None:
         pass
 
     def __repr__(self) -> str:

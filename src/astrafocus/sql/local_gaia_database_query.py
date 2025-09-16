@@ -1,5 +1,6 @@
 import sqlite3
 import time
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -20,13 +21,18 @@ class LocalGaiaDatabaseQuery:
 
     Examples
     --------
-    local_gaia_database_query = LocalGaiaDatabaseQuery(db_path)
+    >>> from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
+    >>> lgdbq = LocalGaiaDatabaseQuery("path/to/db")
+    >>> lgdbq.count_query(10, 20, 30, 40, max_phot_g_mean_mag=12)
     """
 
     def __init__(self, db_path):
-        self.db_path = db_path
+        self.db_path = Path(db_path)
         self.conn = None
         self.query_input_validator = QueryInputValidator()
+
+        if not db_path.is_file():
+            raise FileNotFoundError(f"The database file at {db_path} does not exist.")
 
     def __call__(
         self,
@@ -112,6 +118,7 @@ class LocalGaiaDatabaseQuery:
 
         Examples
         --------
+
         >>> from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
         >>> lgdbq = LocalGaiaDatabaseQuery("path/to/db")
         >>> lgdbq.count_query(10, 20, 30, 40, max_phot_g_mean_mag=12)
@@ -340,7 +347,7 @@ class LocalGaiaDatabaseQuery:
 
     def _connect_to_database(self):
         """Connect to the SQLite database."""
-        self.conn = sqlite3.connect(self.db_path)
+        self.conn = sqlite3.connect(str(self.db_path))
 
     def _close_database_connection(self):
         """Close the SQLite database connection."""
