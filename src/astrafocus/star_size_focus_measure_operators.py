@@ -73,7 +73,7 @@ class GaussianStarFocusMeasure(StarSizeFocusMeasure):
 
     import matplotlib.pyplot as plt
     fm_vals = [gsfm.measure_focus(image) for image in image_data]
-    plt.plot(focus_pos, fm_vals, ls='', marker='.'); plt.show()
+    plt.plot(focus_pos, fm_vals, ls='', marker='.'); plt.show()  # doctest: +SKIP
 
     plot_focus_response_curve(gsfm, image_data, focus_pos, plot_name='gaussian_star.pdf')
     """
@@ -132,7 +132,7 @@ class GaussianStarFocusMeasure(StarSizeFocusMeasure):
         Examples
         --------
         >>> x = np.linspace(-1, 2)
-        >>> plt.plot(x, hyperbola(x=x, a=1, b=1, x_0=0, y_0=-1)); plt.show()
+        >>> plt.plot(x, hyperbola(x=x, a=1, b=1, x_0=0, y_0=-1)); plt.show()  # doctest: +SKIP
         """
         y = b * np.sqrt(1 + ((x - x_0) / a) ** 2) + y_0
 
@@ -159,7 +159,7 @@ class HFRStarFocusMeasure(StarSizeFocusMeasure):
         hfrfm.linear_V_curve(focus_pos, *(-0.003, 0.003, np.mean(focus_pos),
         np.min(fm_vals/np.min(fm_vals))))
     )
-    plt.show()
+    plt.show()  # doctest: +SKIP
 
     plot_focus_response_curve(hfrfm, image_data, focus_pos, plot_name='HFR_star.pdf')
 
@@ -216,7 +216,7 @@ class HFRStarFocusMeasure(StarSizeFocusMeasure):
         Examples
         --------
         >>> x = np.linspace(-2, 2, 200)
-        >>> plt.plot(x, linear_V_curve(x=x)); plt.show()
+        >>> plt.plot(x, linear_V_curve(x=x)); plt.show()  # doctest: +SKIP
 
         y_min = slope_left*v_centre + intercept_left = slope_right*v_centre + intercept_right
         (slope_left-slope_right)*v_centre =  intercept_right - intercept_left
@@ -246,7 +246,7 @@ class HFRStarFocusMeasure(StarSizeFocusMeasure):
         Examples
         --------
         >>> x = np.linspace(-2, 2, 200)
-        >>> plt.plot(x, linear_V_curve(x=x)); plt.show()
+        >>> plt.plot(x, linear_V_curve(x=x)); plt.show()  # doctest: +SKIP
 
         slope_left*v_centre + intercept_left = slope_right*v_centre + intercept_right
         (slope_left-slope_right)*v_centre =  intercept_right - intercept_left

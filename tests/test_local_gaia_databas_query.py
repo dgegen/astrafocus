@@ -96,6 +96,50 @@ class TestLocalGaiaDatabaseQuery(unittest.TestCase):
         df = query_obj(20, 22.2, 23, 23.5)
         self.assertIsInstance(df, pd.DataFrame)
 
+    def test_query_ra_wrap(self):
+        # Test query with min_ra > max_ra (RA wrapping)
+        query_obj = LocalGaiaDatabaseQuery(self.db_path)
+        # This should trigger the RA wrap logic
+        df = query_obj(20, 22.2, 355, 5)
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_weird_ra_ranges(self):
+        query_obj = LocalGaiaDatabaseQuery(self.db_path)
+        # This should trigger the RA wrap logic
+        df = query_obj(20, 22.2, -5, 5)
+        self.assertIsInstance(df, pd.DataFrame)
+
+        query_obj = LocalGaiaDatabaseQuery(self.db_path)
+        # This should trigger the RA wrap logic
+        df = query_obj(20, 22.2, 355, 365)
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_query_with_magnitude_filters(self):
+        # Test query with magnitude filters
+        query_obj = LocalGaiaDatabaseQuery(self.db_path)
+        df = query_obj(
+            20, 22.2, 23, 23.5, min_phot_g_mean_mag=1, max_phot_g_mean_mag=5, min_j_m=1, max_j_m=5
+        )
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_query_all_filters(self):
+        query_obj = LocalGaiaDatabaseQuery(self.db_path)
+        df = query_obj(20, 22, 23, 23.5, min_phot_g_mean_mag=1, max_phot_g_mean_mag=5, min_j_m=1, max_j_m=5)
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_query_empty_result(self):
+        query_obj = LocalGaiaDatabaseQuery(self.db_path)
+        # Use a range that should return no results
+        df = query_obj(80, 81, 0, 1, min_phot_g_mean_mag=99, max_phot_g_mean_mag=100)
+        self.assertTrue(df.empty)
+
+    def test_invalid_shard(self):
+        query_obj = LocalGaiaDatabaseQuery(self.db_path)
+        query_obj._connect_to_database()
+        with self.assertRaises(Exception):
+            query_obj._sql_query_of_shard("invalid_shard", 0, 1, 0, 1)
+        query_obj._close_database_connection()
+
 
 if __name__ == "__main__":
     unittest.main()

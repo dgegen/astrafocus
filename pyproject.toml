@@ -28,7 +28,7 @@ license = {text = "MIT"}
 name = "astrafocus"
 readme = "README.md"
 requires-python = ">=3.11"
-version = '0.1.0'
+version = '0.1.1`'
 
 [project.optional-dependencies]
 alpaca = ["alpyca"]
@@ -39,6 +39,7 @@ dev = [
   "ruff",
   "pytest"
 ]
+docs = ["sphinx", "sphinx-book-theme", "sphinx-design", "sphinx-copybutton", "ipython", "matplotlib", "notebook", "ipywidgets", "myst_nb", "ghp-import", "alpyca"]
 extended = ["scikit-learn"]
 test = ["pytest", "cabaret"]
 visualization = ["ipython", "matplotlib", "notebook"]

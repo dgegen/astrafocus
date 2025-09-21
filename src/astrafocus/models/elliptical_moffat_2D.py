@@ -70,7 +70,7 @@ class EllipticalMoffat2D(Fittable2DModel):
     >>> ax.set_ylabel('Row pixel')
     >>> ax.imshow(star_data, origin="lower")
     >>> ax.contour(fit(*np.indices(star_data.shape)), colors="red")
-    >>> plt.show()
+    >>> plt.show()  # doctest: +SKIP
 
     """
 

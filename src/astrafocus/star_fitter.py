@@ -54,9 +54,8 @@ class StarFitter:
 
 
     >>> star_data = star_fitter.get_masked_star(image, gsfm.star_finder.selected_stars, cutout_size=15)
-    >>> plt.imshow(star_data); plt.show()
-    plt.imshow(star_fitter._result(*np.indices(star_data.shape))); plt.show()
-    >>>
+    >>> plt.imshow(star_data); plt.show()  # doctest: +SKIP
+    >>> plt.imshow(star_fitter._result(*np.indices(star_data.shape))); plt.show()  # doctest: +SKIP
     """
 
     def __init__(

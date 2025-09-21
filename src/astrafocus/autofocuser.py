@@ -596,7 +596,7 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
     >>> sampled_responses = araf.get_focus_response_curve_fit(sampled_pos)
     >>> plt.plot(sampled_pos, sampled_responses)
     >>> plt.axvline(araf.best_focus_position)
-    >>> plt.show()
+    >>> plt.show()  # doctest: +SKIP
 
     """
 

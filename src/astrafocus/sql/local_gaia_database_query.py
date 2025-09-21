@@ -31,7 +31,7 @@ class LocalGaiaDatabaseQuery:
         self.conn = None
         self.query_input_validator = QueryInputValidator()
 
-        if not db_path.is_file():
+        if not self.db_path.is_file():
             raise FileNotFoundError(f"The database file at {db_path} does not exist.")
 
     def __call__(
@@ -51,8 +51,8 @@ class LocalGaiaDatabaseQuery:
             df_result = self.query(
                 min_dec,
                 max_dec,
-                min_ra,
-                max_ra,
+                np.mod(min_ra, 360),
+                np.mod(max_ra, 360),
                 min_phot_g_mean_mag=min_phot_g_mean_mag,
                 max_phot_g_mean_mag=max_phot_g_mean_mag,
                 min_j_m=min_j_m,
@@ -329,7 +329,7 @@ class LocalGaiaDatabaseQuery:
         if min_ra < max_ra:
             query += f"dec BETWEEN {min_dec} AND {max_dec} AND ra BETWEEN {min_ra} AND {max_ra}"
         else:
-            query = (
+            query += (
                 f"dec BETWEEN {min_dec} AND {max_dec} "
                 f"AND (ra BETWEEN {min_ra} AND 360 OR ra BETWEEN 0 AND {max_ra})"
             )
