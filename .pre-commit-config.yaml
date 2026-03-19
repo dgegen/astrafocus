@@ -12,10 +12,12 @@ repos:
     hooks:
       - id: ruff-check # linter
         types_or: [python, pyi, jupyter, toml]
+        exclude: ^uv\.lock$
         args: [ --fix,  --config=pyproject.toml ]
       - id: ruff-format # formatter
         args: [ --config=pyproject.toml ]
         types_or: [python, pyi, jupyter, toml]
+        exclude: ^uv\.lock$
   - repo: https://github.com/deshaw/nbstripout-fast
     rev: v1.1.1
     hooks:
