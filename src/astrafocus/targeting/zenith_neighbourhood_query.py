@@ -94,7 +94,7 @@ class ZenithNeighbourhoodQuery:
         approx_dec, approx_ra = self.zenith_neighbourhood.get_constant_approximation_shards_deg(
             n_sub_div=n_sub_div
         )
-        dec_min, dec_max = np.min(approx_dec), np.max(approx_ra)
+        dec_min, dec_max = np.min(approx_dec), np.max(approx_dec)
         ra_min, ra_max = np.min(approx_ra), np.max(approx_ra)
 
         database_query = LocalGaiaDatabaseQuery(db_path=self.db_path)
@@ -195,7 +195,7 @@ class ZenithNeighbourhoodQuery:
                     max_j_m=max_j_m,
                 )
 
-        result_df = database_query.querry_with_shard_array(
+        result_df = database_query.query_with_shard_array(
             approx_dec,
             approx_ra,
             min_phot_g_mean_mag=min_phot_g_mean_mag,
@@ -246,7 +246,7 @@ class ZenithNeighbourhoodQuery:
             f"to {self.zenith_neighbourhood.maximal_zenith_angle / reduction_factor}."
         )
         self.zenith_neighbourhood = ZenithNeighbourhood(
-            observatory_location=self.zenith_neighbourhood.observatory_location,
+            observatory_location=self.zenith_neighbourhood.location,
             observation_time=self.zenith_neighbourhood.observation_time,
             maximal_zenith_angle=self.zenith_neighbourhood.maximal_zenith_angle / reduction_factor,
         )

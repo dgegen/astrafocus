@@ -17,30 +17,48 @@ logger = get_logger()
 class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
     def __init__(
         self,
-        ref_image,
         model,
+        ref_image=None,
         fwhm=2.0,
         star_find_threshold=5.0,
         absolute_detection_limit=0.0,
         cutout_size: int = 15,
         saturation_threshold=None,
+        max_stars=100,
     ) -> None:
-        self.star_finder = StarFinder(
-            ref_image,
-            fwhm=fwhm,
-            star_find_threshold=star_find_threshold,
-            absolute_detection_limit=absolute_detection_limit,
-            saturation_threshold=saturation_threshold,
+        self._star_finder_kwargs = {
+            "fwhm": fwhm,
+            "star_find_threshold": star_find_threshold,
+            "absolute_detection_limit": absolute_detection_limit,
+            "saturation_threshold": saturation_threshold,
+            "max_stars": max_stars,
+        }
+        self.star_finder = (
+            StarFinder(ref_image, **self._star_finder_kwargs) if ref_image is not None else None
         )
         self.star_fitter = StarFitter(model)
         self.cutout_size = cutout_size
         self.optimised_parameters = None
 
+    def _get_star_finder(self, image=None) -> StarFinder:
+        if self.star_finder is None:
+            if image is None:
+                raise ValueError("StarFinder is not initialised and no image was provided to initialise it.")
+            self.star_finder = StarFinder(image, **self._star_finder_kwargs)
+        return self.star_finder
+
     def measure_focus(self, image: ImageType, cutout_size: int | None = None, **kwargs) -> float:
         if cutout_size is None:
             cutout_size = self.cutout_size
 
-        selected_stars = self.star_finder.selected_stars
+        try:
+            selected_stars = self._get_star_finder(image).selected_stars
+        except ValueError:
+            raise ValueError(
+                "StarFinder could not find enough stars to measure focus. "
+                "Adjust the star finder parameters or check image quality."
+            )
+
         star_size_arr = self.star_fitter.calculate_star_sizes_of_selection(
             image,
             selected_stars=selected_stars,
@@ -50,7 +68,7 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
 
     def __repr__(self) -> str:
         return (
-            f"StarSizeFocusMeasure(self.star_finder={self.star_finder!r}, "
+            f"StarSizeFocusMeasure(star_finder={self.star_finder!r}, "
             f"star_fitter={self.star_fitter!r}, cutout_size={self.cutout_size!r})"
         )
 
@@ -80,20 +98,23 @@ class GaussianStarFocusMeasure(StarSizeFocusMeasure):
 
     def __init__(
         self,
-        ref_image,
+        ref_image=None,
         fwhm=2.0,
         star_find_threshold=5.0,
         absolute_detection_limit=0.0,
+        cutout_size: int = 15,
         saturation_threshold=None,
+        max_stars=100,
     ) -> None:
-        model = astropy.modeling.models.Gaussian2D
         super().__init__(
-            ref_image,
-            model,
+            model=astropy.modeling.models.Gaussian2D,
+            ref_image=ref_image,
             fwhm=fwhm,
             star_find_threshold=star_find_threshold,
             absolute_detection_limit=absolute_detection_limit,
+            cutout_size=cutout_size,
             saturation_threshold=saturation_threshold,
+            max_stars=max_stars,
         )
 
     def fit_focus_response_curve(self, focus_pos, measured_focus):
@@ -171,20 +192,23 @@ class HFRStarFocusMeasure(StarSizeFocusMeasure):
 
     def __init__(
         self,
-        ref_image,
+        ref_image=None,
         fwhm=2.0,
         star_find_threshold=5.0,
         absolute_detection_limit=0.0,
+        cutout_size: int = 15,
         saturation_threshold=None,
+        max_stars=100,
     ) -> None:
-        model = HalfFluxRadius2D
         super().__init__(
-            ref_image,
-            model,
+            model=HalfFluxRadius2D,
+            ref_image=ref_image,
             fwhm=fwhm,
             star_find_threshold=star_find_threshold,
             absolute_detection_limit=absolute_detection_limit,
+            cutout_size=cutout_size,
             saturation_threshold=saturation_threshold,
+            max_stars=max_stars,
         )
 
     def fit_focus_response_curve(self, focus_pos, measured_focus):
@@ -206,7 +230,6 @@ class HFRStarFocusMeasure(StarSizeFocusMeasure):
             x,
             y,
             p0=(-0.1, 0.1, np.mean(x), np.min(y)),
-            # loss="soft_l1",
         )
         return popt, pcov
 

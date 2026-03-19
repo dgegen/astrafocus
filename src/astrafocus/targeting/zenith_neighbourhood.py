@@ -11,7 +11,7 @@ __all__ = ["ZenithNeighbourhood"]
 logger = get_logger()
 
 RAD_TO_DEG = 180 / np.pi
-DEFAULT_MAXIMAL_ZENITH_ANGLE = 10 * u.deg
+DEFAULT_MAXIMAL_ZENITH_ANGLE = Angle(10, "deg")
 
 
 class ZenithNeighbourhood:
@@ -56,7 +56,7 @@ class ZenithNeighbourhood:
         self,
         observatory_location: EarthLocation,
         observation_time: Time | None = None,
-        maximal_zenith_angle=DEFAULT_MAXIMAL_ZENITH_ANGLE,
+        maximal_zenith_angle: Angle | float = DEFAULT_MAXIMAL_ZENITH_ANGLE,
     ):
         """
         Initialize a ZenithNeighbourhood object.
@@ -70,48 +70,50 @@ class ZenithNeighbourhood:
         maximal_zenith_angle : float, optional
             Maximum zenith angle for the neighbourhood in degrees (default is DEFAULT_MAXIMAL_ZENITH_ANGLE).
         """
-        self.maximal_zenith_angle = ZenithNeighbourhood.check_maximal_zenith_angle(maximal_zenith_angle)
-        altitude_angle = Angle(90 * u.deg) - self.maximal_zenith_angle
+        self.maximal_zenith_angle: Angle = ZenithNeighbourhood.check_maximal_zenith_angle(
+            maximal_zenith_angle
+        )
+        altitude_angle = Angle(90, "deg") - self.maximal_zenith_angle
 
         self.location = observatory_location
         self.observation_time = observation_time or Time.now()
-        self.validate_observatoy_location()
+        self.validate_observatory_location()
         self.validate_observation_time()
 
         self.zenith = HorizontalCoordinates(
             obstime=self.observation_time,
             location=self.location,
-            alt=90 * u.deg,
-            az=0 * u.deg,
+            alt=Angle(90, "deg"),
+            az=Angle(0, "deg"),
         )
 
         self.east = HorizontalCoordinates(
             obstime=self.observation_time,
             location=self.location,
             alt=altitude_angle,
-            az=90 * u.deg,
+            az=Angle(90, "deg"),
         )
         self.north = HorizontalCoordinates(
             obstime=self.observation_time,
             location=self.location,
             alt=altitude_angle,
-            az=180 * u.deg,
+            az=Angle(180, "deg"),
         )
         self.west = HorizontalCoordinates(
             obstime=self.observation_time,
             location=self.location,
             alt=altitude_angle,
-            az=270 * u.deg,
+            az=Angle(270, "deg"),
         )
         self.south = HorizontalCoordinates(
             obstime=self.observation_time,
             location=self.location,
             alt=altitude_angle,
-            az=0 * u.deg,
+            az=Angle(0, "deg"),
         )
 
-        self.delta_lon_zenith = np.abs(self.east.ra.rad - self.west.ra.rad)
-        self.delta_dec_zenith = np.abs(self.north.dec.rad - self.south.dec.rad)
+        self.delta_lon_zenith = np.abs(self.east.ra.rad - self.west.ra.rad)  # type: ignore
+        self.delta_dec_zenith = np.abs(self.north.dec.rad - self.south.dec.rad)  # type: ignore
 
         logger.info(
             f"Initializing ZenithNeighbourhood with "
@@ -121,14 +123,16 @@ class ZenithNeighbourhood:
         )
 
         # Warn that the approximation is not valid for declinations near the poles
-        if np.abs(self.zenith.dec.deg) > 90 - self.maximal_zenith_angle.deg:
+        if np.abs(self.zenith.dec.deg) > 90 - self.maximal_zenith_angle.deg:  # type: ignore
             logger.warning(
                 f"The neighbourhood approximation is not yet tested for declinations near the poles. "
                 f"Zenith declination: {self.zenith.dec.deg}, "
                 f"maximal zenith angle: {self.maximal_zenith_angle.deg}"
             )
 
-    def get_ra_bounds(self, n, south=None, north=None):
+    def get_ra_bounds(
+        self, n: int, south: float | None = None, north: float | None = None
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Calculate exact RA bounds between specified declinations.
 
@@ -146,25 +150,23 @@ class ZenithNeighbourhood:
         Tuple[np.ndarray, np.ndarray]
             Declinations and corresponding RA bounds.
         """
-        if south is None:
-            south = self.south.dec.rad
-        if north is None:
-            north = self.north.dec.rad
+        south_dec: float = south if south is not None else self.south.dec.rad  # type: ignore
+        north_dec: float = north if north is not None else self.north.dec.rad  # type: ignore
         logger.info(
             "Calculate exact RA bounds between declinations "
-            f"{south * RAD_TO_DEG:5.2f} and {north * RAD_TO_DEG:5.2f}."
+            f"{south_dec * RAD_TO_DEG:5.2f} and {north_dec * RAD_TO_DEG:5.2f}."
         )
 
         # declinations = np.linspace(*np.sort([south, north]), n)
-        declinations = np.sort(np.linspace(south, north, n))
+        declinations = np.sort(np.linspace(south_dec, north_dec, n))
 
         delta_ras = np.array([self.delta_phi_of_theta(theta) for theta in declinations])
-        ra_bound_coords = np.array(
-            [self.zenith.ra.rad - delta_ras / 2, self.zenith.ra.rad + delta_ras / 2]
+        ra_bound_coords: np.ndarray = np.array(
+            [self.zenith.ra.rad - delta_ras / 2, self.zenith.ra.rad + delta_ras / 2]  # type: ignore
         ).T
 
         # Wrap ra_bound_coords to [0, 2*pi]
-        ra_bound_coords = Longitude(ra_bound_coords * u.rad).rad
+        ra_bound_coords = Longitude(ra_bound_coords * u.rad).rad  # type: ignore
 
         # Where delta_ras is NaN, the zenith is near the pole, where there are no ra bounds.
         ra_bound_coords[np.isnan(delta_ras), :] = np.array([0, 2 * np.pi])
@@ -173,7 +175,7 @@ class ZenithNeighbourhood:
 
     def get_constant_approximation_shards(self, n_sub_div=20):
         """Calculate constant shard-wise RA bounds."""
-        dec_bounds = np.sort([self.south.dec.deg, self.north.dec.deg])
+        dec_bounds = np.sort([self.south.dec.deg, self.north.dec.deg])  # type: ignore
         dec_bounds = np.array([np.floor(dec_bounds[0]), np.ceil(dec_bounds[-1])])
         n_shreds = int(dec_bounds[-1] - dec_bounds[0])
         south, north = dec_bounds * np.pi / 180
@@ -240,22 +242,23 @@ class ZenithNeighbourhood:
         # )
         return np.arccos(
             (
-                np.sin(self.zenith.dec.rad) ** 2
+                np.sin(self.zenith.dec.rad) ** 2  # type: ignore
                 - np.sin(dec) ** 2
-                + np.cos(self.zenith.dec.rad) ** 2 * np.cos(np.abs(self.delta_lon_zenith))
+                + np.cos(self.zenith.dec.rad) ** 2  # type: ignore
+                * np.cos(np.abs(self.delta_lon_zenith))
             )
             / np.cos(dec) ** 2
         )
 
     @staticmethod
-    def check_maximal_zenith_angle(maximal_zenith_angle):
+    def check_maximal_zenith_angle(maximal_zenith_angle) -> Angle:
         if isinstance(maximal_zenith_angle, int | float):
-            maximal_zenith_angle = Angle(float(maximal_zenith_angle) * u.deg)
+            maximal_zenith_angle = Angle(float(maximal_zenith_angle), "deg")
         elif isinstance(maximal_zenith_angle, u.Quantity):
             maximal_zenith_angle = Angle(maximal_zenith_angle)
         if not isinstance(maximal_zenith_angle, Angle):
             raise ValueError("maximal_zenith_angle must be of type astropy.coordinates.angles.Angle")
-        if maximal_zenith_angle < 0 * u.deg or maximal_zenith_angle > 90 * u.deg:
+        if maximal_zenith_angle < Angle(0, "deg") or maximal_zenith_angle > Angle(90, "deg"):
             raise ValueError("maximal_zenith_angle must be in the range [0, 90] deg")
         return maximal_zenith_angle
 
@@ -298,7 +301,7 @@ class ZenithNeighbourhood:
             ),
         )
 
-    def validate_observatoy_location(self):
+    def validate_observatory_location(self):
         if not isinstance(self.location, EarthLocation):
             raise ValueError("observatory_location must be of type astropy.coordinates.EarthLocation")
 
@@ -324,20 +327,20 @@ class HorizontalCoordinates:
         self.icrs = self.skycoord.transform_to("icrs")
 
     @property
-    def alt(self):
+    def alt(self) -> Angle:
         return self.altaz.alt
 
     @property
-    def az(self):
+    def az(self) -> Angle:
         return self.altaz.az
 
     @property
-    def ra(self):
-        return self.icrs.ra
+    def ra(self) -> Angle:
+        return self.icrs.ra  # type: ignore
 
     @property
-    def dec(self):
-        return self.icrs.dec
+    def dec(self) -> Angle:
+        return self.icrs.dec  # type: ignore
 
     def __repr__(self):
         return f"HorizontalCoordinates(alt={self.alt}, az={self.az})"
@@ -381,7 +384,7 @@ class ApproximateZenith:
         self.location = observatory_location
         self.observation_time = observation_time or Time.now()
 
-        self.validate_observatoy_location()
+        self.validate_observatory_location()
         self.validate_observation_time()
 
         self.zenith = self.get_approximate_zenith_icrs()
@@ -408,7 +411,7 @@ class ApproximateZenith:
 
         return local_sidereal_time
 
-    def validate_observatoy_location(self):
+    def validate_observatory_location(self):
         if not isinstance(self.location, EarthLocation):
             raise ValueError("observatory_location must be of type astropy.coordinates.EarthLocation")
 

@@ -2,6 +2,18 @@
 build-backend = "setuptools.build_meta"
 requires = ["setuptools", "setuptools-scm", "wheel"]
 
+[dependency-groups]
+dev = [
+  {include-group = "test"},
+  "ruff>=0.15.6",
+  "matplotlib",
+  "pre-commit>=4.5.1"
+]
+test = [
+  "cabaret>=0.4.5",
+  "pytest>=9.0.0"
+]
+
 [project]
 authors = [
   {email = "ddegen@ethz.ch", name = "David Degen"}
@@ -22,7 +34,7 @@ dependencies = [
   "sqlite3worker",
   "statsmodels"
 ]
-description = "My package description"
+description = "A package that provides flexible autofocus procedures for telescopes."
 keywords = ["telescope", "autofocus"]
 license = {text = "MIT"}
 name = "astrafocus"
@@ -33,15 +45,8 @@ version = '0.1.1'
 [project.optional-dependencies]
 alpaca = ["alpyca"]
 dash = ["dash", "dash_bootstrap_components", "plotly"]
-dev = [
-  "cabaret",
-  "matplotlib",
-  "ruff",
-  "pytest"
-]
 docs = ["sphinx", "sphinx-book-theme", "sphinx-design", "sphinx-copybutton", "ipython", "matplotlib", "notebook", "ipywidgets", "myst_nb", "ghp-import", "alpyca"]
 extended = ["scikit-learn"]
-test = ["pytest", "cabaret"]
 visualization = ["ipython", "matplotlib", "notebook"]
 
 [project.urls]

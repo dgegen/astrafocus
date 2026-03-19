@@ -106,38 +106,90 @@ class AutofocuserBase(ABC):
         self.best_focus_position = None
 
         self.keep_images = keep_images
-        self.secondary_focus_measure_operators = secondary_focus_measure_operators or {}
+        self.secondary_focus_measure_operators = self._validate_secondary_operators(
+            secondary_focus_measure_operators or {}
+        )
         self._image_record = []
         self.save_path = save_path if isinstance(save_path, (str | None)) else str(save_path)
         self.file_suffix = ".fits"
         self._set_search_range(search_range_is_relative)
+
+    @staticmethod
+    def _validate_secondary_operators(operators: dict) -> dict:
+        result = {}
+        for key, val in operators.items():
+            if isinstance(val, type):
+                if not issubclass(val, FocusMeasureOperator):
+                    raise ValueError(
+                        f"secondary_focus_measure_operators['{key}'] "
+                        "must be a subclass of FocusMeasureOperator."
+                    )
+                try:
+                    result[key] = val()
+                except TypeError as e:
+                    raise TypeError(
+                        f"secondary_focus_measure_operators['{key}'] is a class that could not be "
+                        f"instantiated without arguments: {e}"
+                    ) from e
+            else:
+                if not isinstance(val, FocusMeasureOperator):
+                    raise ValueError(
+                        f"secondary_focus_measure_operators['{key}'] "
+                        "must be an instance of FocusMeasureOperator."
+                    )
+                result[key] = val
+        return result
 
     @property
     def focus_record(self):
         df = self._focus_record.copy()
         df["focus_pos"] = df["focus_pos"].astype(int)
 
+        if len(self.secondary_focus_measure_operators) == 0:
+            return df
+
+        image_data = None
+        data_source = None
+
         if self.keep_images:
-            try:
-                for name, fm in self.secondary_focus_measure_operators.items():
-                    df[name] = np.array([fm.measure_focus(image) for image in self._image_record])
-            except Exception as e:
-                logger.warning(
-                    "Error applying secondary focus measure operators to image record. Exception: %s",
-                    e,
-                )
-        elif self.save_path is not None and len(self.secondary_focus_measure_operators) > 0:
+            image_data = self._image_record
+            data_source = "image record"
+        elif self.save_path is not None:
             try:
                 image_data, _ = load_fits_from_directory(self.save_path, suffix=self.file_suffix)
-                # Discard calibration image, if necessary, assuming file names are sorted by time
-                if len(image_data) == len(df) + 1:
-                    image_data = image_data[1:]
-                for name, fm in self.secondary_focus_measure_operators.items():
-                    df[name] = np.array([fm.measure_focus(image) for image in image_data])
-            except Exception as e:
+                data_source = "saved fits"
+            except Exception:
                 logger.warning(
-                    "Error applying secondary focus measure operators to saved fits. Exception: %s",
-                    e,
+                    "Error loading saved fits for secondary focus measure operators.",
+                    exc_info=True,
+                )
+                return df
+
+        if image_data is None:
+            return df
+
+        # Discard calibration image, if present, assuming file names are sorted by time.
+        if len(image_data) == len(df) + 1:
+            image_data = image_data[1:]
+
+        if len(image_data) != len(df):
+            logger.warning(
+                "Skipping secondary focus measures: %d images in %s, but %d focus record rows.",
+                len(image_data),
+                data_source,
+                len(df),
+            )
+            return df
+
+        for name, fm in self.secondary_focus_measure_operators.items():
+            try:
+                df[name] = np.array([fm.measure_focus(image) for image in image_data])
+            except Exception:
+                logger.warning(
+                    "Error applying secondary focus measure operator '%s' to %s.",
+                    name,
+                    data_source,
+                    exc_info=True,
                 )
         return df
 
@@ -161,7 +213,7 @@ class AutofocuserBase(ABC):
         return success
 
     @abstractmethod
-    def _run(self):
+    def _run(self) -> bool:
         pass
 
     def reset(self):
@@ -510,8 +562,6 @@ class NonParametricResponseAutofocuser(SweepingAutofocuser):
     ) -> tuple[int, float]:
         focus_pos, focus_measure = self.get_focus_record()
 
-        focus_pos_sorted, focus_measure_sorted = self.extremum_estimator.sort(focus_pos, focus_measure)
-
         # Use RobustExtremumEstimator to find the best focus position
         if self.focus_measure_operator.smaller_is_better:
             best_focus_pos, best_focus_measure_value = self.extremum_estimator.argmin(
@@ -529,7 +579,7 @@ class NonParametricResponseAutofocuser(SweepingAutofocuser):
 
     def __repr__(self) -> str:
         return (
-            "NonParametricAutofocuser("
+            "NonParametricResponseAutofocuser("
             f"self.autofocus_device_manager={self.autofocus_device_manager!r}, "
             f"exposure_time={self.exposure_time!r} sec, "
             f"search_range={self.search_range!r}, "
@@ -612,7 +662,7 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
         if not issubclass(focus_measure_operator, AnalyticResponseFocusedMeasureOperator):
             raise ValueError(
                 "The focus measure operator must be a subclass of "
-                "AnalyticResponseFocusedMeasureOperator. It should not be an instant."
+                "AnalyticResponseFocusedMeasureOperator. It should not be an instance."
             )
 
         if focus_measure_operator_kwargs is None:

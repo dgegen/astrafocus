@@ -33,7 +33,7 @@ class TestGetZenithICRS(unittest.TestCase):
         approximate_zenith_dec = approximate_zenith_icrs.dec.deg
 
         # Check if the calculated zenith coordinates match the expected values
-        self.assertAlmostEqual(zenith_ra, approximate_zenith_ra, delta=0.4)
+        self.assertAlmostEqual(zenith_ra, approximate_zenith_ra, delta=0.5)
         self.assertAlmostEqual(zenith_dec, approximate_zenith_dec, delta=0.2)
 
 

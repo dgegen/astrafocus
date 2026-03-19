@@ -3,6 +3,7 @@ import time
 from abc import abstractmethod
 from datetime import datetime
 
+import cabaret
 import numpy as np
 from astropy.io import fits
 
@@ -14,9 +15,6 @@ from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory
 from astrafocus.utils.typing import ImageType
 
 __all__ = ["ObservationBasedDeviceSimulator"]
-
-
-np.random.seed(42)
 
 
 class FocuserSimulation(FocuserInterface):
@@ -267,3 +265,64 @@ class ObservationBasedDeviceSimulator(AutofocusDeviceSimulator):
 
         # start off with something realistic
         self.focuser.position_to_sample = self.focuser.position
+
+
+class CabaretCameraSimulator(CameraSimulation):
+    def __init__(
+        self,
+        focuser: FocuserSimulation,
+        observatory: cabaret.Observatory | None = None,
+        sources: cabaret.Sources | None = None,
+        sleep_flag: bool = False,
+        save_path: str | None = None,
+    ):
+        super().__init__(focuser=focuser, sleep_flag=sleep_flag)
+        cabaret_focuser = cabaret.Focuser(
+            position=11_000,
+            best_position=10_000,
+            scale=100,
+        )
+        self.observatory = (
+            observatory if observatory is not None else cabaret.Observatory(focuser=cabaret_focuser)
+        )
+        self.save_path = save_path
+        self.sources = sources if sources is not None else cabaret.Sources.get_test_sources()
+
+    def sample_an_observation(self, desired_position: int, texp: float = 3.0):
+        """Get an observation at the specified focal position."""
+        ra, dec = self.sources.center
+        self.observatory.focuser.position = desired_position
+        image = self.observatory.generate_image(
+            ra=ra,
+            dec=dec,
+            exp_time=texp,
+            sources=self.sources,
+        )
+        return image
+
+
+class CabaretDeviceSimulator(AutofocusDeviceSimulator):
+    def __init__(
+        self,
+        current_position: int = 11_000,
+        allowed_range: tuple[int, int] = (9_000, 13_000),
+        sleep_flag: bool = False,
+        seconds_per_step: float = 0.5,
+        observatory: cabaret.Observatory | None = None,
+        sources: cabaret.Sources | None = None,
+        save_path: str | None = None,
+    ):
+        focuser = FocuserSimulation(
+            current_position=current_position,
+            allowed_range=allowed_range,
+            sleep_flag=sleep_flag,
+            seconds_per_step=seconds_per_step,
+        )
+        camera = CabaretCameraSimulator(
+            focuser=focuser,
+            observatory=observatory,
+            sources=sources,
+            sleep_flag=sleep_flag,
+            save_path=save_path,
+        )
+        super().__init__(camera=camera, focuser=focuser, telescope=None, sleep_flag=sleep_flag)

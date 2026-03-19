@@ -5,7 +5,7 @@ from utils import ConfigTests
 
 from astrafocus.autofocuser import AnalyticResponseAutofocuser
 from astrafocus.focus_measure_operators import FFTFocusMeasureTan2022
-from astrafocus.interface.simulation import ObservationBasedDeviceSimulator
+from astrafocus.interface.simulation import CabaretDeviceSimulator, ObservationBasedDeviceSimulator
 from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure
 
 CONFIG = ConfigTests().get()
@@ -60,7 +60,52 @@ class TestAutofocuser(unittest.TestCase):
         self.assertIsInstance(df, pd.DataFrame)
 
 
-if __name__ == "__main__":
-    config = CONFIG
-    if "path_to_fits" in config and config["path_to_fits"] != "/path/to/fits":
-        unittest.main()
+class TestAutofocuserIdeal(unittest.TestCase):
+    def setUp(self):
+        self.TELESCOPE_INTERFACE = CabaretDeviceSimulator()
+
+    def test_autofocuser(self):
+        ARAF = AnalyticResponseAutofocuser(
+            autofocus_device_manager=self.TELESCOPE_INTERFACE,
+            exposure_time=3.0,
+            focus_measure_operator=HFRStarFocusMeasure,
+            n_steps=(20, 5),
+            n_exposures=(1, 2),
+            decrease_search_range=True,
+            percent_to_cut=40,
+            keep_images=True,
+            secondary_focus_measure_operators={"FFT": FFTFocusMeasureTan2022()},
+        )
+
+        ARAF.run()
+        df = ARAF.focus_record
+
+        # Add assertions based on your expectations
+        self.assertIsNotNone(df)
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_autofocuser_single_sweep(self):
+        ARAF = AnalyticResponseAutofocuser(
+            autofocus_device_manager=self.TELESCOPE_INTERFACE,
+            exposure_time=3.0,
+            focus_measure_operator=HFRStarFocusMeasure,
+            n_steps=20,
+            n_exposures=1,
+            decrease_search_range=True,
+            percent_to_cut=40,
+            keep_images=True,
+            secondary_focus_measure_operators={"FFT": FFTFocusMeasureTan2022()},
+        )
+
+        ARAF.run()
+        df = ARAF.focus_record
+
+        # Add assertions based on your expectations
+        self.assertIsNotNone(df)
+        self.assertIsInstance(df, pd.DataFrame)
+
+
+# if __name__ == "__main__":
+#     config = CONFIG
+#     if "path_to_fits" in config and config["path_to_fits"] != "/path/to/fits":
+#         unittest.main()
