@@ -9,6 +9,19 @@ dev = [
   "matplotlib",
   "pre-commit>=4.5.1"
 ]
+docs = [
+  "alpyca>=3.1.2",
+  "ghp-import>=2.1.0",
+  "ipython>=9.10.0",
+  "ipywidgets>=8.1.8",
+  "matplotlib>=3.10.8",
+  "myst-nb>=1.4.0",
+  "notebook>=7.5.5",
+  "sphinx>=9.0.4",
+  "sphinx-book-theme>=1.2.0",
+  "sphinx-copybutton>=0.5.2",
+  "sphinx-design>=0.7.0"
+]
 test = [
   "cabaret>=0.4.5",
   "pytest>=9.0.0"
@@ -44,8 +57,6 @@ version = '0.1.1'
 
 [project.optional-dependencies]
 alpaca = ["alpyca"]
-dash = ["dash", "dash_bootstrap_components", "plotly"]
-docs = ["sphinx", "sphinx-book-theme", "sphinx-design", "sphinx-copybutton", "ipython", "matplotlib", "notebook", "ipywidgets", "myst_nb", "ghp-import", "alpyca"]
 extended = ["scikit-learn"]
 visualization = ["ipython", "matplotlib", "notebook"]
 
