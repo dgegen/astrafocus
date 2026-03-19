@@ -1,0 +1,824 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>astrafocus.targeting.zenith_neighbourhood &#8212; AstrAFocus Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=15a4c1f9" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/astrafocus/targeting/zenith_neighbourhood';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">AstrAFocus Documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motivation.html">Motivation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dgegen/astrafocus" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dgegen/astrafocus/issues/new?title=Issue%20on%20page%20%2F_modules/astrafocus/targeting/zenith_neighbourhood.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for astrafocus.targeting.zenith_neighbourhood</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">AltAz</span><span class="p">,</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">EarthLocation</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.interface.telescope_specs</span><span class="w"> </span><span class="kn">import</span> <span class="n">TelescopeSpecs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ZenithNeighbourhood&quot;</span><span class="p">]</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+<span class="n">RAD_TO_DEG</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+<span class="n">DEFAULT_MAXIMAL_ZENITH_ANGLE</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ZenithNeighbourhood">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ZenithNeighbourhood</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class representing a zenith neighbourhood for astronomical observations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    observatory_location : Optional[EarthLocation], optional</span>
+<span class="sd">        Location of the observatory specified using astropy&#39;s EarthLocation.</span>
+<span class="sd">    observation_time : Optional[Time], optional</span>
+<span class="sd">        Observation time specified using astropy&#39;s Time.</span>
+<span class="sd">    maximal_zenith_angle : float, optional</span>
+<span class="sd">        Maximum zenith angle for the neighbourhood in degrees (default is DEFAULT_MAXIMAL_ZENITH_ANGLE).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    # Zenith neighbourhood now</span>
+<span class="sd">    &gt;&gt;&gt; from astropy.coordinates import EarthLocation</span>
+<span class="sd">    &gt;&gt;&gt; import astropy.units as u</span>
+<span class="sd">    &gt;&gt;&gt; speculoos_geo_coords = {</span>
+<span class="sd">    ...     &quot;lat&quot;: -24.627222 * u.deg, &quot;lon&quot;: -70.404167 * u.deg, &quot;height&quot;: 2635 * u.m</span>
+<span class="sd">    ... }</span>
+<span class="sd">    &gt;&gt;&gt; zn = ZenithNeighbourhood(</span>
+<span class="sd">    ...     observatory_location=EarthLocation(**speculoos_geo_coords),</span>
+<span class="sd">    ...     maximal_zenith_angle=10 * u.deg</span>
+<span class="sd">    ... )</span>
+
+<span class="sd">    # Zenith neighbourhood at a specific time, crossing the 0, 360 deg boundary</span>
+<span class="sd">    &gt;&gt;&gt; import astropy</span>
+<span class="sd">    &gt;&gt;&gt; from astrafocus.targeting.zenith_neighbourhood import (</span>
+<span class="sd">    ...     ZenithNeighbourhood, DEFAULT_MAXIMAL_ZENITH_ANGLE</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; zenith_neighbourhood = ZenithNeighbourhood(</span>
+<span class="sd">    ...     maximal_zenith_angle=DEFAULT_MAXIMAL_ZENITH_ANGLE,</span>
+<span class="sd">    ...     observatory_location=EarthLocation(**speculoos_geo_coords),</span>
+<span class="sd">    ...     observation_time=astropy.time.Time(&quot;2023-11-23 00:35:54.5018&quot;)</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">observatory_location</span><span class="p">:</span> <span class="n">EarthLocation</span><span class="p">,</span>
+        <span class="n">observation_time</span><span class="p">:</span> <span class="n">Time</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">maximal_zenith_angle</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_MAXIMAL_ZENITH_ANGLE</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a ZenithNeighbourhood object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observatory_location : Optional[EarthLocation], optional</span>
+<span class="sd">            Location of the observatory specified using astropy&#39;s EarthLocation.</span>
+<span class="sd">        observation_time : Optional[Time], optional</span>
+<span class="sd">            Observation time specified using astropy&#39;s Time.</span>
+<span class="sd">        maximal_zenith_angle : float, optional</span>
+<span class="sd">            Maximum zenith angle for the neighbourhood in degrees (default is DEFAULT_MAXIMAL_ZENITH_ANGLE).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maximal_zenith_angle</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="n">ZenithNeighbourhood</span><span class="o">.</span><span class="n">check_maximal_zenith_angle</span><span class="p">(</span>
+            <span class="n">maximal_zenith_angle</span>
+        <span class="p">)</span>
+        <span class="n">altitude_angle</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximal_zenith_angle</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">observatory_location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span> <span class="o">=</span> <span class="n">observation_time</span> <span class="ow">or</span> <span class="n">Time</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_observatory_location</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_observation_time</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">zenith</span> <span class="o">=</span> <span class="n">HorizontalCoordinates</span><span class="p">(</span>
+            <span class="n">obstime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span><span class="p">,</span>
+            <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+            <span class="n">alt</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">),</span>
+            <span class="n">az</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">east</span> <span class="o">=</span> <span class="n">HorizontalCoordinates</span><span class="p">(</span>
+            <span class="n">obstime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span><span class="p">,</span>
+            <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+            <span class="n">alt</span><span class="o">=</span><span class="n">altitude_angle</span><span class="p">,</span>
+            <span class="n">az</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">north</span> <span class="o">=</span> <span class="n">HorizontalCoordinates</span><span class="p">(</span>
+            <span class="n">obstime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span><span class="p">,</span>
+            <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+            <span class="n">alt</span><span class="o">=</span><span class="n">altitude_angle</span><span class="p">,</span>
+            <span class="n">az</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">west</span> <span class="o">=</span> <span class="n">HorizontalCoordinates</span><span class="p">(</span>
+            <span class="n">obstime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span><span class="p">,</span>
+            <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+            <span class="n">alt</span><span class="o">=</span><span class="n">altitude_angle</span><span class="p">,</span>
+            <span class="n">az</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="mi">270</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">south</span> <span class="o">=</span> <span class="n">HorizontalCoordinates</span><span class="p">(</span>
+            <span class="n">obstime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span><span class="p">,</span>
+            <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+            <span class="n">alt</span><span class="o">=</span><span class="n">altitude_angle</span><span class="p">,</span>
+            <span class="n">az</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta_lon_zenith</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">east</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">rad</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">west</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta_dec_zenith</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">north</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">rad</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">south</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Initializing ZenithNeighbourhood with &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;maximal_zenith_angle=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">maximal_zenith_angle</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;location=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;observation_time=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Warn that the approximation is not valid for declinations near the poles</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zenith</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">90</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximal_zenith_angle</span><span class="o">.</span><span class="n">deg</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The neighbourhood approximation is not yet tested for declinations near the poles. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Zenith declination: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">zenith</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">deg</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;maximal zenith angle: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">maximal_zenith_angle</span><span class="o">.</span><span class="n">deg</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="ZenithNeighbourhood.get_ra_bounds">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood.get_ra_bounds">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_ra_bounds</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">south</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">north</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate exact RA bounds between specified declinations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n : int</span>
+<span class="sd">            Number of subdivisions.</span>
+<span class="sd">        south : Optional[float], optional</span>
+<span class="sd">            Southern declination in radians (default is None).</span>
+<span class="sd">        north : Optional[float], optional</span>
+<span class="sd">            Northern declination in radians (default is None).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tuple[np.ndarray, np.ndarray]</span>
+<span class="sd">            Declinations and corresponding RA bounds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">south_dec</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">south</span> <span class="k">if</span> <span class="n">south</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">south</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">rad</span>  <span class="c1"># type: ignore</span>
+        <span class="n">north_dec</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">north</span> <span class="k">if</span> <span class="n">north</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">north</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">rad</span>  <span class="c1"># type: ignore</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Calculate exact RA bounds between declinations &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">south_dec</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">RAD_TO_DEG</span><span class="si">:</span><span class="s2">5.2f</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">north_dec</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">RAD_TO_DEG</span><span class="si">:</span><span class="s2">5.2f</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># declinations = np.linspace(*np.sort([south, north]), n)</span>
+        <span class="n">declinations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">south_dec</span><span class="p">,</span> <span class="n">north_dec</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+        <span class="n">delta_ras</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_phi_of_theta</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="k">for</span> <span class="n">theta</span> <span class="ow">in</span> <span class="n">declinations</span><span class="p">])</span>
+        <span class="n">ra_bound_coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">zenith</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">rad</span> <span class="o">-</span> <span class="n">delta_ras</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zenith</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">rad</span> <span class="o">+</span> <span class="n">delta_ras</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="c1"># Wrap ra_bound_coords to [0, 2*pi]</span>
+        <span class="n">ra_bound_coords</span> <span class="o">=</span> <span class="n">Longitude</span><span class="p">(</span><span class="n">ra_bound_coords</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">rad</span>  <span class="c1"># type: ignore</span>
+
+        <span class="c1"># Where delta_ras is NaN, the zenith is near the pole, where there are no ra bounds.</span>
+        <span class="n">ra_bound_coords</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">delta_ras</span><span class="p">),</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">declinations</span><span class="p">,</span> <span class="n">ra_bound_coords</span></div>
+
+
+<div class="viewcode-block" id="ZenithNeighbourhood.get_constant_approximation_shards">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood.get_constant_approximation_shards">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_constant_approximation_shards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sub_div</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate constant shard-wise RA bounds.&quot;&quot;&quot;</span>
+        <span class="n">dec_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">south</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">north</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">deg</span><span class="p">])</span>  <span class="c1"># type: ignore</span>
+        <span class="n">dec_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">dec_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">dec_bounds</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])])</span>
+        <span class="n">n_shreds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dec_bounds</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">dec_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">south</span><span class="p">,</span> <span class="n">north</span> <span class="o">=</span> <span class="n">dec_bounds</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Calculate constant shard wise RA bounds between declinations &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">dec_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">dec_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">constant_declinations</span><span class="p">,</span> <span class="n">ra_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_constant_approximation</span><span class="p">(</span>
+            <span class="n">n_approx</span><span class="o">=</span><span class="n">n_shreds</span><span class="p">,</span> <span class="n">n_sub_div</span><span class="o">=</span><span class="n">n_sub_div</span><span class="p">,</span> <span class="n">south</span><span class="o">=</span><span class="n">south</span><span class="p">,</span> <span class="n">north</span><span class="o">=</span><span class="n">north</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">constant_declinations</span><span class="p">,</span> <span class="n">ra_bounds</span></div>
+
+
+<div class="viewcode-block" id="ZenithNeighbourhood.get_constant_approximation_shards_deg">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood.get_constant_approximation_shards_deg">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_constant_approximation_shards_deg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sub_div</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate constant approximation in degrees.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_sub_div : int</span>
+<span class="sd">            Number of subdivisions for approximation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tuple[np.ndarray, np.ndarray]</span>
+<span class="sd">            Constant declinations and corresponding RA bounds in degrees.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">approx_dec</span><span class="p">,</span> <span class="n">approx_ra</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_constant_approximation_shards</span><span class="p">(</span><span class="n">n_sub_div</span><span class="o">=</span><span class="n">n_sub_div</span><span class="p">)</span>
+        <span class="n">approx_dec_deg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">approx_dec</span> <span class="o">*</span> <span class="n">RAD_TO_DEG</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">approx_ra_deg</span> <span class="o">=</span> <span class="n">approx_ra</span> <span class="o">*</span> <span class="n">RAD_TO_DEG</span>
+        <span class="k">return</span> <span class="n">approx_dec_deg</span><span class="p">,</span> <span class="n">approx_ra_deg</span></div>
+
+
+<div class="viewcode-block" id="ZenithNeighbourhood.get_constant_approximation">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood.get_constant_approximation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_constant_approximation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_approx</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_sub_div</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">south</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">north</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate constant approximation.&quot;&quot;&quot;</span>
+        <span class="n">declinations</span><span class="p">,</span> <span class="n">ra_bound_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ra_bounds</span><span class="p">(</span>
+            <span class="n">n_approx</span> <span class="o">*</span> <span class="n">n_sub_div</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">south</span><span class="o">=</span><span class="n">south</span><span class="p">,</span> <span class="n">north</span><span class="o">=</span><span class="n">north</span>
+        <span class="p">)</span>
+
+        <span class="n">constant_approximation_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">constant_approximation_ra_bounds</span><span class="p">(</span>
+                    <span class="n">ra_bound_coords</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_sub_div</span> <span class="p">:</span> <span class="n">n_sub_div</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">:]</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_approx</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">constant_approx_declinations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_approx</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">constant_approx_declinations</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">declinations</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">n_sub_div</span><span class="p">]</span>
+        <span class="n">constant_approx_declinations</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">constant_approx_declinations</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">constant_approx_declinations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">declinations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">constant_approx_declinations</span><span class="p">,</span> <span class="n">constant_approximation_values</span></div>
+
+
+<div class="viewcode-block" id="ZenithNeighbourhood.delta_phi_of_theta">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood.delta_phi_of_theta">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delta_phi_of_theta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dec</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="c1"># r*phi is length of something, so I think it should be self.delta_lon_zenith</span>
+        <span class="c1"># return np.cos(self.zenith.dec.rad) / np.cos(dec) * self.delta_lon_zenith</span>
+        <span class="c1"># return np.arcsin(np.cos(self.zenith.dec.rad) / np.cos(dec) * np.sin(self.delta_lon_zenith))</span>
+        <span class="c1"># arccos(np.sin(theta_1)*np.sin(theta_2) + (</span>
+        <span class="c1">#     np.cos(theta_1)*np.cos(theta_2)*np.cos(np.abs(phi_1-phi_2))</span>
+        <span class="c1"># )</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zenith</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># type: ignore</span>
+                <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zenith</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># type: ignore</span>
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_lon_zenith</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenithNeighbourhood.check_maximal_zenith_angle">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood.check_maximal_zenith_angle">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_maximal_zenith_angle</span><span class="p">(</span><span class="n">maximal_zenith_angle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Angle</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maximal_zenith_angle</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="n">maximal_zenith_angle</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">maximal_zenith_angle</span><span class="p">),</span> <span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maximal_zenith_angle</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+            <span class="n">maximal_zenith_angle</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">maximal_zenith_angle</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maximal_zenith_angle</span><span class="p">,</span> <span class="n">Angle</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;maximal_zenith_angle must be of type astropy.coordinates.angles.Angle&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">maximal_zenith_angle</span> <span class="o">&lt;</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">maximal_zenith_angle</span> <span class="o">&gt;</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;maximal_zenith_angle must be in the range [0, 90] deg&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">maximal_zenith_angle</span></div>
+
+
+<div class="viewcode-block" id="ZenithNeighbourhood.constant_approximation_ra_bounds">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood.constant_approximation_ra_bounds">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">constant_approximation_ra_bounds</span><span class="p">(</span><span class="n">phi_bound_coords</span><span class="p">):</span>
+        <span class="n">max_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span>
+            <span class="c1"># Angular distance between the bounds</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">phi_bound_coords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="n">Longitude</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">phi_bound_coords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">rad</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">offset_west</span> <span class="o">=</span> <span class="n">phi_bound_coords</span><span class="p">[</span><span class="n">max_ind</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">offset_east</span> <span class="o">=</span> <span class="n">phi_bound_coords</span><span class="p">[</span><span class="n">max_ind</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">offset_west</span><span class="p">,</span> <span class="n">offset_east</span><span class="p">])</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;ZenithNeighbourhood(maximal_zenith_angle=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">maximal_zenith_angle</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;location=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">, observation_time=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="ZenithNeighbourhood.from_telescope_specs">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood.from_telescope_specs">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_telescope_specs</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">telescope_specs</span><span class="p">:</span> <span class="n">TelescopeSpecs</span><span class="p">,</span>
+        <span class="n">observation_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">maximal_zenith_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialising from config of telescope </span><span class="si">{</span><span class="n">telescope_specs</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">observatory_location</span><span class="o">=</span><span class="n">telescope_specs</span><span class="o">.</span><span class="n">observatory_location</span><span class="p">,</span>
+            <span class="n">observation_time</span><span class="o">=</span><span class="n">observation_time</span><span class="p">,</span>
+            <span class="n">maximal_zenith_angle</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">maximal_zenith_angle</span>
+                <span class="k">if</span> <span class="n">maximal_zenith_angle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="n">telescope_specs</span><span class="o">.</span><span class="n">find_airmass_threshold_crossover</span><span class="p">()</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenithNeighbourhood.validate_observatory_location">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood.validate_observatory_location">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_observatory_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="n">EarthLocation</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;observatory_location must be of type astropy.coordinates.EarthLocation&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenithNeighbourhood.validate_observation_time">
+<a class="viewcode-back" href="../../../api.html#astrafocus.targeting.zenith_neighbourhood.ZenithNeighbourhood.validate_observation_time">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_observation_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span><span class="p">,</span> <span class="n">Time</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;observation_time must be of type astropy.time.Time&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HorizontalCoordinates</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class representing horizontal coordinates.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    south = HorizontalCoordinates(</span>
+<span class="sd">        obstime=obs_time, location=location, alt=90 * u.deg - maximal_zenith_angle, az=0 * u.deg</span>
+<span class="sd">    )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">altaz</span> <span class="o">=</span> <span class="n">AltAz</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skycoord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">altaz</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skycoord</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Angle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">altaz</span><span class="o">.</span><span class="n">alt</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">az</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Angle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Angle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">icrs</span><span class="o">.</span><span class="n">ra</span>  <span class="c1"># type: ignore</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Angle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">icrs</span><span class="o">.</span><span class="n">dec</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;HorizontalCoordinates(alt=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">alt</span><span class="si">}</span><span class="s2">, az=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">az</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ApproximateZenith</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class representing an approximate zenith position.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    observatory_location : EarthLocation</span>
+<span class="sd">        Location of the observatory specified using astropy&#39;s EarthLocation.</span>
+<span class="sd">    observation_time : Optional[Time], optional</span>
+<span class="sd">        Observation time specified using astropy&#39;s Time (default is None).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; speculoos_geo_coords = {</span>
+<span class="sd">    ...     &quot;lat&quot;: -24.627222 * u.deg, &quot;lon&quot;: -70.404167 * u.deg, &quot;height&quot;: 2635 * u.m</span>
+<span class="sd">    ... }</span>
+<span class="sd">    &gt;&gt;&gt; observatory_location = EarthLocation(**speculoos_geo_coords)</span>
+<span class="sd">    &gt;&gt;&gt; approximate_zenith = ApproximateZenith(observatory_location)</span>
+
+<span class="sd">    # Check the approximate zenith position</span>
+<span class="sd">    &gt;&gt;&gt; print(approximate_zenith.zenith)</span>
+<span class="sd">    SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observatory_location</span><span class="p">:</span> <span class="n">EarthLocation</span><span class="p">,</span> <span class="n">observation_time</span><span class="p">:</span> <span class="n">Time</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an ApproximateZenith object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observatory_location : EarthLocation</span>
+<span class="sd">            Location of the observatory specified using astropy&#39;s EarthLocation.</span>
+<span class="sd">        observation_time : Optional[Time], optional</span>
+<span class="sd">            Observation time specified using astropy&#39;s Time (default is None).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">observatory_location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span> <span class="o">=</span> <span class="n">observation_time</span> <span class="ow">or</span> <span class="n">Time</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_observatory_location</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_observation_time</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">zenith</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_approximate_zenith_icrs</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_approximate_zenith_icrs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SkyCoord</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        DEC_Z ~ obs_latitude</span>
+<span class="sd">        RA_Z ~ local_sidereal_time</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">local_sidereal_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_local_sidereal_time</span><span class="p">()</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="n">local_sidereal_time</span><span class="o">.</span><span class="n">deg</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">deg</span>
+
+        <span class="k">return</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_local_sidereal_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        LST.hms format this into hh:mm:ss</span>
+<span class="sd">        making it comparable to online sources like https://sidereal.app/calculate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">observing_time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;utc&quot;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="n">local_sidereal_time</span> <span class="o">=</span> <span class="n">observing_time</span><span class="o">.</span><span class="n">sidereal_time</span><span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">local_sidereal_time</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_observatory_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="n">EarthLocation</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;observatory_location must be of type astropy.coordinates.EarthLocation&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_observation_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_time</span><span class="p">,</span> <span class="n">Time</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;observation_time must be of type astropy.time.Time&quot;</span><span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By David Degen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, David Degen.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

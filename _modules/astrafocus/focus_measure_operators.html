@@ -1,0 +1,714 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>astrafocus.focus_measure_operators &#8212; AstrAFocus Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=15a4c1f9" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/astrafocus/focus_measure_operators';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">AstrAFocus Documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motivation.html">Motivation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dgegen/astrafocus" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dgegen/astrafocus/issues/new?title=Issue%20on%20page%20%2F_modules/astrafocus/focus_measure_operators.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for astrafocus.focus_measure_operators</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.utils.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageType</span>
+
+
+<div class="viewcode-block" id="FocusMeasureOperator">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FocusMeasureOperator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FocusMeasureOperator</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract base class for focus measure operators.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    smaller_is_better : bool</span>
+<span class="sd">        A class attribute indicating whether a smaller focus measure is considered better.</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        A class attribute representing the name of the focus measure operator.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    __call__(image: np.ndarray, **kwargs) -&gt; float</span>
+<span class="sd">        Compute the focus measure of the input image.</span>
+
+<span class="sd">    measure_focus(image: np.ndarray, **kwargs) -&gt; float</span>
+<span class="sd">        Abstract method to be implemented by subclasses.</span>
+<span class="sd">        Compute the focus measure of the input image.</span>
+
+<span class="sd">    convert_to_grayscale(image: np.ndarray) -&gt; np.ndarray</span>
+<span class="sd">        Convert the input image to grayscale.</span>
+
+<span class="sd">    validate_image(image: np.ndarray)</span>
+<span class="sd">        Validate the input image for compatibility with focus measure algorithms.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;FocusMeasure&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Star&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span>
+                    <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="ow">and</span> <span class="p">(</span>
+                        <span class="ow">not</span> <span class="n">name</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span>
+                        <span class="ow">or</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">name</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">and</span> <span class="n">name</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">islower</span><span class="p">())</span>
+                    <span class="p">)</span>
+                    <span class="k">else</span> <span class="n">c</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="c1"># Separate numbers from letters</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">c</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="bp">cls</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FocusMeasureOperator.__call__">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FocusMeasureOperator.__call__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the focus measure of the input image.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        image : np.ndarray</span>
+<span class="sd">            Input image.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Computed focus measure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convert_to_grayscale</span><span class="p">(</span><span class="n">image</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FocusMeasureOperator.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FocusMeasureOperator.measure_focus">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method to be implemented by subclasses.</span>
+<span class="sd">        Compute the focus measure of the input image.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        image : np.ndarray</span>
+<span class="sd">            Input image.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Computed focus measure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="FocusMeasureOperator.convert_to_grayscale">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FocusMeasureOperator.convert_to_grayscale">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_to_grayscale</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the input image to grayscale.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input must be a 2D array.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image</span></div>
+
+
+<div class="viewcode-block" id="FocusMeasureOperator.validate_image">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FocusMeasureOperator.validate_image">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_image</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the input image for compatibility with focus measure algorithms.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input must be a numpy array.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Values in the numpy array must be either integers or floats.&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AnalyticResponseFocusedMeasureOperator">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.AnalyticResponseFocusedMeasureOperator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnalyticResponseFocusedMeasureOperator</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+<div class="viewcode-block" id="AnalyticResponseFocusedMeasureOperator.fit_focus_response_curve">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.AnalyticResponseFocusedMeasureOperator.fit_focus_response_curve">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_focus_response_curve</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">,</span> <span class="n">measured_focus</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="AnalyticResponseFocusedMeasureOperator.get_focus_response_curve_fit">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.AnalyticResponseFocusedMeasureOperator.get_focus_response_curve_fit">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_focus_response_curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">focus_pos</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AutoCorrelationFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.AutoCorrelationFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AutoCorrelationFocusMeasure</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="AutoCorrelationFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.AutoCorrelationFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bools are not allowed&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">image</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">image</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">image</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">image</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span> <span class="p">:]))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BrennerFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.BrennerFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BrennerFocusMeasure</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="BrennerFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.BrennerFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">image</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">image</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NormalizedVarianceFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.NormalizedVarianceFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NormalizedVarianceFocusMeasure</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="NormalizedVarianceFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.NormalizedVarianceFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">var</span><span class="p">()</span> <span class="o">/</span> <span class="n">image</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FFTPhaseMagnitudeProductFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FFTPhaseMagnitudeProductFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FFTPhaseMagnitudeProductFocusMeasure</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    \mathrm{FM} &amp;= \norm{\bm{R \phi}}_{1} \\</span>
+<span class="sd">    \mathrm{FFT}(x, y) &amp;= R(x, y) \exp\qty(-i\phi(x,y)) \\</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="FFTPhaseMagnitudeProductFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FFTPhaseMagnitudeProductFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">phase</span> <span class="o">*</span> <span class="n">mag</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FFTFocusMeasureTan2022">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FFTFocusMeasureTan2022">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FFTFocusMeasureTan2022</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    \mathrm{FM} &amp;= \norm{\bm{R \phi}}_{1} \\</span>
+<span class="sd">    \mathrm{FFT}(x, y) &amp;= R(x, y) \exp\qty(-i\phi(x,y)) \\</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="FFTFocusMeasureTan2022.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FFTFocusMeasureTan2022.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="n">n_max_y</span><span class="p">,</span> <span class="n">n_max_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+
+        <span class="c1"># average of the high frequency components of the power spectrum</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mag</span><span class="p">[</span><span class="n">n_max_y</span> <span class="o">//</span> <span class="mi">2</span> <span class="p">:</span> <span class="n">n_max_y</span><span class="p">,</span> <span class="n">n_max_x</span> <span class="o">//</span> <span class="mi">2</span> <span class="p">:</span> <span class="n">n_max_x</span><span class="p">])</span>
+        <span class="n">fft_without_noise</span> <span class="o">=</span> <span class="n">mag</span> <span class="o">-</span> <span class="n">beta</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fft_without_noise</span><span class="p">[</span><span class="n">fft_without_noise</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FFTPowerFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FFTPowerFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FFTPowerFocusMeasure</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    \mathrm{FM} &amp;= \norm{\bm{R \phi}}_{1} \\</span>
+<span class="sd">    \mathrm{FFT}(x, y) &amp;= R(x, y) \exp\qty(-i\phi(x,y)) \\</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="FFTPowerFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.FFTPowerFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="n">n_max_y</span><span class="p">,</span> <span class="n">n_max_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+
+        <span class="c1"># average of the high frequency components of the power spectrum</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mag</span><span class="p">[</span><span class="n">n_max_y</span> <span class="o">//</span> <span class="mi">2</span> <span class="p">:</span> <span class="n">n_max_y</span><span class="p">,</span> <span class="n">n_max_x</span> <span class="o">//</span> <span class="mi">2</span> <span class="p">:</span> <span class="n">n_max_x</span><span class="p">])</span>
+        <span class="n">fft_without_noise</span> <span class="o">=</span> <span class="n">mag</span> <span class="o">-</span> <span class="n">beta</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fft_without_noise</span><span class="p">[</span><span class="n">fft_without_noise</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AbsoluteGradientFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.AbsoluteGradientFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AbsoluteGradientFocusMeasure</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="AbsoluteGradientFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.AbsoluteGradientFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">image</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">image</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">image</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SquaredGradientFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.SquaredGradientFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SquaredGradientFocusMeasure</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="SquaredGradientFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.SquaredGradientFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">image</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">image</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">image</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">image</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="VarianceOfLaplacianFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.VarianceOfLaplacianFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VarianceOfLaplacianFocusMeasure</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="VarianceOfLaplacianFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.VarianceOfLaplacianFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Laplacian</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_64F</span><span class="p">)</span><span class="o">.</span><span class="n">var</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="LaplacianFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.LaplacianFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LaplacianFocusMeasure</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="LaplacianFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.LaplacianFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">Laplacian</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_64F</span><span class="p">)))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TenengradFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.TenengradFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TenengradFocusMeasure</span><span class="p">(</span><span class="n">FocusMeasureOperator</span><span class="p">):</span>
+    <span class="n">smaller_is_better</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="TenengradFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.focus_measure_operators.TenengradFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="c1"># Compute the gradients in the x and y directions using Sobel operators</span>
+        <span class="n">gradient_x</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_64F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="n">ksize</span><span class="p">)</span>
+        <span class="n">gradient_y</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_64F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="n">ksize</span><span class="p">)</span>
+        <span class="n">tenengrad_measure</span> <span class="o">=</span> <span class="n">gradient_x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gradient_y</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tenengrad_measure</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By David Degen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, David Degen.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
