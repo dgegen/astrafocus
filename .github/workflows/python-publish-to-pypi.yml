@@ -27,31 +27,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v5
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - name: Install uv and set up Python
+      uses: astral-sh/setup-uv@v7
       with:
-        python-version: "3.x"
+        python-version: "3.11"
 
-    - name: Install dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install pytest setuptools build wheel
+    - name: Sync dependencies
+      run: uv sync --locked --dev
 
     - name: Checks with pre-commit
       uses: pre-commit/action@v3.0.1
 
     - name: Test with pytest
-      run: |
-        python -m pip install ".[test]"
-        python -m pytest tests
+      run: uv run pytest tests
 
     - name: Build a binary wheel and a source tarball
-      run: python3 -m build
-
-    - name: Build a binary wheel and a source tarball
-      run: python3 -m build --sdist
+      run: uv build
 
     - name: Store the distribution packages
       uses: actions/upload-artifact@v4
