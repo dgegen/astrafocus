@@ -304,8 +304,8 @@ class CabaretCameraSimulator(CameraSimulation):
 class CabaretDeviceSimulator(AutofocusDeviceSimulator):
     def __init__(
         self,
-        current_position: int = 11_000,
-        allowed_range: tuple[int, int] = (9_000, 13_000),
+        current_position: int = 9_550,
+        allowed_range: tuple[int, int] = (9_500, 10_500),
         sleep_flag: bool = False,
         seconds_per_step: float = 0.5,
         observatory: cabaret.Observatory | None = None,

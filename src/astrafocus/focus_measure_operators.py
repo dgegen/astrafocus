@@ -36,6 +36,9 @@ class FocusMeasureOperator(ABC):
 
     smaller_is_better = True
 
+    def __init__(self, **kwargs):
+        pass
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
 

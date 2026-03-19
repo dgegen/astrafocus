@@ -25,6 +25,7 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         cutout_size: int = 15,
         saturation_threshold=None,
         max_stars=100,
+        **kwargs,
     ) -> None:
         self._star_finder_kwargs = {
             "fwhm": fwhm,
@@ -105,6 +106,7 @@ class GaussianStarFocusMeasure(StarSizeFocusMeasure):
         cutout_size: int = 15,
         saturation_threshold=None,
         max_stars=100,
+        **kwargs,
     ) -> None:
         super().__init__(
             model=astropy.modeling.models.Gaussian2D,
@@ -199,6 +201,7 @@ class HFRStarFocusMeasure(StarSizeFocusMeasure):
         cutout_size: int = 15,
         saturation_threshold=None,
         max_stars=100,
+        **kwargs,
     ) -> None:
         super().__init__(
             model=HalfFluxRadius2D,
