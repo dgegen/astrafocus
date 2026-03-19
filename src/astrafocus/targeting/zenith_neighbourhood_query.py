@@ -228,7 +228,7 @@ class ZenithNeighbourhoodQuery:
         if not hasattr(df, "zenith_angle"):
             ZenithAngleCalculator.add_zenith_angle_fast(df=df, zenith=self.zenith_neighbourhood.zenith)
 
-        result_df = df[df.zenith_angle < self.zenith_neighbourhood.maximal_zenith_angle].reset_index(
+        result_df = df[df.zenith_angle < self.zenith_neighbourhood.maximal_zenith_angle.deg].reset_index(
             drop=True
         )
 
