@@ -45,7 +45,8 @@ dependencies = [
   "photutils",
   "scipy",
   "sqlite3worker",
-  "statsmodels"
+  "statsmodels",
+  "tqdm>=4.67.3"
 ]
 description = "A package that provides flexible autofocus procedures for telescopes."
 keywords = ["telescope", "autofocus"]
@@ -64,6 +65,10 @@ visualization = ["ipython", "matplotlib", "notebook"]
 "Bug Tracker" = "https://github.com/dgegen/astrafocus/issues"
 "Homepage" = "https://github.com/dgegen/astrafocus"
 "Source" = "https://github.com/dgegen/astrafocus"
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"
+testpaths = ["tests", "src/astrafocus/focus_measure_scan.py"]
 
 [tool.ruff]
 exclude = ["*.yaml"]

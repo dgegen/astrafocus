@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import cabaret
 import numpy as np
 import pytest
@@ -83,3 +85,23 @@ def dark_image() -> np.ndarray:
         )
         .astype(float)
     )
+
+
+_FOCUS_POSITIONS = [9600, 9800, 10000, 10200, 10400]
+
+
+@pytest.fixture(scope="session")
+def fits_directory(tmp_path_factory) -> Path:
+    """Directory of simulated FITS files spanning a focus sweep around best position."""
+    directory = tmp_path_factory.mktemp("fits")
+    for position in _FOCUS_POSITIONS:
+        cabaret.Observatory(focuser={"position": position, "best_position": 10000}).generate_fits_image(
+            ra=_RA,
+            dec=_DEC,
+            sources=_SOURCES,
+            exp_time=10,
+            seed=42,
+            file_path=directory / f"focus_{position:05d}.fits",
+            user_header={"FOCUSPOS": position},
+        )
+    return directory

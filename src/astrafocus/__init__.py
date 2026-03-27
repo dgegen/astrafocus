@@ -13,6 +13,7 @@ from astrafocus.focus_measure_operators import (
     TenengradFocusMeasure,
     VarianceOfLaplacianFocusMeasure,
 )
+from astrafocus.focus_measure_scan import FocusMeasureScan
 from astrafocus.star_size_focus_measure_operators import (
     GaussianStarFocusMeasure,
     HFRStarFocusMeasure,
@@ -26,6 +27,7 @@ __all__ = [
     "NonParametricResponseAutofocuser",
     "FocusMeasureOperatorRegistry",
     "ExtremumEstimatorRegistry",
+    "FocusMeasureScan",
 ]
 
 
