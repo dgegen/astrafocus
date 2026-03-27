@@ -118,6 +118,10 @@ class FocusMeasureOperator(ABC):
             raise ValueError("Input must be a numpy array.")
         if not (np.issubdtype(image.dtype, np.integer) or np.issubdtype(image.dtype, np.floating)):
             raise ValueError("Values in the numpy array must be either integers or floats.")
+        if image.ndim not in (2, 3):
+            raise ValueError(f"Input must be a 2D or 3D array, got shape {image.shape}.")
+        if image.ndim == 3 and image.shape[2] not in (1, 3, 4):
+            raise ValueError(f"3D input must have 1, 3, or 4 channels, got shape {image.shape}.")
 
 
 class AnalyticResponseFocusedMeasureOperator(FocusMeasureOperator):

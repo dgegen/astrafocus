@@ -258,14 +258,34 @@ class AutofocuserBase(ABC):
             logger.exception(e)
             logger.warning("Error saving focus record to csv.")
 
-    def get_focus_record(self):
+    def get_focus_record(self, threshold_nan_ratio: float = 0.25) -> tuple[np.ndarray, np.ndarray]:
+        """Retrieve the focus record as sorted arrays of focus positions and corresponding measures.
+
+        Parameters
+        ----------
+        threshold_nan_ratio : float, optional
+            Threshold for the ratio of NaN values in the focus record to issue a warning about data quality
+            (default is 0.25).  If the ratio of NaN values exceeds this threshold, a warning is logged
+            indicating that the results may be unreliable.
+        """
         if self._focus_record.size == 0:
             raise ValueError("Focus record is empty. Run the autofocus algorithm first.")
 
-        focus_pos = self._focus_record.focus_pos[~np.isnan(self._focus_record.focus_pos)].to_numpy(int)
-        focus_measure = self._focus_record.focus_measure[
-            ~np.isnan(self._focus_record.focus_measure)
-        ].to_numpy()
+        valid = ~(self._focus_record.focus_pos.isna() | self._focus_record.focus_measure.isna())
+        n_total = len(self._focus_record)
+        n_valid = valid.sum()
+        n_nan = n_total - n_valid
+        if n_nan / n_total > threshold_nan_ratio:
+            logger.warning(
+                "%d of %d focus record points are NaN (%.0f%%). Results may be unreliable.",
+                n_nan,
+                n_total,
+                100 * n_nan / n_total,
+            )
+
+        record = self._focus_record[valid]
+        focus_pos = record.focus_pos.to_numpy(int)
+        focus_measure = record.focus_measure.to_numpy()
         sort_ind = np.argsort(focus_pos)
 
         return focus_pos[sort_ind], focus_measure[sort_ind]
@@ -493,7 +513,20 @@ class SweepingAutofocuser(AutofocuserBase):
                     focus_position=focus_position, texp=self.exposure_time
                 )
 
-                fm_value = self.measure_focus(image)
+                if not self.autofocus_device_manager.check_conditions():
+                    return False
+
+                try:
+                    fm_value = self.measure_focus(image)
+                except Exception:
+                    logger.warning(
+                        "Failed to measure focus at position %d (exposure %d/%d); skipping point.",
+                        focus_position,
+                        exposure + 1,
+                        n_exposures,
+                        exc_info=True,
+                    )
+                    fm_value = np.nan
                 logger.debug(f"Obtained measure value: {fm_value:8.3e} at focus position: {focus_position}")
 
                 # Save to record
@@ -501,13 +534,17 @@ class SweepingAutofocuser(AutofocuserBase):
                 self._focus_record.loc[df_index, "focus_pos"] = focus_position
                 self._focus_record.loc[df_index, "focus_measure"] = fm_value
 
-            mean_fm_value = np.mean(
+            mean_fm_value = np.nanmean(
                 self._focus_record.loc[
                     start_index + ind * n_exposures : start_index + ind * (n_exposures + 1),
                     "focus_measure",
                 ]
             )
-            if mean_fm_value < 1e3:
+            if np.isnan(mean_fm_value):
+                logger.warning(
+                    f"Focus Position: {focus_position:6d} | Mean Focus Measure: all exposures failed"
+                )
+            elif mean_fm_value < 1e3:
                 logger.info(
                     f"Focus Position: {focus_position:6d} | Mean Focus Measure: {mean_fm_value:8.3f}"
                 )
