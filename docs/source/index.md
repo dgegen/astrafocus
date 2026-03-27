@@ -28,4 +28,5 @@ notebooks/getting_started.ipynb
    :caption: References
 
 api.md
+citation.md
 ```

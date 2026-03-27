@@ -281,8 +281,12 @@ class ZenithNeighbourhoodQuery:
 
         Example
         -------
-        >>> telescope_specs = TelescopeSpecs.load_telescope_config(file_path=path_to_config_file)
-        >>> zenith_neighbourhood_query = ZenithNeighbourhoodQuery.from_telescope_specs(telescope_specs)
+        >>> telescope_specs = TelescopeSpecs.load_telescope_config(  # doctest: +SKIP
+        ...     file_path=path_to_config_file
+        ... )
+        >>> zenith_neighbourhood_query = (  # doctest: +SKIP
+        ...     ZenithNeighbourhoodQuery.from_telescope_specs(telescope_specs)
+        ... )
         """
         return cls(
             db_path=db_path or telescope_specs.gaia_tmass_db_path,

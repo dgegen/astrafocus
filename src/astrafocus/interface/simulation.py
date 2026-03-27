@@ -6,6 +6,7 @@ from datetime import datetime
 import cabaret
 import numpy as np
 from astropy.io import fits
+from cabaret.sources import Sources
 
 from astrafocus.interface.camera import CameraInterface
 from astrafocus.interface.device_manager import AutofocusDeviceManager
@@ -15,6 +16,51 @@ from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory
 from astrafocus.utils.typing import ImageType
 
 __all__ = ["ObservationBasedDeviceSimulator"]
+
+DEFAULT_SOURCES = Sources.from_arrays(
+    ra=np.array(
+        [
+            10.63950247,
+            10.6880729,
+            10.70349581,
+            10.71333998,
+            10.70022208,
+            10.68780207,
+            10.63804045,
+            10.73974676,
+            10.71181048,
+            10.67584817,
+        ]
+    ),
+    dec=np.array(
+        [
+            41.26393165,
+            41.22524785,
+            41.25357386,
+            41.29943347,
+            41.26019689,
+            41.31717482,
+            41.27468757,
+            41.2942209,
+            41.29130279,
+            41.26275058,
+        ]
+    ),
+    fluxes=np.array(
+        [
+            248801.90860538,
+            63459.13500958,
+            37018.39316537,
+            19189.9952933,
+            16366.89603078,
+            13204.99311425,
+            10040.65065901,
+            8150.59415653,
+            6937.47387072,
+            6500.26581163,
+        ]
+    ),
+)
 
 
 class FocuserSimulation(FocuserInterface):
@@ -326,3 +372,17 @@ class CabaretDeviceSimulator(AutofocusDeviceSimulator):
             save_path=save_path,
         )
         super().__init__(camera=camera, focuser=focuser, telescope=None, sleep_flag=sleep_flag)
+
+    @classmethod
+    def default(cls, **kwargs) -> "CabaretDeviceSimulator":
+        """Return a simulator pre-loaded with a fixed set of sources near M31.
+
+        The sources are a catalogue of 10 stars with known fluxes, so no
+        Gaia query is performed and results are fully reproducible.
+
+        Parameters
+        ----------
+        **kwargs
+            Forwarded to :class:`CabaretDeviceSimulator`.
+        """
+        return cls(sources=DEFAULT_SOURCES, **kwargs)

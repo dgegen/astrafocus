@@ -39,10 +39,10 @@ class AutofocusDeviceManager(ABC):
     >>> from astrafocus.interface.focuser import TrivialFocuser
     >>> from astrafocus.interface.telescope import TrivialTelescope
     >>> autofocus_device_manager = AutofocusDeviceManager(
-        camera=TrivialCamera(),
-        focuser=TrivialFocuser(current_position=0, allowed_range=(0, 1000)),
-        telescope=TrivialTelescope()
-    )
+    ...     camera=TrivialCamera(),
+    ...     focuser=TrivialFocuser(current_position=0, allowed_range=(0, 1000)),
+    ...     telescope=TrivialTelescope(),
+    ... )
     """
 
     def __init__(

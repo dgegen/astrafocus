@@ -36,26 +36,11 @@ class StarFitter:
 
     Examples
     --------
-    >>> image = image_data[0]
-    >>> from astrafocus.star_size_focus_measure_operators import GaussianStarFocusMeasure
-    >>> gsfm = GaussianStarFocusMeasure(image, fwhm=2.0, star_find_threshold=8.0)
-    >>> gsfm.star_finder.selected_stars
-
-    # initialise with a model from astropy.modeling.models,
-    >>> star_fitter = StarFitter(models.Gaussian2D)
-    >>> star_fitter.fit(star_data)
-    >>> fwhm = star_fitter.star_size
-    >>> star_fitter.fit_source(image, star=gsfm.star_finder.selected_stars, cutout_size=15)
-
-    # Initialise model
-    >>> from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
-    >>> star_fitter = StarFitter(HalfFluxRadius2D)
-    >>> star_fitter.fit_source(image, star=gsfm.star_finder.selected_stars, cutout_size=15)
-
-
-    >>> star_data = star_fitter.get_masked_star(image, gsfm.star_finder.selected_stars, cutout_size=15)
-    >>> plt.imshow(star_data); plt.show()  # doctest: +SKIP
-    >>> plt.imshow(star_fitter._result(*np.indices(star_data.shape))); plt.show()  # doctest: +SKIP
+    >>> from astrafocus.star_size_focus_measure_operators import GaussianStarFocusMeasure  # doctest: +SKIP
+    >>> gsfm = GaussianStarFocusMeasure(image, fwhm=2.0, star_find_threshold=8.0)  # doctest: +SKIP
+    >>> star_fitter = StarFitter(models.Gaussian2D)  # doctest: +SKIP
+    >>> star_fitter.fit_source(image, star=gsfm.star_finder.selected_stars, cutout_size=15)  # doctest: +SKIP
+    >>> star_fitter.star_size  # doctest: +SKIP
     """
 
     def __init__(

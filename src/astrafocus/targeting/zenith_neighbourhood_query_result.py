@@ -23,21 +23,17 @@ class ZenithNeighbourhoodQueryResult(pd.DataFrame):
     >>> from astrafocus.targeting.zenith_neighbourhood import ZenithNeighbourhood
     >>> from astrafocus.targeting.zenith_neighbourhood_query import ZenithNeighbourhoodQuery
 
-    # Zenith neighbourhood now
-    >>> speculoos_geo_coords = {
-        "lat": -24.627222 * u.deg, "lon": -70.404167 * u.deg, "height": 2635 * u.m
-    }
-    >>> zn = ZenithNeighbourhood(
-        observatory_location=EarthLocation(**speculoos_geo_coords),
-        maximal_zenith_angle=10 * u.deg
-    )
-
-    # Perform query of approximation
-    >>> db_path = "path_to/database.db"
-    >>> zenith_neighbourhood_query = ZenithNeighbourhoodQuery(
-        db_path=db_path, zenith_neighbourhood=zenith_neighbourhood
-    )
-    >>> df = zenith_neighbourhood_query.query_shardwise(n_sub_div=20)
+    >>> speculoos_geo_coords = {  # doctest: +SKIP
+    ...     "lat": -24.627222 * u.deg, "lon": -70.404167 * u.deg, "height": 2635 * u.m
+    ... }
+    >>> zn = ZenithNeighbourhood(  # doctest: +SKIP
+    ...     observatory_location=EarthLocation(**speculoos_geo_coords),
+    ...     maximal_zenith_angle=10 * u.deg,
+    ... )
+    >>> zenith_neighbourhood_query = ZenithNeighbourhoodQuery(  # doctest: +SKIP
+    ...     db_path="path_to/database.db", zenith_neighbourhood=zn
+    ... )
+    >>> df = zenith_neighbourhood_query.query_shardwise(n_sub_div=20)  # doctest: +SKIP
     """
 
     def __init__(self, *args, **kwargs):

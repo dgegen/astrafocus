@@ -280,9 +280,11 @@ class ExtremumEstimatorRegistry:
 
     Examples
     --------
-    >>> from astrafocus.extremum_estimators import ExtremumEstimators
-    >>> ExtremumEstimators.list()
-    >>> ExtremumEstimators.from_name("spline")  # Get the class by fuzzy matching
+    >>> from astrafocus.extremum_estimators import ExtremumEstimatorRegistry
+    >>> ExtremumEstimatorRegistry.list()
+    ['lowess', 'median', 'rbf', 'spline']
+    >>> ExtremumEstimatorRegistry.from_name("spline")
+    <class 'astrafocus.extremum_estimators.SplineExtremumEstimator'>
     """
 
     _estimators = {

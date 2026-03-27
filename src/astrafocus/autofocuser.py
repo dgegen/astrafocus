@@ -75,13 +75,10 @@ class AutofocuserBase(ABC):
 
     Examples
     --------
-    # Instantiate an AutofocuserBase instance
-    >>> autofocus_instance = AutofocuserBase(
+    >>> autofocus_instance = AutofocuserBase(  # doctest: +SKIP
     ...     autofocus_device_manager, focus_measure_operator, exposure_time
     ... )
-
-    # Run the autofocus algorithm
-    >>> autofocus_instance.run()
+    >>> autofocus_instance.run()  # doctest: +SKIP
     """
 
     def __init__(
@@ -391,13 +388,10 @@ class SweepingAutofocuser(AutofocuserBase):
 
     Examples
     --------
-    # Instantiate a SweepingAutofocuser instance
-    >>> sweeping_autofocuser = SweepingAutofocuser(
+    >>> sweeping_autofocuser = SweepingAutofocuser(  # doctest: +SKIP
     ...     autofocus_device_manager, exposure_time, focus_measure_operator
     ... )
-
-    # Run the sweeping autofocus algorithm
-    >>> sweeping_autofocuser.run()
+    >>> sweeping_autofocuser.run()  # doctest: +SKIP
     """
 
     def __init__(
@@ -564,7 +558,7 @@ class SweepingAutofocuser(AutofocuserBase):
         Notes
         -----
         Search positions can be redundant
-        >>> integer_linspace(0, 1, 4)
+        >>> SweepingAutofocuser.integer_linspace(0, 1, 4)
         array([0, 0, 1, 1])
         """
         search_positions = np.array(np.round(np.linspace(min_focus_pos, max_focus_pos, n_steps)), dtype=int)
@@ -654,36 +648,22 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
 
     Examples
     --------
-    >>> from astrafocus.interface.device_manager import AutofocusDeviceManager
-    >>> from astrafocus.interface.simulation import ObservationBasedDeviceSimulator
+    >>> from astrafocus.interface.simulation import CabaretDeviceSimulator
     >>> from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure
     >>> from astrafocus.autofocuser import AnalyticResponseAutofocuser
-    >>> PATH_TO_FITS = 'path_to_fits'
-    >>> autofocus_device_manager = ObservationBasedDeviceSimulator(fits_path=PATH_TO_FITS)
-
-    >>> np.random.seed(42)
+    >>> sim = CabaretDeviceSimulator.default()
     >>> araf = AnalyticResponseAutofocuser(
-            autofocus_device_manager=autofocus_device_manager,
-            exposure_time=3.0,
-            focus_measure_operator=HFRStarFocusMeasure,
-            n_steps=(30, 10),
-            n_exposures=(1, 2),
-            decrease_search_range=True,
-            percent_to_cut=60
-        )
-    >>> araf.run()
-    >>> araf.autofocus_device_manager.total_time
-    >>> araf.focus_record
-
-    >>> import matplotlib.pyplot as plt
-    >>> plt.scatter(
-        araf.focus_record.focus_pos, araf.focus_record.focus_measure, ls='', marker='.'
-    )
-    >>> sampled_pos = np.linspace(*araf.search_range, 100)
-    >>> sampled_responses = araf.get_focus_response_curve_fit(sampled_pos)
-    >>> plt.plot(sampled_pos, sampled_responses)
-    >>> plt.axvline(araf.best_focus_position)
-    >>> plt.show()  # doctest: +SKIP
+    ...     autofocus_device_manager=sim,
+    ...     exposure_time=1.0,
+    ...     focus_measure_operator=HFRStarFocusMeasure,
+    ...     n_steps=(20, 5),
+    ...     n_exposures=1,
+    ...     decrease_search_range=True,
+    ...     percent_to_cut=50,
+    ... )
+    >>> _ = araf.run()
+    >>> abs(araf.best_focus_position - 10000) < 500
+    True
 
     """
 

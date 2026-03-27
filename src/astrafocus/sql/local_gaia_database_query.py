@@ -22,8 +22,8 @@ class LocalGaiaDatabaseQuery:
     Examples
     --------
     >>> from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
-    >>> lgdbq = LocalGaiaDatabaseQuery("path/to/db")
-    >>> lgdbq.count_query(10, 20, 30, 40, max_phot_g_mean_mag=12)
+    >>> lgdbq = LocalGaiaDatabaseQuery("path/to/db")  # doctest: +SKIP
+    >>> lgdbq.count_query(10, 20, 30, 40, max_phot_g_mean_mag=12)  # doctest: +SKIP
     """
 
     def __init__(self, db_path):
@@ -120,8 +120,8 @@ class LocalGaiaDatabaseQuery:
         --------
 
         >>> from astrafocus.sql.local_gaia_database_query import LocalGaiaDatabaseQuery
-        >>> lgdbq = LocalGaiaDatabaseQuery("path/to/db")
-        >>> lgdbq.count_query(10, 20, 30, 40, max_phot_g_mean_mag=12)
+        >>> lgdbq = LocalGaiaDatabaseQuery("path/to/db")  # doctest: +SKIP
+        >>> lgdbq.count_query(10, 20, 30, 40, max_phot_g_mean_mag=12)  # doctest: +SKIP
         """
         self.query_input_validator(
             min_dec=min_dec,

@@ -37,8 +37,10 @@ class FocusMeasureOperatorRegistry:
     Examples
     --------
     >>> from astrafocus import FocusMeasureOperatorRegistry
-    >>> FocusMeasureOperatorRegistry.list()
+    >>> FocusMeasureOperatorRegistry.list()  # doctest: +ELLIPSIS
+    ['hfr', ..., 'auto_correlation']
     >>> FocusMeasureOperatorRegistry.from_name("fft")
+    <class 'astrafocus.focus_measure_operators.FFTFocusMeasureTan2022'>
     """
 
     _operators = {

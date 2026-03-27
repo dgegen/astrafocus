@@ -84,4 +84,8 @@ Wrap them in `AutofocusDeviceManager` and pass it to any autofocuser. For hardwa
 
 The sky-targeting component requires a local Gaia-2MASS catalogue, available at [ppp-one/gaia-tmass-sqlite](https://github.com/ppp-one/gaia-tmass-sqlite).
 
+## Citation
+
+If you use AstraFocus in your research, please cite it. A DOI is minted via [Zenodo](https://zenodo.org) for each release. Use the **Cite this repository** button on GitHub for an up-to-date citation in your preferred format.
+
 May your stars align and your focus be as sharp as a caffeinated owl spotting its prey!

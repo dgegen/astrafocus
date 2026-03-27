@@ -22,13 +22,11 @@ rosenberg_interpolative(zenith_angle)
 
 Example Usage
 -------------
->>> import airmass_models
-
->>> cutoff = airmass_models.find_airmass_threshold_crossover(
-    airmass_threshold=1.2, airmass_models=airmass_models.plane_parallel_atmosphere
-)
->>> zenith = airmass_models.zenith_angle(altitude)
-
+>>> from astrafocus.targeting import airmass_models
+>>> cutoff = airmass_models.find_airmass_threshold_crossover(  # doctest: +SKIP
+...     airmass_threshold=1.2, airmass_model=airmass_models.plane_parallel_atmosphere
+... )
+>>> zenith = airmass_models.zenith_angle(0.5)
 >>> airmass_pickering = airmass_models.pickering_interpolative(zenith)
 >>> airmass_rosenberg = airmass_models.rosenberg_interpolative(zenith)
 
@@ -59,7 +57,7 @@ def plane_parallel_atmosphere(zenith_angle):
 
     Examples
     --------
-    >>> plane_parallel_atmosphere(0)
+    >>> float(plane_parallel_atmosphere(0))
     1.0
     """
     airmass = 1 / np.cos(zenith_angle)
@@ -82,7 +80,7 @@ def pickering_interpolative(zenith_angle):
 
     Examples
     --------
-    >>> pickering_interpolative(0)
+    >>> float(pickering_interpolative(0))
     1.000000196171337
     """
     altitude_deg = (np.pi / 2 - zenith_angle) * 180 / np.pi
@@ -105,7 +103,7 @@ def rosenberg_interpolative(zenith_angle):
 
     Examples
     --------
-    >>> rosenberg_interpolative(0)
+    >>> float(rosenberg_interpolative(0))
     0.9999995824576546
     """
     return 1 / (np.cos(zenith_angle) + 0.025 * np.exp(-11 * np.cos(zenith_angle)))
@@ -159,9 +157,9 @@ def find_airmass_threshold_crossover(
 
     Examples
     --------
-    >>> find_airmass_threshold_crossover(
+    >>> float(find_airmass_threshold_crossover(
     ... airmass_threshold=1.2, airmass_model=plane_parallel_atmosphere
-    ... )
+    ... ))
     0.5846852994181003
     """
     zenith_angles = np.linspace(0, 90, 181) * np.pi / 180

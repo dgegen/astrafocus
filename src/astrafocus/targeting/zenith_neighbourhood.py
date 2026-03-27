@@ -365,9 +365,9 @@ class ApproximateZenith:
     >>> observatory_location = EarthLocation(**speculoos_geo_coords)
     >>> approximate_zenith = ApproximateZenith(observatory_location)
 
-    # Check the approximate zenith position
-    >>> print(approximate_zenith.zenith)
-    SkyCoord (ICRS): (ra, dec) in deg
+    >>> print(approximate_zenith.zenith)  # doctest: +ELLIPSIS
+    <SkyCoord (ICRS): (ra, dec) in deg
+        (...)>
     """
 
     def __init__(self, observatory_location: EarthLocation, observation_time: Time | None = None):

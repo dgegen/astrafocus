@@ -46,9 +46,9 @@ def configure_logger(
 
     Example
     -------
-    >>> logger = setup_logger(log_file='mylog.log', stream_handler_level=logging.INFO)
-    >>> logger.info('This is an informational message.')
-    >>> logger.debug('This is a debug message.')
+    >>> import logging
+    >>> logger = configure_logger(stream_handler_level=logging.WARNING)
+    >>> logger.warning('This is a warning.')  # doctest: +SKIP
 
     """
     logger = get_logger()
