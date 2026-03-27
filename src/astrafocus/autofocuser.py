@@ -388,10 +388,22 @@ class SweepingAutofocuser(AutofocuserBase):
 
     Examples
     --------
-    >>> sweeping_autofocuser = SweepingAutofocuser(  # doctest: +SKIP
-    ...     autofocus_device_manager, exposure_time, focus_measure_operator
+    >>> from astrafocus.interface.simulation import CabaretDeviceSimulator
+    >>> from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure
+    >>> from astrafocus.autofocuser import AnalyticResponseAutofocuser
+    >>> sim = CabaretDeviceSimulator.default()
+    >>> saf = AnalyticResponseAutofocuser(
+    ...     autofocus_device_manager=sim,
+    ...     exposure_time=1.0,
+    ...     focus_measure_operator=HFRStarFocusMeasure,
+    ...     n_steps=(20, 5),
+    ...     n_exposures=1,
+    ...     decrease_search_range=True,
+    ...     percent_to_cut=50,
     ... )
-    >>> sweeping_autofocuser.run()  # doctest: +SKIP
+    >>> _ = saf.run()
+    >>> len(saf.focus_record) > 0
+    True
     """
 
     def __init__(

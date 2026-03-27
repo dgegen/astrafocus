@@ -386,3 +386,30 @@ class CabaretDeviceSimulator(AutofocusDeviceSimulator):
             Forwarded to :class:`CabaretDeviceSimulator`.
         """
         return cls(sources=DEFAULT_SOURCES, **kwargs)
+
+    @classmethod
+    def generate_image(cls, focus_position: int = 10_000, texp: float = 1.0) -> np.ndarray:
+        """Generate a single synthetic sky image at the given focus position.
+
+        Uses :meth:`default` sources so no Gaia query is required.
+
+        Parameters
+        ----------
+        focus_position : int
+            Focuser position at which to render the image.
+        texp : float
+            Exposure time in seconds.
+
+        Returns
+        -------
+        numpy.ndarray
+            Simulated 2-D image array.
+
+        Examples
+        --------
+        >>> from astrafocus.interface.simulation import CabaretDeviceSimulator
+        >>> image = CabaretDeviceSimulator.generate_image()
+        >>> image.ndim
+        2
+        """
+        return cls.default().camera.sample_an_observation(desired_position=focus_position, texp=texp)

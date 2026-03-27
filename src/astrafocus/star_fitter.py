@@ -36,11 +36,16 @@ class StarFitter:
 
     Examples
     --------
-    >>> from astrafocus.star_size_focus_measure_operators import GaussianStarFocusMeasure  # doctest: +SKIP
-    >>> gsfm = GaussianStarFocusMeasure(image, fwhm=2.0, star_find_threshold=8.0)  # doctest: +SKIP
-    >>> star_fitter = StarFitter(models.Gaussian2D)  # doctest: +SKIP
-    >>> star_fitter.fit_source(image, star=gsfm.star_finder.selected_stars, cutout_size=15)  # doctest: +SKIP
-    >>> star_fitter.star_size  # doctest: +SKIP
+    >>> from astropy.modeling import models
+    >>> from astrafocus.interface.simulation import CabaretDeviceSimulator
+    >>> from astrafocus.star_size_focus_measure_operators import GaussianStarFocusMeasure
+    >>> image = CabaretDeviceSimulator.generate_image()
+    >>> gsfm = GaussianStarFocusMeasure(image)
+    >>> star = gsfm.star_finder.selected_stars[0]
+    >>> star_fitter = StarFitter(models.Gaussian2D)
+    >>> _ = star_fitter.fit_source(image, star=star, cutout_size=15)
+    >>> bool(star_fitter.star_size > 0)
+    True
     """
 
     def __init__(

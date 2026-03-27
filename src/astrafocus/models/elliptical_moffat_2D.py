@@ -51,22 +51,16 @@ class EllipticalMoffat2D(Fittable2DModel):
 
     Examples
     --------
-    >>> from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory  # doctest: +SKIP
-    >>> image_data, _, _ = load_fits_with_focus_pos_from_directory("path_to_fits")  # doctest: +SKIP
-    >>> star_data = StarFitter.get_masked_star(  # doctest: +SKIP
-    ...     image_data[0], selected_stars[0], cutout_size=15
-    ... )
-    >>> model = EllipticalMoffat2D(  # doctest: +SKIP
-    ...     amplitude=np.max(star_data),
-    ...     background=np.median(star_data),
-    ...     x_0=star_data.shape[1]/2,
-    ...     y_0=star_data.shape[0]/2,
-    ... )
-    >>> fitter = fitting.LevMarLSQFitter()  # doctest: +SKIP
-    >>> fit = fitter(  # doctest: +SKIP
-    ...     model, *np.indices(star_data.shape)[::-1], star_data, estimate_jacobian=False
-    ... )
-    >>> plt.show()  # doctest: +SKIP
+    >>> import numpy as np
+    >>> from astropy.modeling import fitting
+    >>> from astrafocus.models.elliptical_moffat_2D import EllipticalMoffat2D
+    >>> y, x = np.indices((21, 21))
+    >>> star_data = EllipticalMoffat2D(amplitude=1000, x_0=10.0, y_0=10.0)(x, y)
+    >>> model = EllipticalMoffat2D(amplitude=np.max(star_data), x_0=10.0, y_0=10.0)
+    >>> fitter = fitting.LevMarLSQFitter()
+    >>> fit = fitter(model, x, y, star_data, estimate_jacobian=True)
+    >>> bool(abs(fit.x_0 - 10) < 0.1)
+    True
 
     """
 
