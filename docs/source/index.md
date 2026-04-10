@@ -21,6 +21,8 @@ installation.md
 contributing.md
 motivation.md
 notebooks/getting_started.ipynb
+   choosing_focus_measure.md
+   operators_reference.md
 ```
 
 ```{toctree}

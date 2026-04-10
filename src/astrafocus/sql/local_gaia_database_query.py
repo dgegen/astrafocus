@@ -14,6 +14,8 @@ class LocalGaiaDatabaseQuery:
     """
     Perform queries on the Gaia-2MASS Local Catalogue.
 
+    A citable snapshot of the Gaia-2MASS local catalogue is available on Zenodo: https://zenodo.org/records/18214672 (DOI: 10.5281/zenodo.18214672).
+
     Parameters
     ----------
     db_path : str
