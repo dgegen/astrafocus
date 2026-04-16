@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>astrafocus.models.elliptical_moffat_2D &#8212; AstrAFocus Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=15a4c1f9" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/astrafocus/models/elliptical_moffat_2D';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">AstrAFocus Documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motivation.html">Motivation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation.html">Citation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dgegen/astrafocus" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dgegen/astrafocus/issues/new?title=Issue%20on%20page%20%2F_modules/astrafocus/models/elliptical_moffat_2D.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for astrafocus.models.elliptical_moffat_2D</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.modeling.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fittable2DModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.modeling.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnitsError</span>
+
+
+<div class="viewcode-block" id="elliptical_moffat_model">
+<a class="viewcode-back" href="../../../api.html#astrafocus.models.elliptical_moffat_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">elliptical_moffat_model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">model</span><span class="p">(</span><span class="n">amplitude</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">y_0</span><span class="p">,</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+        <span class="c1"># https://pixinsight.com/doc/tools/DynamicPSF/DynamicPSF.html</span>
+        <span class="n">dx_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x_0</span>
+        <span class="n">dy_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">y_0</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="o">-</span><span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">background</span> <span class="o">+</span> <span class="n">amplitude</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">dx</span> <span class="o">/</span> <span class="n">sx</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">dy</span> <span class="o">/</span> <span class="n">sy</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+
+<div class="viewcode-block" id="EllipticalMoffat2D">
+<a class="viewcode-back" href="../../../api.html#astrafocus.models.EllipticalMoffat2D">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EllipticalMoffat2D</span><span class="p">(</span><span class="n">Fittable2DModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Two dimensional Moffat model.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    amplitude : float</span>
+<span class="sd">        Amplitude of the model.</span>
+<span class="sd">    x_0 : float</span>
+<span class="sd">        x position of the maximum of the Moffat model.</span>
+<span class="sd">    y_0 : float</span>
+<span class="sd">        y position of the maximum of the Moffat model.</span>
+<span class="sd">    sigma_x : float</span>
+<span class="sd">        Core width of the Moffat model.</span>
+<span class="sd">    sigma_y : float</span>
+<span class="sd">        Core height of the Moffat model.</span>
+<span class="sd">    alpha : float</span>
+<span class="sd">        Power index of the Moffat model.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    Gaussian2D, Box2D</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Model formula:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        f(x, y) = B + A \\left(1 + \\mathrm{amplitude} \\cdot \\frac{\\left(x - x_{0}\\right)^{2} +</span>
+<span class="sd">        \\left(y - y_{0}\\right)^{2}}{\\gamma^{2}}\\right)^{- \\alpha}</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from astropy.modeling import fitting</span>
+<span class="sd">    &gt;&gt;&gt; from astrafocus.models.elliptical_moffat_2D import EllipticalMoffat2D</span>
+<span class="sd">    &gt;&gt;&gt; y, x = np.indices((21, 21))</span>
+<span class="sd">    &gt;&gt;&gt; star_data = EllipticalMoffat2D(amplitude=1000, x_0=10.0, y_0=10.0)(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; model = EllipticalMoffat2D(amplitude=np.max(star_data), x_0=10.0, y_0=10.0)</span>
+<span class="sd">    &gt;&gt;&gt; fitter = fitting.LevMarLSQFitter()</span>
+<span class="sd">    &gt;&gt;&gt; fit = fitter(model, x, y, star_data, estimate_jacobian=True)</span>
+<span class="sd">    &gt;&gt;&gt; bool(abs(fit.x_0 - 10) &lt; 0.1)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">amplitude</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Amplitude (peak value) of the model&quot;</span><span class="p">)</span>
+    <span class="n">background</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average local background value of the model&quot;</span><span class="p">)</span>
+    <span class="n">x_0</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;X position of the maximum of the Moffat model&quot;</span><span class="p">)</span>
+    <span class="n">y_0</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Y position of the maximum of the Moffat model&quot;</span><span class="p">)</span>
+    <span class="n">sigma_x</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Core x-width of the Moffat model&quot;</span><span class="p">)</span>
+    <span class="n">sigma_y</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Core y-width of the Moffat model&quot;</span><span class="p">)</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Power index of the Moffat model&quot;</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Rotation angle either as a float (in radians) or a |Quantity| angle (optional)&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fwhm_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Moffat full width at half maximum.</span>
+<span class="sd">        Derivation of the formula is available in</span>
+<span class="sd">        `this notebook by Yoonsoo Bach</span>
+<span class="sd">        &lt;https://nbviewer.jupyter.org/github/ysbach/AO_2017/blob/master/04_Ground_Based_Concept.ipynb#1.2.-Moffat&gt;`_.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma_x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="c1"># return 2.0 * np.abs(self.sigma_y) * np.sqrt(2.0 ** (1.0 / self.alpha) - 1.0)</span>
+        <span class="c1"># gaussian_sigma_to_fwhm * np.mean(</span>
+        <span class="c1">#     [params[&quot;sigma_x&quot;], params[&quot;sigma_y&quot;]]</span>
+        <span class="c1"># )</span>
+
+<div class="viewcode-block" id="EllipticalMoffat2D.evaluate">
+<a class="viewcode-back" href="../../../api.html#astrafocus.models.EllipticalMoffat2D.evaluate">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">y_0</span><span class="p">,</span> <span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Two dimensional Moffat model function.&quot;&quot;&quot;</span>
+        <span class="c1"># rr_gg = ((dx_) ** 2 / sigma_x + (dy_) ** 2) / sigma_y**2</span>
+        <span class="c1"># return amplitude * (1 + rr_gg) ** (-alpha) + background</span>
+
+        <span class="n">dx_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x_0</span>
+        <span class="n">dy_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">y_0</span>
+
+        <span class="c1"># Perform rotation</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="o">-</span><span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">background</span> <span class="o">+</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">dx</span> <span class="o">/</span> <span class="n">sigma_x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">dy</span> <span class="o">/</span> <span class="n">sigma_y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">alpha</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EllipticalMoffat2D.fit_deriv">
+<a class="viewcode-back" href="../../../api.html#astrafocus.models.EllipticalMoffat2D.fit_deriv">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_deriv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">y_0</span><span class="p">,</span> <span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Two dimensional Moffat model derivative with respect to parameters.&quot;&quot;&quot;</span>
+        <span class="n">dx_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x_0</span>
+        <span class="n">dy_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">y_0</span>
+
+        <span class="c1"># Perform rotation</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="o">-</span><span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+        <span class="n">rr_gg</span> <span class="o">=</span> <span class="p">(</span><span class="n">dx</span> <span class="o">/</span> <span class="n">sigma_x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">dy</span> <span class="o">/</span> <span class="n">sigma_y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">d_A</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">rr_gg</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="n">inner_derivative</span> <span class="o">=</span> <span class="n">d_A</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">rr_gg</span><span class="p">)</span>  <span class="c1"># == (1 + rr_gg) ** (-alpha - 1)</span>
+
+        <span class="c1"># d_gamma = 2 * amplitude * alpha * d_A * rr_gg / (gamma * (1 + rr_gg))</span>
+        <span class="c1"># e.g. d/dv(A (1 + ((x-x_0)/v)^2 + ((y-y_0)/w)^2)^(-a))</span>
+        <span class="c1"># d/dv (1 + ((x Cos[t] + y Sin[t])/v)^2 + ((-x Sin[t] + y Cos[t])/w)^2)^(-a)</span>
+        <span class="n">d_sigma_x</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">dx</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner_derivative</span> <span class="o">/</span> <span class="n">sigma_x</span><span class="o">**</span><span class="mi">3</span>
+        <span class="n">d_sigma_y</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">dy</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner_derivative</span> <span class="o">/</span> <span class="n">sigma_y</span><span class="o">**</span><span class="mi">3</span>
+
+        <span class="c1"># Here gamma changed to sigma</span>
+        <span class="n">d_x_0</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_0</span><span class="p">)</span> <span class="o">*</span> <span class="n">inner_derivative</span> <span class="o">/</span> <span class="n">sigma_x</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">d_y_0</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">y_0</span><span class="p">)</span> <span class="o">*</span> <span class="n">inner_derivative</span> <span class="o">/</span> <span class="n">sigma_y</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">d_alpha</span> <span class="o">=</span> <span class="o">-</span><span class="n">amplitude</span> <span class="o">*</span> <span class="n">d_A</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">rr_gg</span><span class="p">)</span>
+        <span class="n">d_theta</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mi">2</span>
+            <span class="o">*</span> <span class="n">amplitude</span>
+            <span class="o">*</span> <span class="n">alpha</span>
+            <span class="o">*</span> <span class="n">inner_derivative</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="p">((</span><span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)))</span>
+                <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">sigma_x</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sigma_y</span><span class="o">**</span><span class="mi">2</span><span class="p">)(</span>
+                    <span class="p">(</span><span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="o">/</span> <span class="n">sigma_x</span><span class="o">**</span><span class="mi">2</span>
+                <span class="o">-</span> <span class="p">((</span><span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">dx_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">dy_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)))</span>
+                <span class="o">/</span> <span class="n">sigma_x</span><span class="o">**</span><span class="mi">2</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">d_background</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">d_A</span><span class="p">,</span> <span class="n">d_background</span><span class="p">,</span> <span class="n">d_x_0</span><span class="p">,</span> <span class="n">d_y_0</span><span class="p">,</span> <span class="n">d_sigma_x</span><span class="p">,</span> <span class="n">d_sigma_y</span><span class="p">,</span> <span class="n">d_alpha</span><span class="p">,</span> <span class="n">d_theta</span><span class="p">]</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">input_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_0</span><span class="o">.</span><span class="n">input_unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_0</span><span class="o">.</span><span class="n">input_unit</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_0</span><span class="o">.</span><span class="n">input_unit</span><span class="p">,</span>
+            <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parameter_units_for_data_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs_unit</span><span class="p">,</span> <span class="n">outputs_unit</span><span class="p">):</span>
+        <span class="c1"># Note that here we need to make sure that x and y are in the same</span>
+        <span class="c1"># units otherwise this can lead to issues since rotation is not well</span>
+        <span class="c1"># defined.</span>
+        <span class="k">if</span> <span class="n">inputs_unit</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">!=</span> <span class="n">inputs_unit</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]]:</span>
+            <span class="k">raise</span> <span class="n">UnitsError</span><span class="p">(</span><span class="s2">&quot;Units of &#39;x&#39; and &#39;y&#39; inputs should match&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;x_0&quot;</span><span class="p">:</span> <span class="n">inputs_unit</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+            <span class="s2">&quot;y_0&quot;</span><span class="p">:</span> <span class="n">inputs_unit</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+            <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="n">inputs_unit</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+            <span class="s2">&quot;amplitude&quot;</span><span class="p">:</span> <span class="n">outputs_unit</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+        <span class="p">}</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By David Degen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, David Degen.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
