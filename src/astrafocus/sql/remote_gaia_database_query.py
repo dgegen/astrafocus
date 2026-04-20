@@ -22,6 +22,8 @@ class RemoteGaiaDatabaseQuery(LocalGaiaDatabaseQuery):
         """
         job = Gaia.launch_job(query)
         r = job.get_results()
+        if r is None:
+            raise ValueError("No results returned from Gaia query.")
         df = r.to_pandas()
         df["dec_min"] = dec_min
         df["dec_max"] = dec_max

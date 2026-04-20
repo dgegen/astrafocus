@@ -282,7 +282,7 @@ class LocalGaiaDatabaseQuery:
         set
             A set of relevant shard IDs.
         """
-        arr = np.arange(start=np.floor(min_dec), stop=np.ceil(max_dec) + 1, step=1, dtype=int)
+        arr = np.arange(np.floor(min_dec), stop=np.ceil(max_dec) + 1, step=1, dtype=int)
         return {f"{arr[i]}_{arr[i + 1]}" for i in range(len(arr) - 1)}
 
     def _sql_query_of_shard(
