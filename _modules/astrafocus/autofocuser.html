@@ -1,0 +1,1210 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>astrafocus.autofocuser &#8212; AstrAFocus Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=15a4c1f9" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/astrafocus/autofocuser';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">AstrAFocus Documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motivation.html">Motivation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dgegen/astrafocus" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dgegen/astrafocus/issues/new?title=Issue%20on%20page%20%2F_modules/astrafocus/autofocuser.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for astrafocus.autofocuser</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.extremum_estimators</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LOWESSExtremumEstimator</span><span class="p">,</span>
+    <span class="n">RobustExtremumEstimator</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.focus_measure_operators</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AnalyticResponseFocusedMeasureOperator</span><span class="p">,</span>
+    <span class="n">FocusMeasureOperator</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.interface.device_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutofocusDeviceManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.star_size_focus_measure_operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">StarSizeFocusMeasure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.utils.fits</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_fits_from_directory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="AutofocuserBase">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AutofocuserBase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AutofocuserBase</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract base class for autofocusing algorithms.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    autofocus_device_manager : AutofocusDeviceManager</span>
+<span class="sd">        Interface to control the camera and its focuser.</span>
+<span class="sd">    focus_measure_operator : FocusMeasureOperator</span>
+<span class="sd">        Operator to measure the focus of images.</span>
+<span class="sd">    exposure_time : float</span>
+<span class="sd">        Exposure time for image acquisition.</span>
+<span class="sd">    search_range : Optional[Tuple[int, int]], optional</span>
+<span class="sd">        Range of focus positions to search for the best focus (default is None,</span>
+<span class="sd">        using the telescope&#39;s allowed range).</span>
+<span class="sd">    initial_position : Optional[int], optional</span>
+<span class="sd">        Initial focus position for the autofocus algorithm (default is None,</span>
+<span class="sd">        using the telescope&#39;s current position).</span>
+<span class="sd">    keep_images : bool, optional</span>
+<span class="sd">        Whether to keep images for additional analysis (default is False).</span>
+<span class="sd">    secondary_focus_measure_operators : Optional[dict], optional</span>
+<span class="sd">        Dictionary of additional focus measure operators for image analysis</span>
+<span class="sd">        (default is an empty dictionary).</span>
+<span class="sd">    search_range_is_relative : bool, optional</span>
+<span class="sd">        Whether the search range is relative to the initial position (default is False).</span>
+<span class="sd">    save_path : Optional[str], optional</span>
+<span class="sd">        Path to save focus record to (default is None). If None, the focus record is not saved.</span>
+<span class="sd">        If the path ends with &#39;.csv&#39;, the focus record is saved with that name. Otherwise, the</span>
+<span class="sd">        focus record is saved as a csv file with a timestamp in the specified directory.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    focus_record : pd.DataFrame</span>
+<span class="sd">        DataFrame containing focus positions and corresponding focus measures.</span>
+<span class="sd">    best_focus_position : int or None</span>
+<span class="sd">        Best focus position determined by the autofocus algorithm.</span>
+<span class="sd">    _image_record : list</span>
+<span class="sd">        List to store images if &#39;keep_images&#39; is True.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    measure_focus(image: np.ndarray) -&gt; float:</span>
+<span class="sd">        Measure the focus of a given image using the specified focus measure operator.</span>
+<span class="sd">    run():</span>
+<span class="sd">        Execute the autofocus algorithm. Handles exceptions and resets the focuser on failure.</span>
+<span class="sd">    _run():</span>
+<span class="sd">        Abstract method to be implemented by subclasses for the actual autofocus algorithm.</span>
+<span class="sd">    reset():</span>
+<span class="sd">        Reset the focuser to the initial position.</span>
+<span class="sd">    get_focus_record() -&gt; Tuple[np.ndarray, np.ndarray]:</span>
+<span class="sd">        Retrieve the focus record as sorted arrays of focus positions and corresponding measures.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; autofocus_instance = AutofocuserBase(  # doctest: +SKIP</span>
+<span class="sd">    ...     autofocus_device_manager, focus_measure_operator, exposure_time</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; autofocus_instance.run()  # doctest: +SKIP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">autofocus_device_manager</span><span class="p">:</span> <span class="n">AutofocusDeviceManager</span><span class="p">,</span>
+        <span class="n">focus_measure_operator</span><span class="p">:</span> <span class="n">FocusMeasureOperator</span><span class="p">,</span>
+        <span class="n">exposure_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">search_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">initial_position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keep_images</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">secondary_focus_measure_operators</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">search_range_is_relative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span> <span class="o">=</span> <span class="n">autofocus_device_manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">focus_measure_operator</span> <span class="o">=</span> <span class="n">focus_measure_operator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span> <span class="o">=</span> <span class="n">exposure_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search_range</span> <span class="o">=</span> <span class="n">search_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span> <span class="o">=</span> <span class="n">initial_position</span> <span class="ow">or</span> <span class="n">autofocus_device_manager</span><span class="o">.</span><span class="n">focuser</span><span class="o">.</span><span class="n">position</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;focus_pos&quot;</span><span class="p">,</span> <span class="s2">&quot;focus_measure&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_focus_position</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">keep_images</span> <span class="o">=</span> <span class="n">keep_images</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">secondary_focus_measure_operators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_secondary_operators</span><span class="p">(</span>
+            <span class="n">secondary_focus_measure_operators</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_record</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">save_path</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">))</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_suffix</span> <span class="o">=</span> <span class="s2">&quot;.fits&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_search_range</span><span class="p">(</span><span class="n">search_range_is_relative</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_secondary_operators</span><span class="p">(</span><span class="n">operators</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">operators</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">FocusMeasureOperator</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;secondary_focus_measure_operators[&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39;] &quot;</span>
+                        <span class="s2">&quot;must be a subclass of FocusMeasureOperator.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;secondary_focus_measure_operators[&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39;] is a class that could not be &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;instantiated without arguments: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">FocusMeasureOperator</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;secondary_focus_measure_operators[&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39;] &quot;</span>
+                        <span class="s2">&quot;must be an instance of FocusMeasureOperator.&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">focus_record</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;focus_pos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;focus_pos&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">secondary_focus_measure_operators</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">df</span>
+
+        <span class="n">image_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">data_source</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_images</span><span class="p">:</span>
+            <span class="n">image_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_record</span>
+            <span class="n">data_source</span> <span class="o">=</span> <span class="s2">&quot;image record&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">image_data</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_fits_from_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_suffix</span><span class="p">)</span>
+                <span class="n">data_source</span> <span class="o">=</span> <span class="s2">&quot;saved fits&quot;</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Error loading saved fits for secondary focus measure operators.&quot;</span><span class="p">,</span>
+                    <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">df</span>
+
+        <span class="k">if</span> <span class="n">image_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">df</span>
+
+        <span class="c1"># Discard calibration image, if present, assuming file names are sorted by time.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">image_data</span> <span class="o">=</span> <span class="n">image_data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Skipping secondary focus measures: </span><span class="si">%d</span><span class="s2"> images in </span><span class="si">%s</span><span class="s2">, but </span><span class="si">%d</span><span class="s2"> focus record rows.&quot;</span><span class="p">,</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">image_data</span><span class="p">),</span>
+                <span class="n">data_source</span><span class="p">,</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">df</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">secondary_focus_measure_operators</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fm</span><span class="o">.</span><span class="n">measure_focus</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">image_data</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Error applying secondary focus measure operator &#39;</span><span class="si">%s</span><span class="s2">&#39; to </span><span class="si">%s</span><span class="s2">.&quot;</span><span class="p">,</span>
+                    <span class="n">name</span><span class="p">,</span>
+                    <span class="n">data_source</span><span class="p">,</span>
+                    <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+<div class="viewcode-block" id="AutofocuserBase.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AutofocuserBase.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_images</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_image_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_measure_operator</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AutofocuserBase.run">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AutofocuserBase.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successfully completed autofocusing.&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_focus_record</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Error in autofocus algorithm. Resetting focuser to initial position.&quot;</span><span class="p">)</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">success</span></div>
+
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="AutofocuserBase.reset">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AutofocuserBase.reset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="o">.</span><span class="n">move_focuser_to_position</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AutofocuserBase.save_focus_record">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AutofocuserBase.save_focus_record">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_focus_record</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Error saving focus record to csv. Invalid save path.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.csv&quot;</span><span class="p">):</span>
+                <span class="n">save_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">timestr</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H%M%S&quot;</span><span class="p">)</span>
+                <span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">timestr</span><span class="si">}</span><span class="s2">_focus_record.csv&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">focus_record</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Error saving focus record to csv.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AutofocuserBase.save_focus_log">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AutofocuserBase.save_focus_log">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_focus_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Error saving focus record to csv. Invalid save path.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.csv&quot;</span><span class="p">):</span>
+                <span class="n">save_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;_focus_log.txt&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">timestr</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H%M%S&quot;</span><span class="p">)</span>
+                <span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">timestr</span><span class="si">}</span><span class="s2">_focus_log.txt&quot;</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best focus position: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">best_focus_position</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Autofocuser: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Error saving focus record to csv.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AutofocuserBase.get_focus_record">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AutofocuserBase.get_focus_record">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_focus_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold_nan_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the focus record as sorted arrays of focus positions and corresponding measures.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        threshold_nan_ratio : float, optional</span>
+<span class="sd">            Threshold for the ratio of NaN values in the focus record to issue a warning about data quality</span>
+<span class="sd">            (default is 0.25).  If the ratio of NaN values exceeds this threshold, a warning is logged</span>
+<span class="sd">            indicating that the results may be unreliable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Focus record is empty. Run the autofocus algorithm first.&quot;</span><span class="p">)</span>
+
+        <span class="n">valid</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="o">.</span><span class="n">focus_pos</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="o">.</span><span class="n">focus_measure</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span>
+        <span class="n">n_total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="p">)</span>
+        <span class="n">n_valid</span> <span class="o">=</span> <span class="n">valid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">n_nan</span> <span class="o">=</span> <span class="n">n_total</span> <span class="o">-</span> <span class="n">n_valid</span>
+        <span class="k">if</span> <span class="n">n_nan</span> <span class="o">/</span> <span class="n">n_total</span> <span class="o">&gt;</span> <span class="n">threshold_nan_ratio</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> of </span><span class="si">%d</span><span class="s2"> focus record points are NaN (</span><span class="si">%.0f%%</span><span class="s2">). Results may be unreliable.&quot;</span><span class="p">,</span>
+                <span class="n">n_nan</span><span class="p">,</span>
+                <span class="n">n_total</span><span class="p">,</span>
+                <span class="mi">100</span> <span class="o">*</span> <span class="n">n_nan</span> <span class="o">/</span> <span class="n">n_total</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+        <span class="n">focus_pos</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">focus_pos</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">focus_measure</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">focus_measure</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="n">sort_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">focus_pos</span><span class="p">[</span><span class="n">sort_ind</span><span class="p">],</span> <span class="n">focus_measure</span><span class="p">[</span><span class="n">sort_ind</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_search_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_range_is_relative</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="n">allowed_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="o">.</span><span class="n">focuser</span><span class="o">.</span><span class="n">allowed_range</span>
+        <span class="n">search_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_range</span>
+        <span class="k">if</span> <span class="n">search_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">search_range</span> <span class="o">=</span> <span class="n">allowed_range</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">search_range</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="n">search_range_is_relative</span><span class="p">:</span>
+            <span class="n">search_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">search_range</span><span class="p">,</span> <span class="n">search_range</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">search_range</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">search_range</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">search_range</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Search_range must be a tuple or list of length 2.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">search_range</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Search_range must be a tuple or list of length 2.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">search_range_is_relative</span><span class="p">:</span>
+            <span class="n">search_range</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">search_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">search_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="p">)</span>
+
+        <span class="n">search_range</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">max</span><span class="p">(</span><span class="n">search_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">allowed_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="nb">min</span><span class="p">(</span><span class="n">search_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">allowed_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search_range</span> <span class="o">=</span> <span class="n">search_range</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;AutofocuserBase(self.autofocus_device_manager=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;exposure_time=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span><span class="si">!r}</span><span class="s2"> sec, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;search_range=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">search_range</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;initial_position=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SweepingAutofocuser">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.SweepingAutofocuser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SweepingAutofocuser</span><span class="p">(</span><span class="n">AutofocuserBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Autofocuser implementation using a sweeping algorithm.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    autofocus_device_manager : AutofocusDeviceManager</span>
+<span class="sd">        Interface to control the camera and its focuser.</span>
+<span class="sd">    exposure_time : float</span>
+<span class="sd">        Exposure time for image acquisition.</span>
+<span class="sd">    focus_measure_operator : FocusMeasureOperator</span>
+<span class="sd">        Operator to measure the focus of images.</span>
+<span class="sd">    n_steps : Tuple[int], optional</span>
+<span class="sd">        Number of steps for each sweep (default is (10,)).</span>
+<span class="sd">        The length of this tuple determines the number of sweeps. The entries specify the number of</span>
+<span class="sd">        steps for each sweep.</span>
+<span class="sd">    n_exposures : int | np.ndarray, optional</span>
+<span class="sd">        Number of exposures at each focus position or an array specifying exposures for each sweep.</span>
+<span class="sd">        If an integer is given, the same number of exposures is used for each sweep (default is 1).</span>
+<span class="sd">        If an array is given, the length of the array must match the number of sweeps.</span>
+<span class="sd">        (default is 1).</span>
+<span class="sd">    search_range : Optional[Tuple[int, int]], optional</span>
+<span class="sd">        Range of focus positions to search for the best focus (default is None,</span>
+<span class="sd">        using the telescope&#39;s allowed range).</span>
+<span class="sd">    decrease_search_range : bool, optional</span>
+<span class="sd">        Whether to decrease the search range after each sweep (default is True).</span>
+<span class="sd">    initial_position : Optional[int], optional</span>
+<span class="sd">        Initial focus position for the autofocus algorithm (default is None,</span>
+<span class="sd">        using the telescope&#39;s current position).</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_sweeps : int</span>
+<span class="sd">        Number of sweeps to perform.</span>
+<span class="sd">    n_steps : Tuple[int]</span>
+<span class="sd">        Number of steps for each sweep.</span>
+<span class="sd">    n_exposures : np.ndarray</span>
+<span class="sd">        Number of exposures at each focus position.</span>
+<span class="sd">    decrease_search_range : bool</span>
+<span class="sd">        Whether to decrease the search range after each sweep.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    _run():</span>
+<span class="sd">        Execute the sweeping autofocus algorithm.</span>
+<span class="sd">    get_initial_direction(min_focus_pos, max_focus_pos) -&gt; int:</span>
+<span class="sd">        Determine the initial direction of the sweep.</span>
+<span class="sd">    find_best_focus_position():</span>
+<span class="sd">        Find and set the best focus position based on the recorded focus measures.</span>
+<span class="sd">    _find_best_focus_position(focus_pos, focus_measure) -&gt; Tuple[int, float]:</span>
+<span class="sd">        Abstract method to be implemented by subclasses for finding the best focus position.</span>
+<span class="sd">    _run_sweep(search_positions, n_exposures):</span>
+<span class="sd">        Perform a single sweep across the specified focus positions.</span>
+<span class="sd">    update_search_range(min_focus_pos, max_focus_pos) -&gt; Tuple[int, int]:</span>
+<span class="sd">        Update the search range after each sweep.</span>
+<span class="sd">    integer_linspace(min_focus_pos, max_focus_pos, n_steps) -&gt; np.ndarray:</span>
+<span class="sd">        Generate integer-spaced values within the specified range.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from astrafocus.interface.simulation import CabaretDeviceSimulator</span>
+<span class="sd">    &gt;&gt;&gt; from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure</span>
+<span class="sd">    &gt;&gt;&gt; from astrafocus.autofocuser import AnalyticResponseAutofocuser</span>
+<span class="sd">    &gt;&gt;&gt; sim = CabaretDeviceSimulator.default()</span>
+<span class="sd">    &gt;&gt;&gt; saf = AnalyticResponseAutofocuser(</span>
+<span class="sd">    ...     autofocus_device_manager=sim,</span>
+<span class="sd">    ...     exposure_time=1.0,</span>
+<span class="sd">    ...     focus_measure_operator=HFRStarFocusMeasure,</span>
+<span class="sd">    ...     n_steps=(20, 5),</span>
+<span class="sd">    ...     n_exposures=1,</span>
+<span class="sd">    ...     decrease_search_range=True,</span>
+<span class="sd">    ...     percent_to_cut=50,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; _ = saf.run()</span>
+<span class="sd">    &gt;&gt;&gt; len(saf.focus_record) &gt; 0</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">autofocus_device_manager</span><span class="p">:</span> <span class="n">AutofocusDeviceManager</span><span class="p">,</span>
+        <span class="n">exposure_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">focus_measure_operator</span><span class="p">,</span>
+        <span class="n">n_steps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,),</span>
+        <span class="n">n_exposures</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">search_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">decrease_search_range</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">initial_position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">autofocus_device_manager</span><span class="p">,</span>
+            <span class="n">focus_measure_operator</span><span class="p">,</span>
+            <span class="n">exposure_time</span><span class="p">,</span>
+            <span class="n">search_range</span><span class="p">,</span>
+            <span class="n">initial_position</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">n_steps</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">n_steps</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">n_steps</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_sweeps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_exposures</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">n_exposures</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_exposures</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_sweeps</span><span class="p">,</span> <span class="n">n_exposures</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_exposures</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_sweeps</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Length of n_exposures (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_exposures</span><span class="p">)</span><span class="si">}</span><span class="s2">) must match length of n_steps &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_sweeps</span><span class="si">}</span><span class="s2">).&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">n_steps</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_exposures</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decrease_search_range</span> <span class="o">=</span> <span class="n">decrease_search_range</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_range</span>
+        <span class="n">initial_direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_direction</span><span class="p">(</span><span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">sweep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_sweeps</span><span class="p">):</span>
+            <span class="n">search_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integer_linspace</span><span class="p">(</span><span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">[</span><span class="n">sweep</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">sweep</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">initial_direction</span><span class="p">:</span>
+                <span class="n">search_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">search_positions</span><span class="p">)</span>  <span class="c1"># Reverse order</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="o">.</span><span class="n">check_conditions</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Starting sweep </span><span class="si">{</span><span class="n">sweep</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_sweeps</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">search_positions</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">search_positions</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">[</span><span class="n">sweep</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;, reversed&quot;</span> <span class="k">if</span> <span class="n">sweep</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">initial_direction</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="o">+</span> <span class="s2">&quot;).&quot;</span>
+            <span class="p">)</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_sweep</span><span class="p">(</span><span class="n">search_positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_exposures</span><span class="p">[</span><span class="n">sweep</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">decrease_search_range</span><span class="p">:</span>
+                <span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_search_range</span><span class="p">(</span><span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_best_focus_position</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SweepingAutofocuser.get_initial_direction">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.SweepingAutofocuser.get_initial_direction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_initial_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move upward if initial position is closer to min_focus_pos than max_focus_pos.&quot;&quot;&quot;</span>
+        <span class="n">initial_direction</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span> <span class="o">-</span> <span class="n">min_focus_pos</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span> <span class="o">-</span> <span class="n">max_focus_pos</span><span class="p">)</span>
+            <span class="k">else</span> <span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">initial_direction</span></div>
+
+
+<div class="viewcode-block" id="SweepingAutofocuser.find_best_focus_position">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.SweepingAutofocuser.find_best_focus_position">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_best_focus_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">focus_pos</span><span class="p">,</span> <span class="n">focus_measure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_focus_record</span><span class="p">()</span>
+
+        <span class="n">best_focus_pos</span><span class="p">,</span> <span class="n">best_focus_measure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_best_focus_position</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">,</span> <span class="n">focus_measure</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_focus_position</span> <span class="o">=</span> <span class="n">best_focus_pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="o">.</span><span class="n">move_focuser_to_position</span><span class="p">(</span><span class="n">best_focus_pos</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Best focus position: </span><span class="si">{</span><span class="n">best_focus_pos</span><span class="si">}</span><span class="s2"> with focus measure value: </span><span class="si">{</span><span class="n">best_focus_measure</span><span class="si">:</span><span class="s2">8.3e</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SweepingAutofocuser._find_best_focus_position">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.SweepingAutofocuser._find_best_focus_position">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_best_focus_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">focus_pos</span><span class="p">,</span> <span class="n">focus_measure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="c1"># min_ind = np.argmin(focus_measure)</span>
+        <span class="c1"># best_focus_pos, best_focus_val = focus_pos[min_ind], focus_measure[min_ind]</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_sweep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_positions</span><span class="p">,</span> <span class="n">n_exposures</span><span class="p">):</span>
+        <span class="n">start_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">focus_position</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">search_positions</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="o">.</span><span class="n">check_conditions</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">exposure</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_exposures</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="o">.</span><span class="n">check_conditions</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="c1"># This step should include processing such as hot pixel removal etc.</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="o">.</span><span class="n">perform_exposure_at</span><span class="p">(</span>
+                    <span class="n">focus_position</span><span class="o">=</span><span class="n">focus_position</span><span class="p">,</span> <span class="n">texp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="o">.</span><span class="n">check_conditions</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">fm_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">measure_focus</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;Failed to measure focus at position </span><span class="si">%d</span><span class="s2"> (exposure </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">); skipping point.&quot;</span><span class="p">,</span>
+                        <span class="n">focus_position</span><span class="p">,</span>
+                        <span class="n">exposure</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">n_exposures</span><span class="p">,</span>
+                        <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">fm_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Obtained measure value: </span><span class="si">{</span><span class="n">fm_value</span><span class="si">:</span><span class="s2">8.3e</span><span class="si">}</span><span class="s2"> at focus position: </span><span class="si">{</span><span class="n">focus_position</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Save to record</span>
+                <span class="n">df_index</span> <span class="o">=</span> <span class="n">start_index</span> <span class="o">+</span> <span class="n">ind</span> <span class="o">*</span> <span class="n">n_exposures</span> <span class="o">+</span> <span class="n">exposure</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_index</span><span class="p">,</span> <span class="s2">&quot;focus_pos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">focus_position</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_index</span><span class="p">,</span> <span class="s2">&quot;focus_measure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fm_value</span>
+
+            <span class="n">mean_fm_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_focus_record</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                    <span class="n">start_index</span> <span class="o">+</span> <span class="n">ind</span> <span class="o">*</span> <span class="n">n_exposures</span> <span class="p">:</span> <span class="n">start_index</span> <span class="o">+</span> <span class="n">ind</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_exposures</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="s2">&quot;focus_measure&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mean_fm_value</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Focus Position: </span><span class="si">{</span><span class="n">focus_position</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2"> | Mean Focus Measure: all exposures failed&quot;</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">mean_fm_value</span> <span class="o">&lt;</span> <span class="mf">1e3</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Focus Position: </span><span class="si">{</span><span class="n">focus_position</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2"> | Mean Focus Measure: </span><span class="si">{</span><span class="n">mean_fm_value</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Focus Position: </span><span class="si">{</span><span class="n">focus_position</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2"> | Mean Focus Measure: </span><span class="si">{</span><span class="n">mean_fm_value</span><span class="si">:</span><span class="s2">8.3e</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SweepingAutofocuser.update_search_range">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.SweepingAutofocuser.update_search_range">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_search_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span></div>
+
+
+<div class="viewcode-block" id="SweepingAutofocuser.integer_linspace">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.SweepingAutofocuser.integer_linspace">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integer_linspace</span><span class="p">(</span><span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Search positions can be redundant</span>
+<span class="sd">        &gt;&gt;&gt; SweepingAutofocuser.integer_linspace(0, 1, 4)</span>
+<span class="sd">        array([0, 0, 1, 1])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">search_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">search_positions</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;SweepingAutofocuser(self.autofocus_device_manager=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;exposure_time=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span><span class="si">!r}</span><span class="s2"> sec, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;search_range=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">search_range</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;initial_position=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;n_steps=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;n_exposures=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_exposures</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;decrease_search_range=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">decrease_search_range</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="NonParametricResponseAutofocuser">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.NonParametricResponseAutofocuser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NonParametricResponseAutofocuser</span><span class="p">(</span><span class="n">SweepingAutofocuser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">autofocus_device_manager</span><span class="p">,</span>
+        <span class="n">exposure_time</span><span class="p">,</span>
+        <span class="n">focus_measure_operator</span><span class="p">,</span>
+        <span class="n">extremum_estimator</span><span class="p">:</span> <span class="n">RobustExtremumEstimator</span> <span class="o">=</span> <span class="n">LOWESSExtremumEstimator</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">it</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extremum_estimator</span> <span class="o">=</span> <span class="n">extremum_estimator</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">autofocus_device_manager</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">,</span> <span class="n">focus_measure_operator</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_best_focus_position</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">focus_pos</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">focus_measure</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="n">focus_pos</span><span class="p">,</span> <span class="n">focus_measure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_focus_record</span><span class="p">()</span>
+
+        <span class="c1"># Use RobustExtremumEstimator to find the best focus position</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_measure_operator</span><span class="o">.</span><span class="n">smaller_is_better</span><span class="p">:</span>
+            <span class="n">best_focus_pos</span><span class="p">,</span> <span class="n">best_focus_measure_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extremum_estimator</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span>
+                <span class="n">focus_pos</span><span class="p">,</span> <span class="n">focus_measure</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">best_focus_pos</span><span class="p">,</span> <span class="n">best_focus_measure_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extremum_estimator</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span>
+                <span class="n">focus_pos</span><span class="p">,</span> <span class="n">focus_measure</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+        <span class="n">best_focus_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">best_focus_pos</span><span class="p">))</span>
+        <span class="n">best_focus_measure_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">best_focus_measure_value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">best_focus_pos</span><span class="p">,</span> <span class="n">best_focus_measure_value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;NonParametricResponseAutofocuser(&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;self.autofocus_device_manager=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;exposure_time=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span><span class="si">!r}</span><span class="s2"> sec, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;search_range=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">search_range</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;initial_position=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;robust_estimator=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">extremum_estimator</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;NonParametricResponseAutofocuser(&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;exposure_time=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span><span class="si">!r}</span><span class="s2"> sec, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;search_range=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">search_range</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;initial_position=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;robust_estimator=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">extremum_estimator</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AnalyticResponseAutofocuser">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AnalyticResponseAutofocuser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnalyticResponseAutofocuser</span><span class="p">(</span><span class="n">SweepingAutofocuser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Autofocuser that fits a curve to the focus response curve and finds the best focus position.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    autofocus_device_manager : AutofocusDeviceManager</span>
+<span class="sd">        Interface to control the telescope and its focuser.</span>
+<span class="sd">    exposure_time : float</span>
+<span class="sd">        Exposure time for image acquisition.</span>
+<span class="sd">    focus_measure_operator : AnalyticResponseFocusedMeasureOperator</span>
+<span class="sd">        Operator to measure the focus of images using an analytic response curve.</span>
+<span class="sd">    percent_to_cut : float, optional</span>
+<span class="sd">        Percentage of worst-performing focus positions to exclude when updating the search range</span>
+<span class="sd">        (default is 50.0).</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from astrafocus.interface.simulation import CabaretDeviceSimulator</span>
+<span class="sd">    &gt;&gt;&gt; from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure</span>
+<span class="sd">    &gt;&gt;&gt; from astrafocus.autofocuser import AnalyticResponseAutofocuser</span>
+<span class="sd">    &gt;&gt;&gt; sim = CabaretDeviceSimulator.default()</span>
+<span class="sd">    &gt;&gt;&gt; araf = AnalyticResponseAutofocuser(</span>
+<span class="sd">    ...     autofocus_device_manager=sim,</span>
+<span class="sd">    ...     exposure_time=1.0,</span>
+<span class="sd">    ...     focus_measure_operator=HFRStarFocusMeasure,</span>
+<span class="sd">    ...     n_steps=(20, 5),</span>
+<span class="sd">    ...     n_exposures=1,</span>
+<span class="sd">    ...     decrease_search_range=True,</span>
+<span class="sd">    ...     percent_to_cut=50,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; _ = araf.run()</span>
+<span class="sd">    &gt;&gt;&gt; abs(araf.best_focus_position - 10000) &lt; 500</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">autofocus_device_manager</span><span class="p">:</span> <span class="n">AutofocusDeviceManager</span><span class="p">,</span>
+        <span class="n">exposure_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">focus_measure_operator</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">AnalyticResponseFocusedMeasureOperator</span><span class="p">],</span>
+        <span class="n">percent_to_cut</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">50.0</span><span class="p">,</span>
+        <span class="n">focus_measure_operator_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">focus_measure_operator</span><span class="p">,</span> <span class="n">AnalyticResponseFocusedMeasureOperator</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The focus measure operator must be a subclass of &quot;</span>
+                <span class="s2">&quot;AnalyticResponseFocusedMeasureOperator. It should not be an instance.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">focus_measure_operator_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">focus_measure_operator_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">focus_measure_operator</span><span class="p">,</span> <span class="n">StarSizeFocusMeasure</span><span class="p">):</span>
+            <span class="n">ref_image</span> <span class="o">=</span> <span class="n">autofocus_device_manager</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">perform_exposure</span><span class="p">(</span><span class="n">texp</span><span class="o">=</span><span class="n">exposure_time</span><span class="p">)</span>
+            <span class="n">focus_measure_operator_kwargs</span><span class="p">[</span><span class="s2">&quot;ref_image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref_image</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">autofocus_device_manager</span><span class="o">=</span><span class="n">autofocus_device_manager</span><span class="p">,</span>
+            <span class="n">exposure_time</span><span class="o">=</span><span class="n">exposure_time</span><span class="p">,</span>
+            <span class="n">focus_measure_operator</span><span class="o">=</span><span class="n">focus_measure_operator</span><span class="p">(</span><span class="o">**</span><span class="n">focus_measure_operator_kwargs</span><span class="p">),</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">percent_to_cut</span> <span class="o">=</span> <span class="n">percent_to_cut</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_best_focus_position</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">focus_pos</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">focus_measure</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_focus_response_curve</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">,</span> <span class="n">focus_measure</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AnalyticResponseAutofocuser.fit_focus_response_curve">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AnalyticResponseAutofocuser.fit_focus_response_curve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_focus_response_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">focus_pos</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">focus_measure</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">optimal_focus_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_measure_operator</span><span class="o">.</span><span class="n">fit_focus_response_curve</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">,</span> <span class="n">focus_measure</span><span class="p">)</span>
+        <span class="n">optimal_focus_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">optimal_focus_pos</span><span class="p">))</span>
+        <span class="n">best_focus_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_measure_operator</span><span class="o">.</span><span class="n">get_focus_response_curve_fit</span><span class="p">(</span><span class="n">optimal_focus_pos</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">optimal_focus_pos</span><span class="p">,</span> <span class="n">best_focus_val</span></div>
+
+
+<div class="viewcode-block" id="AnalyticResponseAutofocuser.get_focus_response_curve_fit">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AnalyticResponseAutofocuser.get_focus_response_curve_fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_focus_response_curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">focus_pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">focus_response_curve_fit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_measure_operator</span><span class="o">.</span><span class="n">get_focus_response_curve_fit</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">focus_response_curve_fit</span></div>
+
+
+<div class="viewcode-block" id="AnalyticResponseAutofocuser.update_search_range">
+<a class="viewcode-back" href="../../api.html#astrafocus.autofocuser.AnalyticResponseAutofocuser.update_search_range">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_search_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the search range for optimal focus position based on focus response curve.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This function updates the search range for the optimal focus position based on the</span>
+<span class="sd">        focus response curve. It identifies the worst-performing positions in the current</span>
+<span class="sd">        interval and adjusts the interval accordingly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get focus data and fit focus response curve parameters</span>
+        <span class="n">focus_pos</span><span class="p">,</span> <span class="n">focus_measure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_focus_record</span><span class="p">()</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_measure_operator</span><span class="o">.</span><span class="n">fit_focus_response_curve</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">,</span> <span class="n">focus_measure</span><span class="p">)</span>
+
+        <span class="c1"># Generate focus response curve</span>
+        <span class="n">sampled_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">max_focus_pos</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">sampled_responses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_focus_response_curve_fit</span><span class="p">(</span><span class="n">sampled_pos</span><span class="p">)</span>
+
+        <span class="c1"># Find threshold to exclude worst values</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">sampled_responses</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">percent_to_cut</span><span class="p">)</span>
+
+        <span class="c1"># Identify indices with responses below threshold</span>
+        <span class="n">below_threshold_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sampled_responses</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Update focus search interval based on below-threshold positions</span>
+        <span class="n">new_min_focus_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">min_focus_pos</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">sampled_pos</span><span class="p">[</span><span class="n">below_threshold_indices</span><span class="p">]))</span>
+        <span class="n">new_max_focus_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">max_focus_pos</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sampled_pos</span><span class="p">[</span><span class="n">below_threshold_indices</span><span class="p">]))</span>
+        <span class="n">new_min_focus_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">new_min_focus_pos</span><span class="p">))</span>
+        <span class="n">new_max_focus_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">new_max_focus_pos</span><span class="p">))</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Updating search range from (</span><span class="si">{</span><span class="n">min_focus_pos</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">max_focus_pos</span><span class="si">}</span><span class="s2">) to &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">new_min_focus_pos</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">new_max_focus_pos</span><span class="si">}</span><span class="s2">).&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_min_focus_pos</span><span class="p">,</span> <span class="n">new_max_focus_pos</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;AnalyticResponseAutofocuser(&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;self.autofocus_device_manager=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">autofocus_device_manager</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;exposure_time=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span><span class="si">!r}</span><span class="s2"> sec, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;search_range=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">search_range</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;initial_position=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;focus_measure_operator=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">focus_measure_operator</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;percent_to_cut=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">percent_to_cut</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;AnalyticResponseAutofocuser(&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;exposure_time=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;focus_measure_operator=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">focus_measure_operator</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;search_range=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">search_range</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;initial_position=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;percent_to_cut=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">percent_to_cut</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By David Degen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, David Degen.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
