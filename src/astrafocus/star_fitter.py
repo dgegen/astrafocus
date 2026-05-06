@@ -164,7 +164,7 @@ class StarFitter:
 
     @staticmethod
     def get_masked_star(image, star, cutout_size):
-        y, x = star["ycentroid"], star["xcentroid"]
+        y, x = star["y_centroid"], star["x_centroid"]
         star_data = StarFitter._slice_out_star(image, x, y, size=cutout_size)
         return star_data
 

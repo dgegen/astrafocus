@@ -60,12 +60,12 @@ class TestStarFinderFallback:
         original = StarFinder._dao_star_finder
         thresholds_tried = []
 
-        def spy(cleaned_image, fwhm, threshold, brightest=None, peakmax=None):
+        def spy(cleaned_image, fwhm, threshold, n_brightest=None, peak_max=None):
             thresholds_tried.append(threshold)
             return (
                 None
                 if len(thresholds_tried) == 1
-                else original(cleaned_image, fwhm, threshold, brightest=brightest, peakmax=peakmax)
+                else original(cleaned_image, fwhm, threshold, n_brightest=n_brightest, peak_max=peak_max)
             )
 
         with patch.object(StarFinder, "_dao_star_finder", staticmethod(spy)):

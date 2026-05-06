@@ -41,7 +41,7 @@ dependencies = [
   "opencv-python",
   "numpy",
   "pandas",
-  "photutils",
+  "photutils>=3.0.0",
   "scipy",
   "sqlite3worker",
   "statsmodels",

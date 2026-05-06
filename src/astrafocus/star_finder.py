@@ -130,8 +130,8 @@ class StarFinder:
             cleaned_image=cleaned_image,
             fwhm=fwhm,
             threshold=np.maximum(absolute_detection_limit, std * threshold),
-            peakmax=saturation_threshold,
-            brightest=max_stars,
+            peak_max=saturation_threshold,
+            n_brightest=max_stars,
         )
         if sources is not None:
             sources.sort("flux", reverse=True)
@@ -143,8 +143,8 @@ class StarFinder:
                 cleaned_image=cleaned_image,
                 fwhm=fwhm,
                 threshold=np.maximum(absolute_detection_limit, std * threshold),
-                peakmax=saturation_threshold,
-                brightest=max_stars,
+                peak_max=saturation_threshold,
+                n_brightest=max_stars,
             )
 
             if sources is not None:
@@ -162,12 +162,12 @@ class StarFinder:
             return cls.FALLBACK_THRESHOLDS[(cls.FALLBACK_THRESHOLDS < threshold)]
 
     @staticmethod
-    def _dao_star_finder(cleaned_image, fwhm, threshold, brightest=None, peakmax=None):
+    def _dao_star_finder(cleaned_image, fwhm, threshold, n_brightest=None, peak_max=None):
         daofind = DAOStarFinder(
             fwhm=fwhm,
             threshold=threshold,
-            brightest=brightest,
-            peakmax=peakmax,
+            n_brightest=n_brightest,
+            peak_max=peak_max,
         )
         sources = daofind(cleaned_image)
 

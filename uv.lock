@@ -196,7 +196,7 @@ requires-dist = [
     { name = "numpy" },
     { name = "opencv-python" },
     { name = "pandas" },
-    { name = "photutils" },
+    { name = "photutils", specifier = ">=3.0.0" },
     { name = "scikit-learn", marker = "extra == 'extended'" },
     { name = "scipy" },
     { name = "sqlite3worker" },
