@@ -1,0 +1,699 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>astrafocus.star_size_focus_measure_operators &#8212; AstrAFocus Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=15a4c1f9" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/astrafocus/star_size_focus_measure_operators';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">AstrAFocus Documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motivation.html">Motivation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dgegen/astrafocus" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dgegen/astrafocus/issues/new?title=Issue%20on%20page%20%2F_modules/astrafocus/star_size_focus_measure_operators.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for astrafocus.star_size_focus_measure_operators</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">astropy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.focus_measure_operators</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AnalyticResponseFocusedMeasureOperator</span><span class="p">,</span>
+    <span class="n">ImageType</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.models.half_flux_radius_2D</span><span class="w"> </span><span class="kn">import</span> <span class="n">HalfFluxRadius2D</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.star_finder</span><span class="w"> </span><span class="kn">import</span> <span class="n">StarFinder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.star_fitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">StarFitter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astrafocus.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="StarSizeFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.StarSizeFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StarSizeFocusMeasure</span><span class="p">(</span><span class="n">AnalyticResponseFocusedMeasureOperator</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">ref_image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">fwhm</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">star_find_threshold</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">absolute_detection_limit</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">cutout_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
+        <span class="n">saturation_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_stars</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_star_finder_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;fwhm&quot;</span><span class="p">:</span> <span class="n">fwhm</span><span class="p">,</span>
+            <span class="s2">&quot;star_find_threshold&quot;</span><span class="p">:</span> <span class="n">star_find_threshold</span><span class="p">,</span>
+            <span class="s2">&quot;absolute_detection_limit&quot;</span><span class="p">:</span> <span class="n">absolute_detection_limit</span><span class="p">,</span>
+            <span class="s2">&quot;saturation_threshold&quot;</span><span class="p">:</span> <span class="n">saturation_threshold</span><span class="p">,</span>
+            <span class="s2">&quot;max_stars&quot;</span><span class="p">:</span> <span class="n">max_stars</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">star_finder</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">StarFinder</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_star_finder_kwargs</span><span class="p">)</span> <span class="k">if</span> <span class="n">ref_image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">star_fitter</span> <span class="o">=</span> <span class="n">StarFitter</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cutout_size</span> <span class="o">=</span> <span class="n">cutout_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimised_parameters</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_star_finder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StarFinder</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">star_finder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;StarFinder is not initialised and no image was provided to initialise it.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">star_finder</span> <span class="o">=</span> <span class="n">StarFinder</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_star_finder_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">star_finder</span>
+
+<div class="viewcode-block" id="StarSizeFocusMeasure.measure_focus">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.StarSizeFocusMeasure.measure_focus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measure_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="n">cutout_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cutout_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cutout_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutout_size</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">selected_stars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_star_finder</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">selected_stars</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;StarFinder could not find enough stars to measure focus. &quot;</span>
+                <span class="s2">&quot;Adjust the star finder parameters or check image quality.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">star_size_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">star_fitter</span><span class="o">.</span><span class="n">calculate_star_sizes_of_selection</span><span class="p">(</span>
+            <span class="n">image</span><span class="p">,</span>
+            <span class="n">selected_stars</span><span class="o">=</span><span class="n">selected_stars</span><span class="p">,</span>
+            <span class="n">cutout_size</span><span class="o">=</span><span class="n">cutout_size</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">star_size_arr</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;StarSizeFocusMeasure(star_finder=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">star_finder</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;star_fitter=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">star_fitter</span><span class="si">!r}</span><span class="s2">, cutout_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cutout_size</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;StarSizeFocusMeasure(star_finder=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">star_finder</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;star_fitter=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">star_fitter</span><span class="si">}</span><span class="s2">, cutout_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cutout_size</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="GaussianStarFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.GaussianStarFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GaussianStarFocusMeasure</span><span class="p">(</span><span class="n">StarSizeFocusMeasure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory</span>
+<span class="sd">    fits_directory = &quot;path_to_fits_files&quot;</span>
+<span class="sd">    image_data, headers, focus_pos = load_fits_with_focus_pos_from_directory(fits_directory)</span>
+
+<span class="sd">    image = image_data[0]</span>
+<span class="sd">    gsfm = GaussianStarFocusMeasure(image, fwhm=2.0, star_find_threshold=8.0)</span>
+<span class="sd">    gsfm.star_finder.selected_stars</span>
+
+<span class="sd">    import matplotlib.pyplot as plt</span>
+<span class="sd">    fm_vals = [gsfm.measure_focus(image) for image in image_data]</span>
+<span class="sd">    plt.plot(focus_pos, fm_vals, ls=&#39;&#39;, marker=&#39;.&#39;); plt.show()  # doctest: +SKIP</span>
+
+<span class="sd">    plot_focus_response_curve(gsfm, image_data, focus_pos, plot_name=&#39;gaussian_star.pdf&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ref_image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">fwhm</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">star_find_threshold</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">absolute_detection_limit</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">cutout_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
+        <span class="n">saturation_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_stars</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">astropy</span><span class="o">.</span><span class="n">modeling</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Gaussian2D</span><span class="p">,</span>
+            <span class="n">ref_image</span><span class="o">=</span><span class="n">ref_image</span><span class="p">,</span>
+            <span class="n">fwhm</span><span class="o">=</span><span class="n">fwhm</span><span class="p">,</span>
+            <span class="n">star_find_threshold</span><span class="o">=</span><span class="n">star_find_threshold</span><span class="p">,</span>
+            <span class="n">absolute_detection_limit</span><span class="o">=</span><span class="n">absolute_detection_limit</span><span class="p">,</span>
+            <span class="n">cutout_size</span><span class="o">=</span><span class="n">cutout_size</span><span class="p">,</span>
+            <span class="n">saturation_threshold</span><span class="o">=</span><span class="n">saturation_threshold</span><span class="p">,</span>
+            <span class="n">max_stars</span><span class="o">=</span><span class="n">max_stars</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="GaussianStarFocusMeasure.fit_focus_response_curve">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.GaussianStarFocusMeasure.fit_focus_response_curve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_focus_response_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">focus_pos</span><span class="p">,</span> <span class="n">measured_focus</span><span class="p">):</span>
+        <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">GaussianStarFocusMeasure</span><span class="o">.</span><span class="n">fit_hyperbola</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">,</span> <span class="n">measured_focus</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimised_parameters</span> <span class="o">=</span> <span class="n">popt</span>
+
+        <span class="k">return</span> <span class="n">popt</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="GaussianStarFocusMeasure.get_focus_response_curve_fit">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.GaussianStarFocusMeasure.get_focus_response_curve_fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_focus_response_curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">focus_pos</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimised_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">predicted_focus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperbola</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">optimised_parameters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">predicted_focus</span></div>
+
+
+<div class="viewcode-block" id="GaussianStarFocusMeasure.fit_hyperbola">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.GaussianStarFocusMeasure.fit_hyperbola">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_hyperbola</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span>
+            <span class="n">GaussianStarFocusMeasure</span><span class="o">.</span><span class="n">hyperbola</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">y</span><span class="p">,</span>
+            <span class="n">p0</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span>  <span class="c1"># , np.min(y)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span></div>
+
+
+<div class="viewcode-block" id="GaussianStarFocusMeasure.hyperbola">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.GaussianStarFocusMeasure.hyperbola">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hyperbola</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x_0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_0</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        If we want the hyperbola to be north-south opening, we need to use the parametrisation</span>
+<span class="sd">        (y-y_0)**2/b**2 - (x-x_0)**2/a**2 = 1</span>
+
+<span class="sd">        Resulting in the following parametrisation of the north opening hyperbola</span>
+<span class="sd">        y = b * sqrt(1 + ((x-x_0)/a)**2) + y_0</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = np.linspace(-1, 2)</span>
+<span class="sd">        &gt;&gt;&gt; plt.plot(x, hyperbola(x=x, a=1, b=1, x_0=0, y_0=-1)); plt.show()  # doctest: +SKIP</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_0</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">y_0</span>
+
+        <span class="k">return</span> <span class="n">y</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="HFRStarFocusMeasure">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.HFRStarFocusMeasure">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HFRStarFocusMeasure</span><span class="p">(</span><span class="n">StarSizeFocusMeasure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    from astrafocus.utils.fits import load_fits_with_focus_pos_from_directory</span>
+<span class="sd">    fits_directory = &quot;path_to_fits_files&quot;</span>
+<span class="sd">    image_data, headers, focus_pos = load_fits_with_focus_pos_from_directory(fits_directory)</span>
+
+
+<span class="sd">    image = image_data[0]</span>
+<span class="sd">    hfrfm = HFRStarFocusMeasure(image, fwhm=2.0, star_find_threshold=8.0)</span>
+<span class="sd">    hfrfm.star_finder.selected_stars</span>
+
+
+<span class="sd">    import matplotlib.pyplot as plt</span>
+<span class="sd">    fm_vals = [hfrfm.measure_focus(image) for image in image_data]</span>
+<span class="sd">    plt.plot(focus_pos, fm_vals/np.min(fm_vals), ls=&#39;&#39;, marker=&#39;.&#39;)</span>
+<span class="sd">    plt.plot(</span>
+<span class="sd">        focus_pos,</span>
+<span class="sd">        hfrfm.linear_V_curve(focus_pos, *(-0.003, 0.003, np.mean(focus_pos),</span>
+<span class="sd">        np.min(fm_vals/np.min(fm_vals))))</span>
+<span class="sd">    )</span>
+<span class="sd">    plt.show()  # doctest: +SKIP</span>
+
+<span class="sd">    plot_focus_response_curve(hfrfm, image_data, focus_pos, plot_name=&#39;HFR_star.pdf&#39;)</span>
+
+
+<span class="sd">    hfrfm.fit_focus_response_curve(focus_pos, fm_vals/np.min(fm_vals))</span>
+<span class="sd">    hfrfm.get_focus_response_curve_fit(focus_pos)</span>
+<span class="sd">    focus_pos_fine = np.linspace(np.min(focus_pos), np.max(focus_pos))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ref_image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">fwhm</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">star_find_threshold</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">absolute_detection_limit</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">cutout_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
+        <span class="n">saturation_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_stars</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">HalfFluxRadius2D</span><span class="p">,</span>
+            <span class="n">ref_image</span><span class="o">=</span><span class="n">ref_image</span><span class="p">,</span>
+            <span class="n">fwhm</span><span class="o">=</span><span class="n">fwhm</span><span class="p">,</span>
+            <span class="n">star_find_threshold</span><span class="o">=</span><span class="n">star_find_threshold</span><span class="p">,</span>
+            <span class="n">absolute_detection_limit</span><span class="o">=</span><span class="n">absolute_detection_limit</span><span class="p">,</span>
+            <span class="n">cutout_size</span><span class="o">=</span><span class="n">cutout_size</span><span class="p">,</span>
+            <span class="n">saturation_threshold</span><span class="o">=</span><span class="n">saturation_threshold</span><span class="p">,</span>
+            <span class="n">max_stars</span><span class="o">=</span><span class="n">max_stars</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="HFRStarFocusMeasure.fit_focus_response_curve">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.HFRStarFocusMeasure.fit_focus_response_curve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_focus_response_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">focus_pos</span><span class="p">,</span> <span class="n">measured_focus</span><span class="p">):</span>
+        <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">HFRStarFocusMeasure</span><span class="o">.</span><span class="n">fit_linear_V_curve</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">,</span> <span class="n">measured_focus</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimised_parameters</span> <span class="o">=</span> <span class="n">popt</span>
+
+        <span class="k">return</span> <span class="n">popt</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="HFRStarFocusMeasure.get_focus_response_curve_fit">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.HFRStarFocusMeasure.get_focus_response_curve_fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_focus_response_curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">focus_pos</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimised_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">predicted_focus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_V_curve</span><span class="p">(</span><span class="n">focus_pos</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">optimised_parameters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">predicted_focus</span></div>
+
+
+<div class="viewcode-block" id="HFRStarFocusMeasure.fit_linear_V_curve">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.HFRStarFocusMeasure.fit_linear_V_curve">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_linear_V_curve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span>
+            <span class="n">HFRStarFocusMeasure</span><span class="o">.</span><span class="n">linear_V_curve</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">y</span><span class="p">,</span>
+            <span class="n">p0</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span></div>
+
+
+<div class="viewcode-block" id="HFRStarFocusMeasure.linear_V_curve">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.HFRStarFocusMeasure.linear_V_curve">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linear_V_curve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">slope_left</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">slope_right</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x_centre</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = np.linspace(-2, 2, 200)</span>
+<span class="sd">        &gt;&gt;&gt; plt.plot(x, linear_V_curve(x=x)); plt.show()  # doctest: +SKIP</span>
+
+<span class="sd">        y_min = slope_left*v_centre + intercept_left = slope_right*v_centre + intercept_right</span>
+<span class="sd">        (slope_left-slope_right)*v_centre =  intercept_right - intercept_left</span>
+<span class="sd">        v_centre = (intercept_right-intercept_left)/(slope_left - slope_right)</span>
+
+<span class="sd">        intercept_diff = (intercept_right - intercept_left)</span>
+
+<span class="sd">        v_centre = intercept_diff /(slope_left - slope_right)</span>
+
+<span class="sd">        slope_left*(x-v_centre) + b = slope_left*x + (b - slope_left**v_centre)</span>
+<span class="sd">        slope_right*(x-v_centre) + b = slope_right*x + (b - v_centre*slope_right)</span>
+<span class="sd">        intercept_diff = v_centre*(slope_left-slope_right)</span>
+
+<span class="sd">        v_centre = (intercept_right - intercept_left) / (slope_left - slope_right)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">x</span> <span class="o">-</span> <span class="n">x_centre</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">slope_left</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_centre</span><span class="p">)</span> <span class="o">+</span> <span class="n">intercept</span><span class="p">,</span>
+            <span class="n">slope_right</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_centre</span><span class="p">)</span> <span class="o">+</span> <span class="n">intercept</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="HFRStarFocusMeasure.linear_V_curve_prime">
+<a class="viewcode-back" href="../../api.html#astrafocus.star_size_focus_measure_operators.HFRStarFocusMeasure.linear_V_curve_prime">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linear_V_curve_prime</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">slope_left</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">slope_right</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">intercept_left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">intercept_right</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = np.linspace(-2, 2, 200)</span>
+<span class="sd">        &gt;&gt;&gt; plt.plot(x, linear_V_curve(x=x)); plt.show()  # doctest: +SKIP</span>
+
+<span class="sd">        slope_left*v_centre + intercept_left = slope_right*v_centre + intercept_right</span>
+<span class="sd">        (slope_left-slope_right)*v_centre =  intercept_right - intercept_left</span>
+<span class="sd">        v_centre = (intercept_right-intercept_left)/(slope_left - slope_right)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">v_centre</span> <span class="o">=</span> <span class="p">(</span><span class="n">intercept_right</span> <span class="o">-</span> <span class="n">intercept_left</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">slope_left</span> <span class="o">-</span> <span class="n">slope_right</span><span class="p">)</span>
+
+        <span class="n">left_mask</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">v_centre</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">left_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">slope_left</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">left_mask</span><span class="p">]</span> <span class="o">+</span> <span class="n">intercept_left</span>
+        <span class="n">y</span><span class="p">[</span><span class="o">~</span><span class="n">left_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">slope_right</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="o">~</span><span class="n">left_mask</span><span class="p">]</span> <span class="o">+</span> <span class="n">intercept_right</span>
+
+        <span class="k">return</span> <span class="n">y</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By David Degen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, David Degen.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

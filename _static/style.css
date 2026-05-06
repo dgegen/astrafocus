@@ -1,0 +1,212 @@
+:root {
+   /* --pst-color-inline-code: 33, 125, 224; */
+   --mystnb-source-margin-color: rgb(124, 123, 157);
+   --pst-color-primary: #929ad9 !important;
+   --pst-color-secondary: #858585 !important;
+   --pst-color-link-hover: var(--pst-color-secondary) !important;
+   --import-color: #ff4e4e !important;
+}
+
+
+[data-theme="dark"] {
+   --mystnb-source-margin-color: rgb(230, 229, 254);
+   --pst-color-primary: #ab96f0 !important;
+   --pst-color-secondary: #eeeee9 !important;
+   --pst-color-link-hover: #d291f7 !important;
+   --pst-color-target: #d291f74d !important;
+   --pst-color-surface: #00000000 !important;
+   /* #29313d, code background, new #292a3ddd */
+   --pst-color-text-base: #d5cad8 !important;
+   /* Moste code text */
+   --import-color: #ff4e4e !important;
+   --string-color: #03c22c !important;
+   /* String color */
+   --mystnb-stderr-border-color: #ffaced00;
+   --mystnb-stream-border-color: #ffaced00;
+   --mystnb-text_plain-border-color: #ffaced00;
+
+   /* Comments and output */
+   .go {
+      color: #d8b9e4 !important;
+   }
+
+   div.cell.docutils.container .cell_output.docutils.container {
+      font-size: 16px;
+      color: rgb(225, 103, 217);
+      /* Add more styles as needed */
+   }
+
+   div.cell.docutils.container div.cell_output.docutils.container div.output.text_plain.highlight-myst-ansi.notranslate div.highlight {
+      background: #331c3c !important;
+   }
+
+   div.cell.docutils.container div.cell_output.docutils.container div.output.stream.highlight-myst-ansi.notranslate div.highlight {
+      background: #331c3c !important;
+   }
+
+   div.cell.docutils.container div.cell_output.docutils.container div.output.stderr.highlight-myst-ansi.notranslate div.highlight {
+      background: #47344d !important;
+   }
+
+   div.highlight-python.notranslate div.highlight {
+      background: #1e1b28 !important;
+   }
+
+   div.highlight-bash.notranslate div.highlight {
+      background: #1e1b28 !important;
+   }
+
+
+
+}
+
+div.cell.docutils.container div.cell_input.docutils.container div.highlight-ipython3.notranslate div.highlight {
+   background: #1e1b28 !important;
+}
+
+.cell_output .output.text_plain,
+.cell_output .output.traceback,
+.cell_output .output.stream,
+.cell_output .output.stderr {
+   background-color: #8f62ef;
+   margin-top: -0.5em;
+   margin-bottom: 0.7em;
+}
+
+
+.cell_input .highlight-ipython3 {
+   background: #1e1b28 !important;
+}
+
+[data-theme="light"] {
+   --mystnb-source-margin-color: rgb(102, 102, 102);
+   --pst-color-primary: #7343e3 !important;
+   --pst-color-secondary: #383442 !important;
+   --pst-color-link-hover: #383442 !important;
+   --pst-color-target: #d291f74d !important;
+   /* Source code selection color */
+   --pst-color-surface: #f4f3f5 !important;
+   --import-color: #e62121 !important;
+   --string-color: #028c20 !important;
+   /* String color */
+
+   .go {
+      color: #808080 !important;
+   }
+
+
+}
+
+
+
+
+/* Function name */
+html[data-theme="light"] .highlight .nf {
+   color: #9d27ff !important;
+}
+
+html[data-theme="dark"] .highlight .nf {
+   color: #dd50fb !important;
+}
+
+
+/* Code cells */
+
+.highlight pre {
+   line-height: 20px !important;
+   font-weight: 500 !important;
+   font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important;
+   font-size: 13px;
+}
+
+
+.highlight pre {
+   padding: 12px !important;
+}
+
+
+/* no cell number */
+.prompt {
+   display: none !important;
+}
+
+.rst-content code.literal {
+   color: #797979
+}
+
+.docutils.literal.notranslate pre {
+   color: #797979
+}
+
+.xr-attrs dt {
+   background: inherit !important;
+   color: inherit !important;
+   border-top: inherit !important;
+}
+
+div.nboutput.container div.output_area>div {
+   text-align: left !important;
+}
+
+div.nboutput.container div.output_area {
+   text-align: center !important;
+}
+
+/* Import, def, if, else */
+.highlight .kn,
+.highlight .k,
+.highlight .kc,
+.highlight .ow {
+   color: var(--import-color) !important;
+   font-weight: normal !important;
+}
+
+.highlight .mi,
+.highlight .mf,
+.highlight .nb,
+.highlight .bp {
+   color: #2a7bd8 !important
+}
+
+/* Comment color */
+.highlight .c1,
+.highlight .o {
+   color: #9c9c9c !important
+}
+
+/* f'string color */
+.highlight .sa,
+.highlight .sé,
+.highlight .s1,
+.highlight .s2,
+.highlight .sd {
+   color: var(--string-color) !important
+}
+
+/* Decorator color when displaying source*/
+.highlight .nd {
+   color: #b52ad8 !important;
+   font-weight: normal !important;
+}
+
+/* .highlight .p,
+.highlight .mi,
+.highlight .mf {
+   font-weight: normal !important;
+} */
+
+/* Curly brackets? */
+/* .highlight .si {
+   color: rgb(231, 51, 255)t;
+} */
+
+
+.highlight .nf {
+   color: #d82ac4 !important;
+}
+
+/* Dataframe */
+.cell_output .dataframe {
+   font-size: 0.85em;
+   width: 100%;
+}
