@@ -19,20 +19,26 @@ class StarFitter:
         The astropy model used for fitting.
     result : astropy.modeling.Model
         The result of the fitting process.
-    fwhm : float
-        The full-width at half-maximum (FWHM) of the fitted model.
+    star_size : float
+        The full-width at half-maximum (FWHM) of the fitted model, used as the focus measure.
 
     Methods
     -------
     fit(star_data, *args, **kwargs)
         Fit the specified model to the given star_data.
-    calculate_avg_fwhm(result)
-        Calculate the average FWHM from the fitted model parameters.
+    fit_source(image, star, cutout_size=15, *args, **kwargs)
+        Slice out a star from an image and fit the model to it.
+    integrate_source(image, star, cutout_size=15, fitter=..., *args, **kwargs)
+        Fit the model to a star and integrate the fitted profile to estimate its flux.
+    calculate_star_sizes_of_selection(images, selected_stars, cutout_size, *args, **kwargs)
+        Fit the model to each star in a selection, across one or more images.
 
     Raises
     ------
     ValueError
-        If the object has not been fitted yet or if FWHM calculation is not supported for the model type.
+        If `result` or `parameter_dict` is accessed before the object has been fitted.
+    AttributeError
+        If `star_size` is accessed but FWHM calculation is not supported for the model type.
 
     Examples
     --------

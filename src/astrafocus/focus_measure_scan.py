@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -6,6 +7,9 @@ from astropy.io import fits
 from tqdm import tqdm
 
 from astrafocus.focus_measure_operators import FocusMeasureOperator
+
+if TYPE_CHECKING:
+    from matplotlib.axes import Axes
 
 
 class FocusMeasureScan:
@@ -111,7 +115,13 @@ class FocusMeasureScan:
 
         return pd.DataFrame(rows)
 
-    def plot_all(self, df, plot_kwargs={}, log_scale=False, axes=None):
+    def plot_all(
+        self,
+        df: pd.DataFrame,
+        plot_kwargs: dict = {},
+        log_scale: bool = False,
+        axes: "list[Axes] | None" = None,
+    ) -> "list[Axes]":
         try:
             import matplotlib.pyplot as plt
         except ImportError:

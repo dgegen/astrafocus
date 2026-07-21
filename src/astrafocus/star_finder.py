@@ -10,9 +10,53 @@ logger = get_logger()
 
 class StarFinder:
     """
+    Detects stars in a reference image using a tiered-threshold DAOFIND approach.
+
+    On construction, background statistics are estimated from `ref_image` (via
+    sigma-clipped stats) and an initial source search is run at
+    `star_find_threshold`. If no sources are found, the search retries at
+    progressively lower thresholds from `FALLBACK_THRESHOLDS`. See
+    `find_sources` for the search logic. If no sources are found even after
+    all fallbacks, a `ValueError` is raised.
+
+    Parameters
+    ----------
+    ref_image : 2D array_like
+        The reference image to search for stars.
+    fwhm : float, optional
+        Full-Width at Half-Maximum (pixels) of the Gaussian kernel used by
+        DAOStarFinder. Default is 3.0.
+    star_find_threshold : float, optional
+        Initial detection threshold in units of background standard
+        deviation (sigma). Default is 4.0.
+    absolute_detection_limit : float, optional
+        Hard floor for detection in ADU/counts. The effective threshold is
+        max(absolute_detection_limit, std * threshold). Default is 0.0.
+    saturation_threshold : float, optional
+        Maximum allowed pixel value; peaks above this are rejected. Default
+        is None (no cap).
+    max_stars : int, optional
+        Maximum number of sources to keep, sorted by brightness. Default is
+        50.
+
+    Attributes
+    ----------
+    ref_background : float
+        Sigma-clipped median background level of `ref_image`.
+    ref_std : float
+        Sigma-clipped standard deviation of `ref_image`.
+    selected_stars : astropy.table.QTable
+        Table of detected sources with centroids and photometry.
+
+    Raises
+    ------
+    ValueError
+        If no sources are found at `star_find_threshold` or any fallback
+        threshold.
+
     Examples
-    -------
-    TargetFinder(ref_image)
+    --------
+    StarFinder(ref_image)
     """
 
     FALLBACK_THRESHOLDS = np.array([4, 3, 2.5])
