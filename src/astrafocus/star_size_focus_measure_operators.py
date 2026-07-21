@@ -52,6 +52,9 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
     max_stars : int, optional
         Maximum number of stars to use, sorted by brightness. Forwarded to `StarFinder`.
         Default is 100.
+    sharpness_range : tuple of float, optional
+        (sharplo, sharphi) bounds passed to DAOStarFinder, forwarded to `StarFinder`.
+        Default is (0.05, 1.0).
     **kwargs
         Accepted for interface compatibility with other `FocusMeasureOperator`
         implementations; unused.
@@ -85,6 +88,7 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         cutout_size: int = 15,
         saturation_threshold: float | None = None,
         max_stars: int = 100,
+        sharpness_range: tuple[float, float] = (0.05, 1.0),
         **kwargs,
     ) -> None:
         self._star_finder_kwargs = {
@@ -93,6 +97,7 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
             "absolute_detection_limit": absolute_detection_limit,
             "saturation_threshold": saturation_threshold,
             "max_stars": max_stars,
+            "sharpness_range": sharpness_range,
         }
         self.star_finder = (
             StarFinder(ref_image, **self._star_finder_kwargs) if ref_image is not None else None

@@ -38,6 +38,9 @@ class StarFinder:
     max_stars : int, optional
         Maximum number of sources to keep, sorted by brightness. Default is
         50.
+    sharpness_range : tuple of float, optional
+        (sharplo, sharphi) bounds passed to DAOStarFinder; see
+        `find_sources` for details. Default is (0.05, 1.0).
 
     Attributes
     ----------
@@ -69,12 +72,14 @@ class StarFinder:
         absolute_detection_limit: float = 0.0,
         saturation_threshold: float | None = None,
         max_stars: int = 50,
+        sharpness_range: tuple[float, float] = (0.05, 1.0),
     ) -> None:
         self.fwhm = fwhm
         self.star_find_threshold = star_find_threshold
         self.absolute_detection_limit = absolute_detection_limit
         self.saturation_threshold = saturation_threshold
         self.max_stars = max_stars
+        self.sharpness_range = sharpness_range
 
         mean, median, std = astropy.stats.sigma_clipped_stats(ref_image, sigma=3.0)
         self.ref_background = median
@@ -100,6 +105,7 @@ class StarFinder:
             saturation_threshold=self.saturation_threshold,
             absolute_detection_limit=self.absolute_detection_limit,
             max_stars=self.max_stars,
+            sharpness_range=self.sharpness_range,
         )
 
     @classmethod
@@ -113,6 +119,7 @@ class StarFinder:
         saturation_threshold=None,
         absolute_detection_limit: float = 0.0,
         max_stars: int = 50,
+        sharpness_range: tuple[float, float] = (0.05, 1.0),
     ):
         """
         Detect and locate stars using a tiered-threshold DAOFIND approach.
@@ -148,6 +155,13 @@ class StarFinder:
         max_stars : int, optional
             Capping limit for returned sources to optimize downstream
             processing speed. Sorted by brightness.
+        sharpness_range : tuple of float, optional
+            (sharplo, sharphi) bounds passed to DAOStarFinder. The default
+            lower bound of 0.05 (below the photutils default of 0.2) admits
+            softer/broader sources, which helps find stars on an initial
+            out-of-focus reference image. Loosening it further increases the
+            risk of picking up non-stellar diffuse artifacts (e.g. hot-pixel
+            clusters, cosmic rays, background blobs).
 
         Returns
         -------
@@ -176,6 +190,7 @@ class StarFinder:
             threshold=np.maximum(absolute_detection_limit, std * threshold),
             peak_max=saturation_threshold,
             n_brightest=max_stars,
+            sharpness_range=sharpness_range,
         )
         if sources is not None:
             sources.sort("flux", reverse=True)
@@ -206,12 +221,20 @@ class StarFinder:
             return cls.FALLBACK_THRESHOLDS[(cls.FALLBACK_THRESHOLDS < threshold)]
 
     @staticmethod
-    def _dao_star_finder(cleaned_image, fwhm, threshold, n_brightest=None, peak_max=None):
+    def _dao_star_finder(
+        cleaned_image,
+        fwhm,
+        threshold,
+        n_brightest=None,
+        peak_max=None,
+        sharpness_range=(0.05, 1.0),
+    ):
         daofind = DAOStarFinder(
             fwhm=fwhm,
             threshold=threshold,
             n_brightest=n_brightest,
             peak_max=peak_max,
+            sharpness_range=sharpness_range,
         )
         sources = daofind(cleaned_image)
 
