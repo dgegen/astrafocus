@@ -542,7 +542,7 @@ class SweepingAutofocuser(AutofocuserBase):
 
             mean_fm_value = np.nanmean(
                 self._focus_record.loc[
-                    start_index + ind * n_exposures : start_index + ind * (n_exposures + 1),
+                    start_index + ind * n_exposures : start_index + (ind + 1) * n_exposures - 1,
                     "focus_measure",
                 ]
             )
