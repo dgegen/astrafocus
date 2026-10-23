@@ -1,3 +1,5 @@
+import warnings
+
 import astropy
 import numpy as np
 import numpy.typing as npt
@@ -10,9 +12,39 @@ from astrafocus.focus_measure_operators import (
 from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
 from astrafocus.star_finder import StarFinder
 from astrafocus.star_fitter import StarFitter
+from astrafocus.utils.focus_curve import focus_curve_snr
 from astrafocus.utils.logger import get_logger
 
 logger = get_logger()
+
+# The star cutout can grow to this many times `cutout_size`, so large donuts far from focus fit.
+MAX_CUTOUT_FACTOR = 8
+# Stars whose size changes by less than this fraction over a sweep, or whose own size curve has a
+# signal-to-noise ratio below MIN_STAR_CURVE_SNR, are not used (see `combine_star_sizes`).
+MIN_RELATIVE_SIZE_CHANGE = 0.2
+MIN_STAR_CURVE_SNR = 8.0
+
+
+def _lowest_point(x: npt.ArrayLike, y: npt.ArrayLike) -> tuple[np.ndarray, np.ndarray, float, float, float]:
+    """
+    Return `x` and `y` as arrays, the lowest point `(x_low, y_low)`, and a typical slope of the curve.
+
+    The curve fits start at the lowest point. A fit that starts in the middle of the search range
+    does not find a best focus near its edge.
+    """
+    x, y = np.asarray(x, dtype=float), np.asarray(y, dtype=float)
+    i = int(np.argmin(y))
+    slope = max((np.max(y) - y[i]) / max(np.ptp(x), 1.0), 1e-6)
+    return x, y, x[i], y[i], slope
+
+
+def _robust_curve_fit(model, x, y, p0, y_low):
+    """
+    `scipy.optimize.curve_fit` with a soft-L1 loss, so that a few bad points, e.g. of overlapping
+    donuts, do not move the result. Residuals larger than 5% of the lowest value `y_low` count less.
+    """
+    f_scale = max(0.05 * abs(y_low), 1e-3)
+    return scipy.optimize.curve_fit(model, x, y, p0=p0, method="trf", loss="soft_l1", f_scale=f_scale)
 
 
 class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
@@ -20,8 +52,10 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
     Focus measure operator that derives focus quality from the fitted size of detected stars.
 
     Stars are located in the image with a `StarFinder`, and `model` is fit to each detected
-    star with a `StarFitter` (see `StarFitter.star_size`, e.g. FWHM). The mean fitted size
-    across stars is returned as the focus measure; smaller values indicate better focus.
+    star with a `StarFitter` (see `StarFitter.star_size`, e.g. FWHM). Before the fit, the sky is
+    subtracted and only the star light is kept (see `StarFitter.extract_star`). The median
+    fitted size across stars is returned as the focus measure; smaller values indicate better
+    focus.
 
     Subclasses fix `model` to a specific profile (see `GaussianStarFocusMeasure`,
     `HFRStarFocusMeasure`) and implement `fit_focus_response_curve` /
@@ -44,8 +78,8 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
     absolute_detection_limit : float, optional
         Hard floor for detection in ADU/counts, forwarded to `StarFinder`. Default is 0.0.
     cutout_size : int, optional
-        Half-width (pixels) of the square cutout extracted around each star for fitting.
-        Default is 15.
+        Start half-width (pixels) of the square cutout extracted around each star for fitting.
+        It grows up to `MAX_CUTOUT_FACTOR` times this (see `StarFitter.extract_star`). Default is 15.
     saturation_threshold : float, optional
         Maximum allowed pixel value; stars with brighter peaks are rejected. Forwarded to
         `StarFinder`. Default is None (no cap).
@@ -68,6 +102,9 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         Fits `model` to individual stars and reports their size.
     cutout_size : int
         Half-width (pixels) of the cutout used when fitting each star.
+    last_star_sizes : numpy.ndarray or None
+        Size of each selected star in the last image passed to `measure_focus` (NaN if the star
+        could not be measured). None before the first call.
     optimised_parameters : numpy.ndarray or None
         Parameters of the fitted focus response curve, set by `fit_focus_response_curve`
         (subclasses only) and consumed by `get_focus_response_curve_fit`. None until fit.
@@ -104,6 +141,7 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         )
         self.star_fitter = StarFitter(model)
         self.cutout_size = cutout_size
+        self.last_star_sizes = None
         self.optimised_parameters = None
 
     def _get_star_finder(self, image: ImageType | None = None) -> StarFinder:
@@ -134,7 +172,7 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
 
     def measure_focus(self, image: ImageType, cutout_size: int | None = None, **kwargs) -> float:
         """
-        Compute the mean fitted star size in `image`, used as the focus measure.
+        Compute the median fitted star size in `image`, used as the focus measure.
 
         Stars are located via `self.star_finder` (initialised from `image` on first call if
         not already set), and `self.star_fitter` is fit to a cutout around each star.
@@ -153,12 +191,13 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         Returns
         -------
         float
-            Mean fitted star size (e.g. FWHM) across the selected stars. Smaller is better.
+            Median fitted star size (e.g. FWHM) across the selected stars. Smaller is better.
 
         Raises
         ------
         ValueError
-            If the `StarFinder` could not find enough stars in `image`.
+            If the `StarFinder` could not find enough stars in `image`, or if no star could be
+            measured in `image`.
         """
         if cutout_size is None:
             cutout_size = self.cutout_size
@@ -175,8 +214,60 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
             image,
             selected_stars=selected_stars,
             cutout_size=cutout_size,
+            max_cutout_size=MAX_CUTOUT_FACTOR * cutout_size,
         )
-        return np.mean(star_size_arr)
+        self.last_star_sizes = star_size_arr[0]
+        if np.all(np.isnan(star_size_arr)):
+            raise ValueError("No star light above the noise at any of the selected star positions.")
+        return float(np.nanmedian(star_size_arr))
+
+    def combine_star_sizes(
+        self, star_sizes: npt.ArrayLike, focus_pos: npt.ArrayLike, min_points: int = 5
+    ) -> np.ndarray:
+        """
+        Combine the star sizes of a sweep into one focus measure per frame.
+
+        `star_sizes` has shape (n_frames, n_stars), and `focus_pos` gives the focus position of each
+        frame. A real star changes size smoothly when the focus changes, so a star is only used if:
+
+        - it was measured in at least `min_points` frames,
+        - its size changes by at least `MIN_RELATIVE_SIZE_CHANGE` (10th to 90th percentile,
+          relative to the median), and
+        - its own size curve has a signal-to-noise ratio of at least `MIN_STAR_CURVE_SNR`
+          (see `focus_curve_snr`).
+
+        This drops hot pixels and noise. The focus measure of a frame is the median size of the
+        stars that are used, or NaN if no star is left. With fewer than `min_points` frames, all
+        stars are used.
+
+        Examples
+        --------
+        >>> hfrfm = HFRStarFocusMeasure()
+        >>> focus_pos = np.array([100, 200, 300, 400, 500])
+        >>> star = np.array([5.0, 3.0, 2.0, 3.0, 5.0])
+        >>> hot_pixel = np.full(5, 0.6)
+        >>> hfrfm.combine_star_sizes(np.column_stack([star, star, hot_pixel]), focus_pos).tolist()
+        [5.0, 3.0, 2.0, 3.0, 5.0]
+        """
+        star_sizes = np.atleast_2d(np.asarray(star_sizes, dtype=float))
+        keep = np.ones(star_sizes.shape[1], dtype=bool)
+        if len(star_sizes) >= min_points:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", RuntimeWarning)  # stars that are never measured
+                p10, median, p90 = np.nanpercentile(star_sizes, [10, 50, 90], axis=0)
+            keep &= np.count_nonzero(np.isfinite(star_sizes), axis=0) >= min_points
+            keep &= p90 - p10 >= MIN_RELATIVE_SIZE_CHANGE * median
+            keep &= [focus_curve_snr(focus_pos, sizes) >= MIN_STAR_CURVE_SNR for sizes in star_sizes.T]
+            if not np.all(keep):
+                logger.info(
+                    f"Not using {np.count_nonzero(~keep)} of {keep.size} stars: size does not follow focus."
+                )
+        if not np.any(keep):
+            return np.full(len(star_sizes), np.nan)
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)  # frames where no used star is measured
+            return np.nanmedian(star_sizes[:, keep], axis=1)
 
     def __repr__(self) -> str:
         return (
@@ -243,6 +334,7 @@ class GaussianStarFocusMeasure(StarSizeFocusMeasure):
             cutout_size=cutout_size,
             saturation_threshold=saturation_threshold,
             max_stars=max_stars,
+            **kwargs,
         )
 
     def fit_focus_response_curve(self, focus_pos: npt.ArrayLike, measured_focus: npt.ArrayLike) -> float:
@@ -261,14 +353,10 @@ class GaussianStarFocusMeasure(StarSizeFocusMeasure):
 
     @staticmethod
     def fit_hyperbola(x: npt.ArrayLike, y: npt.ArrayLike) -> tuple[np.ndarray, np.ndarray]:
-        """Least-squares fit of `hyperbola` to `(x, y)` via `scipy.optimize.curve_fit`."""
-        popt, pcov = scipy.optimize.curve_fit(
-            GaussianStarFocusMeasure.hyperbola,
-            x,
-            y,
-            p0=(1, 1, np.mean(x), np.min(y)),
-        )
-        return popt, pcov
+        """Robust fit of `hyperbola` to `(x, y)`, starting at the lowest point (see `_lowest_point`)."""
+        x, y, x_low, y_low, slope = _lowest_point(x, y)
+        b = max(y_low, 1e-3)  # with y_0 = 0, the vertex is at (x_low, y_low) and the asymptotes have `slope`
+        return _robust_curve_fit(GaussianStarFocusMeasure.hyperbola, x, y, (b / slope, b, x_low, 0.0), y_low)
 
     @staticmethod
     def hyperbola(
@@ -300,7 +388,8 @@ class HFRStarFocusMeasure(StarSizeFocusMeasure):
     """
     `StarSizeFocusMeasure` that fits a Half Flux Radius (HFR) model to each star.
 
-    Star size is twice the fitted `R_0` (see `HalfFluxRadius2D` and `StarFitter.star_size`).
+    Star size is the half flux radius (HFR) in pixels, i.e. the fitted `R_0` (see
+    `HalfFluxRadius2D` and `StarFitter.star_size`). The half flux diameter (HFD) is twice this.
     The focus response curve (star size vs. focus position) is modelled as a piecewise-linear
     "V" curve via `linear_V_curve`/`fit_linear_V_curve`; its centre gives the estimated
     in-focus position.
@@ -349,6 +438,7 @@ class HFRStarFocusMeasure(StarSizeFocusMeasure):
             cutout_size=cutout_size,
             saturation_threshold=saturation_threshold,
             max_stars=max_stars,
+            **kwargs,
         )
 
     def fit_focus_response_curve(self, focus_pos: npt.ArrayLike, measured_focus: npt.ArrayLike) -> float:
@@ -371,14 +461,11 @@ class HFRStarFocusMeasure(StarSizeFocusMeasure):
 
     @staticmethod
     def fit_linear_V_curve(x: npt.ArrayLike, y: npt.ArrayLike) -> tuple[np.ndarray, np.ndarray]:
-        """Least-squares fit of `linear_V_curve` to `(x, y)` via `scipy.optimize.curve_fit`."""
-        popt, pcov = scipy.optimize.curve_fit(
-            HFRStarFocusMeasure.linear_V_curve,
-            x,
-            y,
-            p0=(-0.1, 0.1, np.mean(x), np.min(y)),
+        """Robust fit of `linear_V_curve` to `(x, y)`, starting at the lowest point (see `_lowest_point`)."""
+        x, y, x_low, y_low, slope = _lowest_point(x, y)
+        return _robust_curve_fit(
+            HFRStarFocusMeasure.linear_V_curve, x, y, (-slope, slope, x_low, y_low), y_low
         )
-        return popt, pcov
 
     @staticmethod
     def linear_V_curve(

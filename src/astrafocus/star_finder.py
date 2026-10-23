@@ -1,11 +1,79 @@
+import warnings
+from typing import NamedTuple
+
 import astropy
+import astropy.stats
+import cv2
 import numpy as np
+from astropy.utils.exceptions import AstropyUserWarning
 from photutils.detection import DAOStarFinder
 
 from astrafocus.utils.logger import get_logger
 from astrafocus.utils.typing import ImageType
 
 logger = get_logger()
+
+
+class PreparedImage(NamedTuple):
+    """An image with the sky and hot pixels removed, and a smoothed copy (see `prepare_image`)."""
+
+    data: np.ndarray
+    noise: float
+    smoothed: np.ndarray
+    smoothed_noise: float
+
+
+def replace_hot_pixels(image: ImageType, std: float, n_sigma: float = 5.0, ratio: float = 5.0) -> np.ndarray:
+    """
+    Replace hot pixels in a sky-subtracted image with the median of their 3x3 neighbourhood.
+
+    A pixel is hot if it is more than `n_sigma` * `std` above the sky and more than `ratio` times
+    the 3x3 median. A star with a FWHM of 1.3 pixels or more has a peak of less than 5 times its
+    3x3 median, so stars are not changed. Clusters of up to 4 hot pixels are also replaced,
+    because their 3x3 median is still the sky.
+
+    Examples
+    --------
+    >>> image = np.zeros((5, 5))
+    >>> image[2, 2] = 1000.0
+    >>> float(replace_hot_pixels(image, std=1.0)[2, 2])
+    0.0
+    """
+    image = np.asarray(image, dtype=np.float32)
+    median = cv2.medianBlur(image, 3)
+    hot = (image > n_sigma * std) & (image > ratio * np.maximum(median, 0))
+    return np.where(hot, median, image)
+
+
+def prepare_image(image, remove_hot_pixels=True, smoothing=2.0, sample_step=4) -> PreparedImage:
+    """
+    Remove the sky and hot pixels from `image`, and make a smoothed copy to find faint star light in.
+
+    The sky is the sigma-clipped median of each row, plus that of each column of what is left. This
+    removes the sky level, row banding and gradients, and the light of one star does not change it.
+    The noise is the sigma-clipped standard deviation of the result. Hot pixels are then replaced
+    (see `replace_hot_pixels`). The copy is smoothed with a Gaussian of standard
+    deviation `smoothing` pixels. Every `sample_step`-th row and column is used for the statistics,
+    to make it fast. A `PreparedImage` is returned as it is.
+    """
+    if isinstance(image, PreparedImage):
+        return image
+
+    data = np.asarray(image, dtype=np.float32)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", AstropyUserWarning)
+        _, row_sky, _ = astropy.stats.sigma_clipped_stats(data[:, ::sample_step], sigma=3.0, axis=1)
+        data = data - row_sky[:, None].astype(np.float32)
+        _, column_sky, _ = astropy.stats.sigma_clipped_stats(data[::sample_step], sigma=3.0, axis=0)
+        data -= column_sky[None, :].astype(np.float32)
+        _, _, noise = astropy.stats.sigma_clipped_stats(data[::sample_step, ::sample_step], sigma=3.0)
+        if remove_hot_pixels:
+            data = replace_hot_pixels(data, noise)
+        smoothed = cv2.GaussianBlur(data, (0, 0), smoothing)
+        _, _, smoothed_noise = astropy.stats.sigma_clipped_stats(
+            smoothed[::sample_step, ::sample_step], sigma=3.0
+        )
+    return PreparedImage(data, float(noise), smoothed, float(smoothed_noise))
 
 
 class StarFinder:
@@ -41,6 +109,8 @@ class StarFinder:
     sharpness_range : tuple of float, optional
         (sharplo, sharphi) bounds passed to DAOStarFinder; see
         `find_sources` for details. Default is (0.05, 1.0).
+    remove_hot_pixels : bool, optional
+        Replace hot pixels before detection (see `replace_hot_pixels`). Default is True.
 
     Attributes
     ----------
@@ -73,6 +143,7 @@ class StarFinder:
         saturation_threshold: float | None = None,
         max_stars: int = 50,
         sharpness_range: tuple[float, float] = (0.05, 1.0),
+        remove_hot_pixels: bool = True,
     ) -> None:
         self.fwhm = fwhm
         self.star_find_threshold = star_find_threshold
@@ -80,12 +151,19 @@ class StarFinder:
         self.saturation_threshold = saturation_threshold
         self.max_stars = max_stars
         self.sharpness_range = sharpness_range
+        self.remove_hot_pixels = remove_hot_pixels
 
+        # Kept as attributes for users. Detection removes the sky per row and column instead
+        # (see `prepare_image`), which also works with row banding and gradients.
         mean, median, std = astropy.stats.sigma_clipped_stats(ref_image, sigma=3.0)
         self.ref_background = median
         self.ref_std = std
 
-        self.selected_stars = self._find_sources(ref_image)
+        # Far from focus, stars are large donuts, which a wider kernel finds.
+        for fwhm_factor in (1, 4, 16):
+            self.selected_stars = self._find_sources(ref_image, fwhm_factor * self.fwhm)
+            if self.selected_stars is not None:
+                break
         if self.selected_stars is None:
             fallbacks = self.get_fallback_thresholds(self.star_find_threshold)
             min_tried = fallbacks[-1] if fallbacks.size > 0 else self.star_find_threshold
@@ -95,17 +173,16 @@ class StarFinder:
                 "(e.g. lower the star_find_threshold or absolute_detection_limit, or increase the fwhm)."
             )
 
-    def _find_sources(self, ref_image):
+    def _find_sources(self, ref_image, fwhm):
         return self.find_sources(
             ref_image=ref_image,
-            fwhm=self.fwhm,
+            fwhm=fwhm,
             threshold=self.star_find_threshold,
-            std=self.ref_std,
-            background=self.ref_background,
             saturation_threshold=self.saturation_threshold,
             absolute_detection_limit=self.absolute_detection_limit,
             max_stars=self.max_stars,
             sharpness_range=self.sharpness_range,
+            remove_hot_pixels=self.remove_hot_pixels,
         )
 
     @classmethod
@@ -120,6 +197,7 @@ class StarFinder:
         absolute_detection_limit: float = 0.0,
         max_stars: int = 50,
         sharpness_range: tuple[float, float] = (0.05, 1.0),
+        remove_hot_pixels: bool = True,
     ):
         """
         Detect and locate stars using a tiered-threshold DAOFIND approach.
@@ -141,11 +219,10 @@ class StarFinder:
             Initial detection threshold in units of background standard
             deviation (sigma). Default is 4.0.
         std : float, optional
-            Background noise standard deviation. If None, estimated via
-            sigma-clipped statistics.
+            Background noise standard deviation. If `std` or `background` is None,
+            the sky is removed per row and column instead (see `prepare_image`).
         background : float, optional
-            Median background level. If None, estimated via sigma-clipped
-            statistics.
+            Median background level, subtracted from `ref_image`.
         saturation_threshold : float, optional
             Maximum allowed pixel value. Peaks above this are rejected
             (useful for excluding saturated stars that bias centroids).
@@ -162,6 +239,9 @@ class StarFinder:
             out-of-focus reference image. Loosening it further increases the
             risk of picking up non-stellar diffuse artifacts (e.g. hot-pixel
             clusters, cosmic rays, background blobs).
+        remove_hot_pixels : bool, optional
+            Replace hot pixels before detection (see `replace_hot_pixels`),
+            because they can pass the sharpness bounds. Default is True.
 
         Returns
         -------
@@ -179,10 +259,12 @@ class StarFinder:
         """
 
         if std is None or background is None:
-            mean, median, std = astropy.stats.sigma_clipped_stats(ref_image, sigma=3.0)
-            background = median
-
-        cleaned_image = ref_image - background
+            prepared = prepare_image(ref_image, remove_hot_pixels=remove_hot_pixels)
+            cleaned_image, std = prepared.data, prepared.noise
+        else:
+            cleaned_image = ref_image - background
+            if remove_hot_pixels:
+                cleaned_image = replace_hot_pixels(cleaned_image, std)
 
         sources = StarFinder._dao_star_finder(
             cleaned_image=cleaned_image,
@@ -204,6 +286,7 @@ class StarFinder:
                 threshold=np.maximum(absolute_detection_limit, std * threshold),
                 peak_max=saturation_threshold,
                 n_brightest=max_stars,
+                sharpness_range=sharpness_range,
             )
 
             if sources is not None:
@@ -237,6 +320,11 @@ class StarFinder:
             sharpness_range=sharpness_range,
         )
         sources = daofind(cleaned_image)
+        if sources is not None:
+            # A source with no positive flux is noise.
+            sources = sources[sources["flux"] > 0]
+            if len(sources) == 0:
+                sources = None
 
         return sources
 

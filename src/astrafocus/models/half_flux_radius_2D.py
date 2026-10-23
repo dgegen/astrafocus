@@ -18,11 +18,19 @@ class HalfFluxRadius2D(Disk2D):
 
     def fit(self, x, y, star_data, *args, **kwargs):
         """
+        Estimate the half flux radius (HFR) as the flux-weighted mean distance from the centroid.
+
+        `R_0` is set to the HFR. The half flux diameter (HFD) is `2 * R_0`. For a Gaussian star
+        with standard deviation sigma, this estimate gives HFR = sqrt(pi / 2) * sigma.
+
+        `star_data` must have the sky subtracted and the noise set to zero
+        (see `StarFitter.extract_star`). If not, the sky dominates and the result depends
+        on the size of the cutout, not on the star.
+
         Source
         https://en.wikipedia.org/wiki/Half_flux_diameter#cite_note-4
         https://www.lost-infinity.com/the-half-flux-diameter-hfd-for-a-perfectly-normal-distributed-star/
         """
-        # Resample the image to a higher resolution using interpolation
         centroid = np.array([np.sum(x * star_data), np.sum(y * star_data)]) / np.sum(star_data)
 
         # Calculate the radius of each pixel from the centroid
@@ -31,11 +39,8 @@ class HalfFluxRadius2D(Disk2D):
         # Estimate the half flux radius (HFR)
         hfr = np.sum(star_data * distances) / np.sum(star_data)
 
-        # Calculate the Half Flux Diameter (HFD)
-        hfd_high_res = 2 * hfr
-
         self.x_0, self.y_0 = centroid
-        self.R_0 = hfd_high_res
+        self.R_0 = hfr
 
         return self
 
