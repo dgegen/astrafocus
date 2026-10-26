@@ -10,7 +10,7 @@ from astrafocus.focus_measure_operators import (
     ImageType,
 )
 from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
-from astrafocus.star_finder import StarFinder
+from astrafocus.star_finder import StarFinder, prepare_image
 from astrafocus.star_fitter import StarFitter
 from astrafocus.utils.focus_curve import focus_curve_snr
 from astrafocus.utils.logger import get_logger
@@ -136,11 +136,9 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
             "max_stars": max_stars,
             "sharpness_range": sharpness_range,
         }
-        self.star_finder = (
-            StarFinder(ref_image, **self._star_finder_kwargs) if ref_image is not None else None
-        )
         self.star_fitter = StarFitter(model)
         self.cutout_size = cutout_size
+        self.star_finder = self._make_star_finder(ref_image) if ref_image is not None else None
         self.last_star_sizes = None
         self.optimised_parameters = None
 
@@ -167,8 +165,38 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         if self.star_finder is None:
             if image is None:
                 raise ValueError("StarFinder is not initialised and no image was provided to initialise it.")
-            self.star_finder = StarFinder(image, **self._star_finder_kwargs)
+            self.star_finder = self._make_star_finder(image)
         return self.star_finder
+
+    def _make_star_finder(self, image: ImageType) -> StarFinder:
+        """
+        Find the stars in `image`, and move each one to the centre of its light.
+
+        Far from focus, the star finder places sources on the ring of a donut, often several on the
+        same donut. The cutouts must be centred on the donut's centre, where the star is at focus
+        (see `StarFitter.extract_star`). So each source moves to the centre of its star (see
+        `StarFitter.star_centre`), and sources that end up within `cutout_size` of a brighter one
+        are dropped. A source whose light is not found keeps its position.
+        """
+        star_finder = StarFinder(image, **self._star_finder_kwargs)
+        stars = star_finder.selected_stars
+        prepared = prepare_image(image)
+        centres = np.column_stack([stars["x_centroid"], stars["y_centroid"]]).astype(float)
+        for i, (x, y) in enumerate(centres):
+            try:
+                centres[i] = StarFitter.star_centre(
+                    prepared, x, y, self.cutout_size, MAX_CUTOUT_FACTOR * self.cutout_size
+                )
+            except ValueError:  # no star light at this source
+                pass
+
+        keep = []
+        for i in range(len(centres)):  # the sources are sorted by flux, brightest first
+            if all(np.hypot(*(centres[i] - centres[j])) > self.cutout_size for j in keep):
+                keep.append(i)
+        stars["x_centroid"], stars["y_centroid"] = centres[:, 0], centres[:, 1]
+        star_finder.selected_stars = stars[keep]
+        return star_finder
 
     def measure_focus(self, image: ImageType, cutout_size: int | None = None, **kwargs) -> float:
         """

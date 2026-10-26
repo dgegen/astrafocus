@@ -190,6 +190,53 @@ class TestRobustness:
         assert star_fitter.star_size == pytest.approx(np.sqrt(np.pi / 2) * sigma, rel=0.01)
 
 
+class TestBrightNeighbour:
+    """A star next to a much brighter one must not be measured on the bright one."""
+
+    FAINT = (100.0, 100.0)
+
+    @staticmethod
+    def frame(faint_flux, distance, donut_radius=0.0, seed=11):
+        # The neighbour is a compact star with a flux of 1e6.
+        shape = (200, 300)
+        x, y = TestBrightNeighbour.FAINT
+        image = star_profile(shape, x, y, faint_flux, donut_radius)
+        image += star_profile(shape, x + distance, y, 1e6, 0.0)
+        return np.random.default_rng(seed).normal(3000.0, 50.0, size=shape) + image
+
+    def test_invisible_star_is_not_replaced_by_neighbour(self):
+        # No light in the first cutout, so it grows until it reaches the neighbour 60 px away.
+        with pytest.raises(ValueError):
+            StarFitter.extract_star(
+                self.frame(2e3, distance=60), *self.FAINT, cutout_size=15, max_cutout_size=120
+            )
+
+    def test_faint_donut_is_not_replaced_by_neighbour(self):
+        # The donut (radius 35 px) reaches the edge of the cutout until its half-width is 60 px,
+        # which also takes in the neighbour, 55 px to the left.
+        frame = self.frame(3e5, distance=-55, donut_radius=35.0)
+        star_data = StarFitter.extract_star(frame, *self.FAINT, cutout_size=15, max_cutout_size=120)
+        assert np.sum(star_data) == pytest.approx(3e5, rel=0.1)
+
+    def test_residue_in_donut_centre_is_not_the_star(self):
+        # A compact source (e.g. a cosmic ray) in the dark centre of a donut of radius 80 px. The
+        # dark centre (radius 28 px) fills the first cutout.
+        shape = (260, 260)
+        image = star_profile(shape, 130.0, 130.0, 3e6, 80.0) + star_profile(shape, 130.0, 130.0, 2e4, 0.0)
+        image += np.random.default_rng(12).normal(3000.0, 50.0, size=shape)
+        star_data = StarFitter.extract_star(image, 130.0, 130.0, cutout_size=15, max_cutout_size=120)
+        assert np.sum(star_data) == pytest.approx(3e6, rel=0.1)
+
+    def test_reference_sources_are_moved_to_star_centres(self):
+        # Far from focus, the star finder places sources on the donut rings (radius 55 px).
+        op = HFRStarFocusMeasure(ref_image=make_frame(BEST_FOCUS + 1000, seed=13), fwhm=FWHM)
+        stars = op.star_finder.selected_stars
+        for x, y in STAR_POSITIONS:
+            distance = np.hypot(stars["x_centroid"] - x, stars["y_centroid"] - y)
+            assert np.count_nonzero(distance < 60) == 1
+            assert np.min(distance) < 2.0
+
+
 class TestLargeDonutSky:
     """
     One donut about 200 px across, in frames not much larger than it, as far from focus on Callisto.

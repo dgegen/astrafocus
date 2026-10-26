@@ -11,10 +11,10 @@ from astrafocus.star_finder import prepare_image
 N_SIGMA = 3.0
 MIN_PIXELS = 3
 MIN_SNR = 10.0
-# The cutout grows while more than this fraction of the star flux is in its outer 2 pixels.
-EDGE_FLUX_FRACTION = 0.01
-# Maximum number of times the cutout is centred again on the star.
-N_RECENTRE = 5
+# The cutout grows while more than this fraction of the star flux is outside it.
+OUTSIDE_FLUX_FRACTION = 0.01
+# A position counts as on the star light if the light comes this close to it (pixels).
+ON_STAR_DISTANCE = 3.0
 
 
 class StarFitter:
@@ -209,13 +209,17 @@ class StarFitter:
     @staticmethod
     def extract_star(image, x, y, cutout_size=15, max_cutout_size=None):
         """
-        Cut out the star near (`x`, `y`) and set all pixels that are not its light to zero.
+        Cut out the star centred near (`x`, `y`) and set all pixels that are not its light to zero.
 
-        The star light is the group of touching pixels with the most flux (see `N_SIGMA`). This
-        removes other stars and what is left of hot pixels. The cutout is centred on the group, so
-        the star can move between frames. The half-width starts at `cutout_size` and doubles, up to
-        `max_cutout_size`, while the group reaches the edge of the cutout or no star light is found.
-        So a large donut far from focus fits, also when its dark centre fills the first cutout.
+        The star light is the group of touching pixels with the most flux (see `N_SIGMA`) whose
+        centroid is within `cutout_size` of (`x`, `y`), among the groups the largest cutout can
+        reach. This removes other stars, even brighter ones, and what is left of hot pixels, also
+        inside the dark centre of a donut. The cutout is centred on the group, so the star can move
+        between frames, but only by up to `cutout_size`. The half-width starts at `cutout_size` and
+        doubles, up to `max_cutout_size`, while more than `OUTSIDE_FLUX_FRACTION` of the light is
+        outside the cutout. So a large donut far from focus fits.
+
+        (`x`, `y`) must be the centre of the star, not a point on a donut's ring; see `star_centre`.
 
         `image` is a raw image or the result of `prepare_image`. The kept pixels have their
         sky-subtracted values. Raises ValueError if there is no star light in the cutout.
@@ -230,50 +234,86 @@ class StarFitter:
         >>> bool(abs(np.sum(star_data) - 1e5) < 0.05 * 1e5)
         True
         """
+        return StarFitter._find_star(image, x, y, cutout_size, max_cutout_size)[0]
+
+    @staticmethod
+    def star_centre(image, x, y, cutout_size=15, max_cutout_size=None):
+        """
+        Return the centre (x, y) of the star whose light is at (`x`, `y`).
+
+        Far from focus, a star finder can place a source on a donut's ring. This returns the centre
+        of the whole donut, which is where the star is at focus (see `extract_star`). The light
+        must come within `ON_STAR_DISTANCE` of (`x`, `y`). Raises ValueError if it does not.
+
+        Examples
+        --------
+        >>> rng = np.random.default_rng(0)
+        >>> image = rng.normal(3000.0, 50.0, size=(200, 200))
+        >>> yy, xx = np.indices(image.shape)
+        >>> r = np.hypot(xx - 100, yy - 90)
+        >>> image += np.where((r > 10) & (r < 25), 300.0, 0.0)
+        >>> x, y = StarFitter.star_centre(image, x=118, y=90, max_cutout_size=60)
+        >>> bool(abs(x - 100) < 1 and abs(y - 90) < 1)
+        True
+        """
+        return StarFitter._find_star(image, x, y, cutout_size, max_cutout_size, on_star=True)[1:]
+
+    @staticmethod
+    def _find_star(image, x, y, cutout_size=15, max_cutout_size=None, on_star=False):
+        """
+        Return the cutout of the star light near (`x`, `y`) and the centre of that light.
+
+        With `on_star`, the light must come within `ON_STAR_DISTANCE` of (`x`, `y`), else its
+        centroid must be within `cutout_size` of it (see `extract_star` and `star_centre`).
+        """
         prepared = prepare_image(image)
         height, width = prepared.data.shape
         size = int(cutout_size)
         max_size = size if max_cutout_size is None else max(size, int(max_cutout_size))
-        n_moves = 0
+
+        # 1. Choose the star light among the groups of touching pixels above the noise, in all of
+        #    the area the cutout can reach. So the whole of a large donut competes with, for
+        #    example, what is left of a hot pixel in its dark centre. A point on the ring can be up
+        #    to a donut radius from its centre, so the area is larger with `on_star`.
+        reach = 2 * max_size if on_star else max_size + size
+        x0, y0 = max(int(x - reach), 0), max(int(y - reach), 0)
+        x1, y1 = min(int(x + reach), width), min(int(y + reach), height)
+        data = prepared.data[y0:y1, x0:x1]
+        above_noise = prepared.smoothed[y0:y1, x0:x1] > N_SIGMA * prepared.smoothed_noise
+        labels, n_groups = ndimage.label(above_noise, structure=np.ones((3, 3)))
+        index = np.arange(1, n_groups + 1)
+        group_flux = ndimage.sum_labels(data, labels, index=index)
+        if on_star:
+            yy, xx = np.indices(data.shape)
+            pixel_distance = np.hypot(x0 + xx - x, y0 + yy - y)
+            distance = np.asarray(ndimage.minimum(pixel_distance, labels, index)).reshape(-1)
+            group_flux[distance > ON_STAR_DISTANCE] = -np.inf
+        else:
+            centres = np.array(ndimage.center_of_mass(np.abs(data), labels, index)).reshape(-1, 2)
+            distance = np.hypot(x0 + centres[:, 1] - x, y0 + centres[:, 0] - y)
+            group_flux[distance > cutout_size] = -np.inf
+
+        # 2. Of the groups near the star, the one with the most flux is the star light.
+        if n_groups == 0 or not np.isfinite(np.max(group_flux)):
+            raise ValueError("No star light above the noise in the cutout.")
+        mask = labels == np.argmax(group_flux) + 1
+        n_pixels = np.count_nonzero(mask)
+        flux = np.sum(data[mask])
+        if n_pixels < MIN_PIXELS or flux < MIN_SNR * prepared.noise * np.sqrt(n_pixels):
+            raise ValueError("No star light above the noise in the cutout.")
+        light = np.where(mask, data, 0.0)
+        yy, xx = np.indices(light.shape)
+        x_centre, y_centre = np.sum(xx * light) / flux, np.sum(yy * light) / flux
+
+        # 3. Centre the cutout on the star light, and grow it while part of the light is outside.
         while True:
-            # 1. Cut out the window around (x, y).
-            x_min, y_min = max(int(x - size), 0), max(int(y - size), 0)
-            x_max, y_max = min(int(x + size), width), min(int(y + size), height)
-            data = prepared.data[y_min:y_max, x_min:x_max]
-
-            # 2. Keep the group of touching pixels above the noise with the most flux.
-            above_noise = prepared.smoothed[y_min:y_max, x_min:x_max] > N_SIGMA * prepared.smoothed_noise
-            labels, n_groups = ndimage.label(above_noise, structure=np.ones((3, 3)))
-            mask = above_noise
-            if n_groups > 1:
-                group_flux = ndimage.sum_labels(data, labels, index=np.arange(1, n_groups + 1))
-                mask = labels == np.argmax(group_flux) + 1
-
-            # 3. If there is no star light, look in a larger window, or give up.
-            n_pixels = np.count_nonzero(mask)
-            if n_pixels < MIN_PIXELS or np.sum(data[mask]) < MIN_SNR * prepared.noise * np.sqrt(n_pixels):
-                if size < max_size:
-                    size = min(2 * size, max_size)
-                    continue
-                raise ValueError("No star light above the noise in the cutout.")
-            star_data = np.where(mask, data, 0.0)
-            flux = np.sum(star_data)
-
-            # 4. Centre the window on the star light. Then grow it while the light reaches its edge.
-            #    Edges of the image do not count, because a larger window does not help there.
-            yy, xx = np.indices(star_data.shape)
-            x_new, y_new = x_min + np.sum(xx * star_data) / flux, y_min + np.sum(yy * star_data) / flux
-            edge = np.zeros_like(mask)
-            edge[:2], edge[-2:] = y_min > 0, y_max < height
-            edge[:, :2] |= x_min > 0
-            edge[:, -2:] |= x_max < width
-            touches_edge = np.sum(star_data[edge]) > EDGE_FLUX_FRACTION * flux
-            if np.hypot(x_new - x, y_new - y) > 0.5 and n_moves < N_RECENTRE:
-                x, y, n_moves = x_new, y_new, n_moves + 1
-            elif touches_edge and size < max_size:
+            x_min, y_min = max(int(x_centre - size), 0), max(int(y_centre - size), 0)
+            x_max, y_max = min(int(x_centre + size), x1 - x0), min(int(y_centre + size), y1 - y0)
+            star_data = light[y_min:y_max, x_min:x_max]
+            if np.sum(star_data) < (1 - OUTSIDE_FLUX_FRACTION) * flux and size < max_size:
                 size = min(2 * size, max_size)
             else:
-                return star_data
+                return star_data, float(x0 + x_centre), float(y0 + y_centre)
 
     @staticmethod
     def _slice_out_star(image, x, y, size=15):
