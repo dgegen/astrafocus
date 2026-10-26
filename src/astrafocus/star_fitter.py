@@ -2,7 +2,6 @@ import astropy
 import cv2
 import numpy as np
 from astropy.modeling import fitting
-from scipy import ndimage
 
 from astrafocus.star_finder import prepare_image
 
@@ -280,23 +279,40 @@ class StarFitter:
         x1, y1 = min(int(x + reach), width), min(int(y + reach), height)
         data = prepared.data[y0:y1, x0:x1]
         above_noise = prepared.smoothed[y0:y1, x0:x1] > N_SIGMA * prepared.smoothed_noise
-        labels, n_groups = ndimage.label(above_noise, structure=np.ones((3, 3)))
-        index = np.arange(1, n_groups + 1)
-        group_flux = ndimage.sum_labels(data, labels, index=index)
+        n_labels, labels = cv2.connectedComponents(above_noise.astype(np.uint8), connectivity=8)
+        if n_labels == 1:  # only the background
+            raise ValueError("No star light above the noise in the cutout.")
+
+        def group_sum(weights):
+            return np.bincount(labels.ravel(), weights=weights.ravel(), minlength=n_labels)
+
+        group_flux = group_sum(data)
         if on_star:
-            yy, xx = np.indices(data.shape)
-            pixel_distance = np.hypot(x0 + xx - x, y0 + yy - y)
-            distance = np.asarray(ndimage.minimum(pixel_distance, labels, index)).reshape(-1)
-            group_flux[distance > ON_STAR_DISTANCE] = -np.inf
+            # A group comes within ON_STAR_DISTANCE of (x, y) if one of its pixels in the window
+            # around (x, y) does.
+            wx0 = max(int(x - ON_STAR_DISTANCE) - x0, 0)
+            wy0 = max(int(y - ON_STAR_DISTANCE) - y0, 0)
+            window = labels[
+                wy0 : int(y + ON_STAR_DISTANCE) + 2 - y0, wx0 : int(x + ON_STAR_DISTANCE) + 2 - x0
+            ]
+            yy, xx = np.indices(window.shape)
+            close = np.hypot(x0 + wx0 + xx - x, y0 + wy0 + yy - y) <= ON_STAR_DISTANCE
+            near = np.zeros(n_labels, dtype=bool)
+            near[window[close]] = True
         else:
-            centres = np.array(ndimage.center_of_mass(np.abs(data), labels, index)).reshape(-1, 2)
-            distance = np.hypot(x0 + centres[:, 1] - x, y0 + centres[:, 0] - y)
-            group_flux[distance > cutout_size] = -np.inf
+            weight = np.abs(data)
+            yy, xx = np.indices(data.shape)
+            with np.errstate(invalid="ignore", divide="ignore"):
+                x_centres = group_sum(xx * weight) / group_sum(weight)
+                y_centres = group_sum(yy * weight) / group_sum(weight)
+            near = np.hypot(x0 + x_centres - x, y0 + y_centres - y) <= cutout_size
+        near[0] = False  # the background
+        group_flux[~near] = -np.inf
 
         # 2. Of the groups near the star, the one with the most flux is the star light.
-        if n_groups == 0 or not np.isfinite(np.max(group_flux)):
+        if not np.isfinite(np.max(group_flux)):
             raise ValueError("No star light above the noise in the cutout.")
-        mask = labels == np.argmax(group_flux) + 1
+        mask = labels == np.argmax(group_flux)
         n_pixels = np.count_nonzero(mask)
         flux = np.sum(data[mask])
         if n_pixels < MIN_PIXELS or flux < MIN_SNR * prepared.noise * np.sqrt(n_pixels):

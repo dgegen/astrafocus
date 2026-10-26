@@ -1,3 +1,4 @@
+import functools
 import warnings
 from typing import NamedTuple
 
@@ -7,7 +8,7 @@ import cv2
 import numpy as np
 from astropy.utils.exceptions import AstropyUserWarning
 from photutils.detection import DAOStarFinder
-from scipy import ndimage, stats
+from scipy import stats
 
 from astrafocus.utils.logger import get_logger
 from astrafocus.utils.typing import ImageType
@@ -73,14 +74,15 @@ def _plane_sky(data, mask, sample_step):
     if np.count_nonzero(good) < design.shape[1]:
         good[:] = True
     for _ in range(5):
-        coefficients, *_ = np.linalg.lstsq(design[good], values[good], rcond=None)
+        fit_design = design[good]  # normal equations: much faster than lstsq, and well-conditioned here
+        coefficients = np.linalg.solve(fit_design.T @ fit_design, fit_design.T @ values[good])
         residual = values - design @ coefficients
         std = astropy.stats.mad_std(residual[good])
         clipped = good & (np.abs(residual) < 3.0 * std)
         if np.count_nonzero(clipped) < design.shape[1] or np.array_equal(clipped, good):
             break
         good = clipped
-    rows, columns = np.indices(data.shape, dtype=np.float32)
+    rows, columns = np.arange(data.shape[0])[:, None], np.arange(data.shape[1])[None, :]
     return (coefficients[0] + coefficients[1] * columns + coefficients[2] * rows).astype(np.float32)
 
 
@@ -91,16 +93,30 @@ def _line_sky(data, mask, axis, sample_step):
     """
     index = (slice(None), slice(None, None, sample_step)) if axis == 1 else slice(None, None, sample_step)
     values, free = data[index], ~mask[index]
-    _, sky, _ = astropy.stats.sigma_clipped_stats(np.where(free, values, np.nan), sigma=3.0, axis=axis)
+    sky = _clipped_median(np.where(free, values, np.nan), axis)
     good = (np.mean(free, axis=axis) >= SKY_MIN_FREE_FRACTION) & np.isfinite(sky)
     if not np.any(good):
-        _, sky, _ = astropy.stats.sigma_clipped_stats(values, sigma=3.0, axis=axis)
-        return sky
+        return _clipped_median(values, axis)
     if not np.all(good):
         logger.debug(f"Sky of {np.count_nonzero(~good)} lines (axis {axis}) interpolated: masked by stars.")
         lines = np.arange(sky.size)
         sky = np.interp(lines, lines[good], sky[good])
     return sky
+
+
+def _clipped_median(values, axis):
+    """
+    Median along `axis` of `values` sigma-clipped at 3 sigma, ignoring NaN, as in
+    `astropy.stats.sigma_clipped_stats`. The median is taken from one sort, which is much faster
+    than the masked-array median that `sigma_clipped_stats` uses.
+    """
+    clipped = astropy.stats.SigmaClip(sigma=3.0)(values, axis=axis, masked=False)
+    clipped = np.sort(clipped, axis=axis)  # NaN sorts last
+    n_valid = np.sum(np.isfinite(clipped), axis=axis, keepdims=True)
+    lower = np.take_along_axis(clipped, np.maximum(n_valid - 1, 0) // 2, axis=axis)
+    upper = np.take_along_axis(clipped, n_valid // 2, axis=axis)
+    median = np.where(n_valid > 0, (lower + upper) / 2, np.nan)
+    return np.squeeze(median, axis=axis)
 
 
 def _row_column_sky(raw, mask, sample_step):
@@ -124,19 +140,17 @@ def _background_noise(data, mask, sample_step):
 
 def _sky_mask(smoothed, smoothed_noise):
     """Mask of the large, compact sources in `smoothed` (see `SKY_MASK_N_SIGMA`)."""
-    above = smoothed > SKY_MASK_N_SIGMA * smoothed_noise
-    labels, n_groups = ndimage.label(above)
-    if n_groups == 0:
-        return above
-    n_pixels = ndimage.sum_labels(above, labels, index=np.arange(1, n_groups + 1))
-    keep = np.zeros(n_groups + 1, dtype=bool)
-    for i_group, (rows, columns) in enumerate(ndimage.find_objects(labels)):
-        height, width = rows.stop - rows.start, columns.stop - columns.start
-        compact = max(height, width) <= SKY_MASK_MAX_ASPECT * min(height, width)
-        keep[i_group + 1] = n_pixels[i_group] >= SKY_MASK_MIN_PIXELS and compact
+    above = (smoothed > SKY_MASK_N_SIGMA * smoothed_noise).astype(np.uint8)
+    _, labels, group_stats, _ = cv2.connectedComponentsWithStats(above, connectivity=4)
+    width, height = group_stats[:, cv2.CC_STAT_WIDTH], group_stats[:, cv2.CC_STAT_HEIGHT]
+    compact = np.maximum(height, width) <= SKY_MASK_MAX_ASPECT * np.minimum(height, width)
+    keep = (group_stats[:, cv2.CC_STAT_AREA] >= SKY_MASK_MIN_PIXELS) & compact
+    keep[0] = False  # the background
     if not np.any(keep):
-        return np.zeros_like(above)
-    return ndimage.binary_dilation(keep[labels], iterations=SKY_MASK_GROW)
+        return np.zeros(above.shape, dtype=bool)
+    # SKY_MASK_GROW times a 3x3 cross, as `ndimage.binary_dilation` does.
+    cross = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
+    return cv2.dilate(keep[labels].astype(np.uint8), cross, iterations=SKY_MASK_GROW).astype(bool)
 
 
 def prepare_image(image, remove_hot_pixels=True, smoothing=2.0, sample_step=4) -> PreparedImage:
@@ -171,14 +185,15 @@ def prepare_image(image, remove_hot_pixels=True, smoothing=2.0, sample_step=4) -
                 mask |= _sky_mask(smoothed, _background_noise(smoothed, mask, sample_step))
 
         data = _row_column_sky(raw - _plane_sky(raw, mask, sample_step), mask, sample_step)
+        sample = (slice(None, None, sample_step), slice(None, None, sample_step))
         _, _, noise = astropy.stats.sigma_clipped_stats(
-            np.where(mask, np.nan, data)[::sample_step, ::sample_step], sigma=3.0
+            np.where(mask[sample], np.nan, data[sample]), sigma=3.0
         )
         if remove_hot_pixels:
             data = replace_hot_pixels(data, noise)
         smoothed = cv2.GaussianBlur(data, (0, 0), smoothing)
         _, _, smoothed_noise = astropy.stats.sigma_clipped_stats(
-            np.where(mask, np.nan, smoothed)[::sample_step, ::sample_step], sigma=3.0
+            np.where(mask[sample], np.nan, smoothed[sample]), sigma=3.0
         )
     return PreparedImage(data, float(noise), smoothed, float(smoothed_noise))
 
@@ -225,6 +240,8 @@ class StarFinder:
         Sigma-clipped median background level of `ref_image`.
     ref_std : float
         Sigma-clipped standard deviation of `ref_image`.
+    prepared_ref_image : PreparedImage
+        `ref_image` with the sky and hot pixels removed (see `prepare_image`).
     selected_stars : astropy.table.QTable
         Table of detected sources with centroids and photometry.
 
@@ -260,15 +277,12 @@ class StarFinder:
         self.sharpness_range = sharpness_range
         self.remove_hot_pixels = remove_hot_pixels
 
-        # Kept as attributes for users. Detection removes the sky per row and column instead
-        # (see `prepare_image`), which also works with row banding and gradients.
-        mean, median, std = astropy.stats.sigma_clipped_stats(ref_image, sigma=3.0)
-        self.ref_background = median
-        self.ref_std = std
+        self._ref_image = ref_image
+        self.prepared_ref_image = prepare_image(ref_image, remove_hot_pixels=remove_hot_pixels)
 
         # Far from focus, stars are large donuts, which a wider kernel finds.
         for fwhm_factor in (1, 4, 16):
-            self.selected_stars = self._find_sources(ref_image, fwhm_factor * self.fwhm)
+            self.selected_stars = self._find_sources(self.prepared_ref_image, fwhm_factor * self.fwhm)
             if self.selected_stars is not None:
                 break
         if self.selected_stars is None:
@@ -279,6 +293,20 @@ class StarFinder:
                 "Check image quality, or adjust the star finder parameters "
                 "(e.g. lower the star_find_threshold or absolute_detection_limit, or increase the fwhm)."
             )
+
+    # Kept for users. Detection removes the sky per row and column instead (see `prepare_image`),
+    # which also works with row banding and gradients.
+    @functools.cached_property
+    def _ref_stats(self):
+        return astropy.stats.sigma_clipped_stats(self._ref_image, sigma=3.0)
+
+    @property
+    def ref_background(self) -> float:
+        return self._ref_stats[1]
+
+    @property
+    def ref_std(self) -> float:
+        return self._ref_stats[2]
 
     def _find_sources(self, ref_image, fwhm):
         return self.find_sources(

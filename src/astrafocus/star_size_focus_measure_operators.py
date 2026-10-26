@@ -10,7 +10,7 @@ from astrafocus.focus_measure_operators import (
     ImageType,
 )
 from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
-from astrafocus.star_finder import StarFinder, prepare_image
+from astrafocus.star_finder import StarFinder
 from astrafocus.star_fitter import StarFitter
 from astrafocus.utils.focus_curve import focus_curve_snr
 from astrafocus.utils.logger import get_logger
@@ -180,7 +180,7 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         """
         star_finder = StarFinder(image, **self._star_finder_kwargs)
         stars = star_finder.selected_stars
-        prepared = prepare_image(image)
+        prepared = star_finder.prepared_ref_image
         centres = np.column_stack([stars["x_centroid"], stars["y_centroid"]]).astype(float)
         for i, (x, y) in enumerate(centres):
             try:
