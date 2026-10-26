@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 from astropy.utils.exceptions import AstropyUserWarning
 from photutils.detection import DAOStarFinder
+from scipy import ndimage, stats
 
 from astrafocus.utils.logger import get_logger
 from astrafocus.utils.typing import ImageType
@@ -45,33 +46,139 @@ def replace_hot_pixels(image: ImageType, std: float, n_sigma: float = 5.0, ratio
     return np.where(hot, median, image)
 
 
+# Sources that are masked before the sky is estimated: groups of touching
+# pixels where the smoothed image is above SKY_MASK_N_SIGMA times its noise, with at least
+# SKY_MASK_MIN_PIXELS pixels and a bounding box no more than SKY_MASK_MAX_ASPECT times longer than
+# wide. So large stars and donuts are masked, but not noise or row banding. The mask is grown by
+# SKY_MASK_GROW pixels to include the wings of the stars.
+SKY_MASK_N_SIGMA = 3.0
+SKY_MASK_MIN_PIXELS = 100
+SKY_MASK_MAX_ASPECT = 4.0
+SKY_MASK_GROW = 3
+# A row or column with less than this fraction of pixels outside the mask gets the sky of its
+# neighbours.
+SKY_MIN_FREE_FRACTION = 0.2
+# Number of times the mask is made and the sky estimated again, first with a plane as the sky and
+# then with the sky of each row and column. The mask only grows, so star light that is found stays
+# masked.
+SKY_MASK_ITERATIONS = 2
+
+
+def _plane_sky(data, mask, sample_step):
+    """Least-squares plane through `data`, without the pixels in `mask` and sigma-clipped at 3 sigma."""
+    rows, columns = np.mgrid[0 : data.shape[0] : sample_step, 0 : data.shape[1] : sample_step]
+    values = data[::sample_step, ::sample_step].ravel()
+    design = np.column_stack([np.ones(values.size), columns.ravel(), rows.ravel()])
+    good = ~mask[::sample_step, ::sample_step].ravel()
+    if np.count_nonzero(good) < design.shape[1]:
+        good[:] = True
+    for _ in range(5):
+        coefficients, *_ = np.linalg.lstsq(design[good], values[good], rcond=None)
+        residual = values - design @ coefficients
+        std = astropy.stats.mad_std(residual[good])
+        clipped = good & (np.abs(residual) < 3.0 * std)
+        if np.count_nonzero(clipped) < design.shape[1] or np.array_equal(clipped, good):
+            break
+        good = clipped
+    rows, columns = np.indices(data.shape, dtype=np.float32)
+    return (coefficients[0] + coefficients[1] * columns + coefficients[2] * rows).astype(np.float32)
+
+
+def _line_sky(data, mask, axis, sample_step):
+    """
+    Sigma-clipped median of `data` along `axis` (1: of each row, 0: of each column), without the
+    pixels in `mask`. Lines with too few pixels outside the mask are interpolated from the others.
+    """
+    index = (slice(None), slice(None, None, sample_step)) if axis == 1 else slice(None, None, sample_step)
+    values, free = data[index], ~mask[index]
+    _, sky, _ = astropy.stats.sigma_clipped_stats(np.where(free, values, np.nan), sigma=3.0, axis=axis)
+    good = (np.mean(free, axis=axis) >= SKY_MIN_FREE_FRACTION) & np.isfinite(sky)
+    if not np.any(good):
+        _, sky, _ = astropy.stats.sigma_clipped_stats(values, sigma=3.0, axis=axis)
+        return sky
+    if not np.all(good):
+        logger.debug(f"Sky of {np.count_nonzero(~good)} lines (axis {axis}) interpolated: masked by stars.")
+        lines = np.arange(sky.size)
+        sky = np.interp(lines, lines[good], sky[good])
+    return sky
+
+
+def _row_column_sky(raw, mask, sample_step):
+    """`raw` minus the sky of each row, and then minus the sky of each column of what is left."""
+    data = raw - _line_sky(raw, mask, 1, sample_step)[:, None].astype(np.float32)
+    data -= _line_sky(data, mask, 0, sample_step)[None, :].astype(np.float32)
+    return data
+
+
+def _background_noise(data, mask, sample_step):
+    """
+    Standard deviation of the background in `data`, from the pixels below the median, outside `mask`.
+    Stars only add light, so they hardly change this, also when they cover a large part of the image.
+    """
+    values = data[::sample_step, ::sample_step][~mask[::sample_step, ::sample_step]]
+    if values.size == 0:
+        values = data[::sample_step, ::sample_step].ravel()
+    median, lower = np.percentile(values, [50.0, 100 * stats.norm.cdf(-1.0)])
+    return float(median - lower)
+
+
+def _sky_mask(smoothed, smoothed_noise):
+    """Mask of the large, compact sources in `smoothed` (see `SKY_MASK_N_SIGMA`)."""
+    above = smoothed > SKY_MASK_N_SIGMA * smoothed_noise
+    labels, n_groups = ndimage.label(above)
+    if n_groups == 0:
+        return above
+    n_pixels = ndimage.sum_labels(above, labels, index=np.arange(1, n_groups + 1))
+    keep = np.zeros(n_groups + 1, dtype=bool)
+    for i_group, (rows, columns) in enumerate(ndimage.find_objects(labels)):
+        height, width = rows.stop - rows.start, columns.stop - columns.start
+        compact = max(height, width) <= SKY_MASK_MAX_ASPECT * min(height, width)
+        keep[i_group + 1] = n_pixels[i_group] >= SKY_MASK_MIN_PIXELS and compact
+    if not np.any(keep):
+        return np.zeros_like(above)
+    return ndimage.binary_dilation(keep[labels], iterations=SKY_MASK_GROW)
+
+
 def prepare_image(image, remove_hot_pixels=True, smoothing=2.0, sample_step=4) -> PreparedImage:
     """
     Remove the sky and hot pixels from `image`, and make a smoothed copy to find faint star light in.
 
-    The sky is the sigma-clipped median of each row, plus that of each column of what is left. This
-    removes the sky level, row banding and gradients, and the light of one star does not change it.
-    The noise is the sigma-clipped standard deviation of the result. Hot pixels are then replaced
-    (see `replace_hot_pixels`). The copy is smoothed with a Gaussian of standard
-    deviation `smoothing` pixels. Every `sample_step`-th row and column is used for the statistics,
-    to make it fast. A `PreparedImage` is returned as it is.
+    The sky is a plane fitted to the image, plus the sigma-clipped median of each row, plus that of
+    each column of what is left. This removes the sky level, gradients and row banding. Large stars
+    and donuts are masked before the sky is estimated (see `SKY_MASK_N_SIGMA`), so their light does
+    not raise the sky, also when they fill a large part of a row. The mask is first found with only
+    the plane as the sky, because the median of a row that a donut fills would remove the donut's
+    light before it can be found, and is then grown with the full sky. The noise is the
+    sigma-clipped standard deviation of the result. Hot pixels are then replaced (see
+    `replace_hot_pixels`). The copy is smoothed with a Gaussian of standard deviation `smoothing`
+    pixels. Every `sample_step`-th row and column is used for the statistics, to make it fast. A
+    `PreparedImage` is returned as it is.
     """
     if isinstance(image, PreparedImage):
         return image
 
-    data = np.asarray(image, dtype=np.float32)
+    raw = np.asarray(image, dtype=np.float32)
+    mask = np.zeros(raw.shape, dtype=bool)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", AstropyUserWarning)
-        _, row_sky, _ = astropy.stats.sigma_clipped_stats(data[:, ::sample_step], sigma=3.0, axis=1)
-        data = data - row_sky[:, None].astype(np.float32)
-        _, column_sky, _ = astropy.stats.sigma_clipped_stats(data[::sample_step], sigma=3.0, axis=0)
-        data -= column_sky[None, :].astype(np.float32)
-        _, _, noise = astropy.stats.sigma_clipped_stats(data[::sample_step, ::sample_step], sigma=3.0)
+        warnings.simplefilter("ignore", RuntimeWarning)  # lines that are fully masked
+        for row_column in (False, True):
+            for _ in range(SKY_MASK_ITERATIONS):
+                data = raw - _plane_sky(raw, mask, sample_step)
+                if row_column:
+                    data = _row_column_sky(data, mask, sample_step)
+                smoothed = cv2.GaussianBlur(data, (0, 0), smoothing)
+                mask |= _sky_mask(smoothed, _background_noise(smoothed, mask, sample_step))
+
+        data = _row_column_sky(raw - _plane_sky(raw, mask, sample_step), mask, sample_step)
+        _, _, noise = astropy.stats.sigma_clipped_stats(
+            np.where(mask, np.nan, data)[::sample_step, ::sample_step], sigma=3.0
+        )
         if remove_hot_pixels:
             data = replace_hot_pixels(data, noise)
         smoothed = cv2.GaussianBlur(data, (0, 0), smoothing)
         _, _, smoothed_noise = astropy.stats.sigma_clipped_stats(
-            smoothed[::sample_step, ::sample_step], sigma=3.0
+            np.where(mask, np.nan, smoothed)[::sample_step, ::sample_step], sigma=3.0
         )
     return PreparedImage(data, float(noise), smoothed, float(smoothed_noise))
 

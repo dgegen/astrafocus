@@ -11,13 +11,14 @@ from synthetic_frames import (
     donut_radius_at,
     hot_pixels,
     make_frame,
+    star_profile,
 )
 
 from astrafocus.autofocuser import NonParametricResponseAutofocuser
 from astrafocus.focus_measure_operators import FocusMeasureOperator
 from astrafocus.interface.simulation import CabaretDeviceSimulator
 from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
-from astrafocus.star_finder import StarFinder
+from astrafocus.star_finder import StarFinder, prepare_image
 from astrafocus.star_fitter import StarFitter
 from astrafocus.star_size_focus_measure_operators import (
     GaussianStarFocusMeasure,
@@ -187,6 +188,52 @@ class TestRobustness:
         star_data += rng.normal(0, 1e-4, star_data.shape)
         star_fitter = StarFitter(HalfFluxRadius2D).fit(star_data)
         assert star_fitter.star_size == pytest.approx(np.sqrt(np.pi / 2) * sigma, rel=0.01)
+
+
+class TestLargeDonutSky:
+    """
+    One donut about 200 px across, in frames not much larger than it, as far from focus on Callisto.
+    As there, the ring is about 250 above the sky, and the row banding has a standard deviation of
+    about 40.
+    """
+
+    OFFSET = 1800  # focuser steps from best focus; the donut radius is 99 px
+    SWEEP = np.arange(BEST_FOCUS - OFFSET, BEST_FOCUS + OFFSET + 1, 300)
+    STAR_FLUX = 7e6
+    BANDING_AMPLITUDE = 45.0
+
+    @classmethod
+    def frame(cls, focus_position, size, gradient=0.0, seed=1):
+        centre = size / 2
+        image = make_frame(
+            focus_position,
+            shape=(size, size),
+            star_positions=((centre, centre),),
+            star_flux=cls.STAR_FLUX,
+            banding_amplitude=cls.BANDING_AMPLITUDE,
+            seed=seed,
+        )
+        return image + np.linspace(0, gradient, size)[None, :]
+
+    @pytest.mark.parametrize("gradient", [0.0, 1500.0])
+    @pytest.mark.parametrize("size", [512, 384, 320])
+    def test_sky_keeps_donut_light(self, size, gradient):
+        radius = donut_radius_at(BEST_FOCUS + self.OFFSET)
+        centre = size / 2
+        data = prepare_image(self.frame(BEST_FOCUS + self.OFFSET, size, gradient)).data
+
+        yy, xx = np.indices(data.shape)
+        r = np.hypot(xx - centre, yy - centre)
+        true_flux = star_profile(data.shape, centre, centre, self.STAR_FLUX, radius).sum()
+        assert data[r < radius + 10].sum() == pytest.approx(true_flux, rel=0.15)
+        assert abs(np.median(data[r > radius + 15])) < 3.0
+
+    @pytest.mark.parametrize("gradient", [0.0, 1500.0])
+    @pytest.mark.parametrize("size", [384, 320])
+    def test_minimum_at_true_focus_in_small_frame(self, size, gradient):
+        op = HFRStarFocusMeasure(ref_image=self.frame(BEST_FOCUS + 600, size, gradient, seed=2), fwhm=FWHM)
+        measures = [op.measure_focus(self.frame(pos, size, gradient, seed=int(pos))) for pos in self.SWEEP]
+        assert self.SWEEP[np.argmin(measures)] == BEST_FOCUS
 
 
 class NoiseFocusMeasure(FocusMeasureOperator):
