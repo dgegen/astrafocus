@@ -290,9 +290,12 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         - its own size curve has a signal-to-noise ratio of at least `MIN_STAR_CURVE_SNR`
           (see `focus_curve_snr`).
 
-        This drops hot pixels and noise. The focus measure of a frame is the median size of the
-        stars that are used, or NaN if no star is left. With fewer than `min_points` frames, all
-        stars are used.
+        This drops hot pixels and noise. Before that, a size measured in a frame whose neighbours (in
+        focus position) both have no size for that star is dropped: one such point says nothing
+        about the shape of the curve, but as the lowest point it would decide the best focus, e.g.
+        a frame taken before the focuser reached its position. The focus measure of a frame is the
+        median size of the stars that are used, or NaN if no star is left. With fewer than
+        `min_points` frames, all stars are used.
 
         Examples
         --------
@@ -303,9 +306,13 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         >>> hfrfm.combine_star_sizes(np.column_stack([star, star, hot_pixel]), focus_pos).tolist()
         [5.0, 3.0, 2.0, 3.0, 5.0]
         """
-        star_sizes = np.atleast_2d(np.asarray(star_sizes, dtype=float))
+        star_sizes = np.atleast_2d(np.array(star_sizes, dtype=float))  # a copy, changed below
         keep = np.ones(star_sizes.shape[1], dtype=bool)
         if len(star_sizes) >= min_points:
+            order = np.argsort(np.asarray(focus_pos, dtype=float), kind="stable")
+            measured = np.pad(np.isfinite(star_sizes[order]), ((1, 1), (0, 0)))
+            rows, columns = np.nonzero(measured[1:-1] & ~measured[:-2] & ~measured[2:])
+            star_sizes[order[rows], columns] = np.nan
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", RuntimeWarning)  # stars that are never measured
                 p10, median, p90 = np.nanpercentile(star_sizes, [10, 50, 90], axis=0)

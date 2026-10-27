@@ -183,6 +183,30 @@ class TestRobustness:
         )
         np.testing.assert_allclose(combined, star)
 
+    def test_combine_star_sizes_drops_isolated_point(self):
+        # As on Callisto run 2: the first frame was taken before the focuser reached its position,
+        # so a star near focus is small at the far end of the sweep, and lost in the next frames.
+        focus_pos = np.linspace(9000, 11000, 20)
+        star = 2 + np.abs(focus_pos - 10_000) / 50
+        star[1:5] = np.nan
+        star[0] = 1.5
+        op = HFRStarFocusMeasure()
+        combined = op.combine_star_sizes(star[:, None], focus_pos)
+        assert np.isnan(combined[0])
+        ok = np.isfinite(combined)
+        assert op.fit_focus_response_curve(focus_pos[ok], combined[ok]) == pytest.approx(10_000, abs=50)
+
+    @pytest.mark.parametrize("lost", [[], [3, 4]])
+    def test_combine_star_sizes_keeps_best_focus_at_edge(self, lost):
+        focus_pos = np.linspace(9000, 11000, 20)
+        star = 2 + np.abs(focus_pos - 9000) / 50
+        star[lost] = np.nan
+        op = HFRStarFocusMeasure()
+        combined = op.combine_star_sizes(star[:, None], focus_pos)
+        np.testing.assert_allclose(combined, star)
+        ok = np.isfinite(combined)
+        assert op.fit_focus_response_curve(focus_pos[ok], combined[ok]) == pytest.approx(9_000, abs=50)
+
     def test_combine_star_sizes_drops_static_and_rarely_measured_stars(self):
         star = np.array([9.0, 6.0, 3.0, 2.0, 3.0, 6.0, 9.0])
         hot_pixel = np.full(star.size, 0.75)
