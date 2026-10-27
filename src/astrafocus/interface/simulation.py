@@ -138,16 +138,27 @@ class ObservationalFocuserSimulation(FocuserSimulation):
         self._position_to_sample = self.position
 
     def move_focuser_to_position(self, desired_position):
-        if desired_position not in self.focus_pos:
-            left = np.where(self.focus_pos <= desired_position)[0][-1]
-            p_bernoulli = (desired_position - self.focus_pos[left]) / (
-                self.focus_pos[left + 1] - self.focus_pos[left]
-            )
+        """
+        Move to `desired_position`, and sample the frames of the nearest observed position.
+
+        Between two observed positions, the frames of one of them are sampled, with a probability
+        that grows the closer it is. Outside the observed positions, the frames of the nearest one
+        are sampled. `focus_pos` need not be sorted.
+        """
+        positions = np.unique(self.focus_pos)  # sorted
+        if desired_position in positions:
+            self.position_to_sample = desired_position
+        elif desired_position < positions[0]:
+            self.position_to_sample = positions[0]
+        elif desired_position > positions[-1]:
+            self.position_to_sample = positions[-1]
+        else:
+            right = np.searchsorted(positions, desired_position)
+            left = right - 1
+            p_bernoulli = (desired_position - positions[left]) / (positions[right] - positions[left])
             move_to = np.random.binomial(n=1, p=p_bernoulli)
 
-            self.position_to_sample = self.focus_pos[left + move_to]
-        else:
-            self.position_to_sample = desired_position
+            self.position_to_sample = positions[left + move_to]
 
         super().move_focuser_to_position(self.position_to_sample)
 
