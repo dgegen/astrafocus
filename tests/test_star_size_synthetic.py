@@ -16,7 +16,7 @@ from synthetic_frames import (
     star_profile,
 )
 
-from astrafocus.autofocuser import NonParametricResponseAutofocuser
+from astrafocus.autofocuser import AnalyticResponseAutofocuser, NonParametricResponseAutofocuser
 from astrafocus.focus_measure_operators import FocusMeasureOperator
 from astrafocus.interface.simulation import CabaretDeviceSimulator
 from astrafocus.models.half_flux_radius_2D import HalfFluxRadius2D
@@ -198,6 +198,23 @@ class TestRobustness:
         ok = np.isfinite(combined)
         assert op.fit_focus_response_curve(focus_pos[ok], combined[ok]) == pytest.approx(10_000, abs=50)
 
+    def test_combine_star_sizes_with_two_exposures(self):
+        # With two exposures per position, the steps between positions are not noise.
+        focus_pos = np.repeat(np.linspace(9000, 11000, 9), 2)
+        star = np.sqrt(1 + ((focus_pos - 10_000) / 200) ** 2)
+        assert focus_curve_snr(focus_pos, star) > 8
+        combined = HFRStarFocusMeasure().combine_star_sizes(np.column_stack([star, star]), focus_pos)
+        np.testing.assert_allclose(combined, star)
+
+    def test_combine_star_sizes_drops_isolated_position_with_two_exposures(self):
+        focus_pos = np.repeat(np.linspace(9000, 11000, 20), 2)
+        star = 2 + np.abs(focus_pos - 10_000) / 50
+        star[2:10] = np.nan
+        star[:2] = 1.5
+        combined = HFRStarFocusMeasure().combine_star_sizes(star[:, None], focus_pos)
+        assert np.all(np.isnan(combined[:2]))
+        np.testing.assert_allclose(combined[10:], star[10:])
+
     @pytest.mark.parametrize("lost", [[], [3, 4]])
     def test_combine_star_sizes_keeps_best_focus_at_edge(self, lost):
         focus_pos = np.linspace(9000, 11000, 20)
@@ -344,6 +361,19 @@ def test_flat_curve_fails_and_resets_focuser():
     assert autofocuser.run() is False
     assert autofocuser.best_focus_position is None
     assert simulator.focuser.position == initial_position
+
+
+def test_short_sweep_with_two_exposures_succeeds():
+    # Before, the curve of a sweep over 10 positions with 2 exposures each counted as flat.
+    autofocuser = AnalyticResponseAutofocuser(
+        autofocus_device_manager=CabaretDeviceSimulator.default(seed=0),
+        exposure_time=3.0,
+        focus_measure_operator=HFRStarFocusMeasure,
+        n_steps=(10,),
+        n_exposures=2,
+    )
+    assert autofocuser.run() is True
+    assert abs(autofocuser.best_focus_position - 10_000) < 100
 
 
 class MostlyFailingFocusMeasure(FocusMeasureOperator):
