@@ -71,7 +71,7 @@ See the [Getting Started](https://dgegen.github.io/astrafocus/notebooks/getting_
 
 - **Coarse Search (e.g., `fft`)**: Best for broad ranges where stars appear as blurry "donuts." These non-parametric operators measure overall frame sharpness without needing to identify individual stars, making them nearly impossible to "confuse" with distorted optics.
 
-- **Fine Tuning (e.g., `HFR`)**: Best for precision near the focus peak. These algorithms fit a "V-curve" to the diameters of detected stars. They provide great accuracy once stars are point-like, but will fail during wide searches if the stars are too bloated to be recognized by the star-finder.
+- **Fine Tuning (e.g., `HFR`)**: Best for precision near the focus peak. These algorithms fit a "V-curve" to the sizes of detected stars (half flux radius or FWHM). They provide great accuracy once stars are point-like, but will fail during wide searches if the stars are too bloated to be recognized by the star-finder.
 
 ### Sky targeting
 

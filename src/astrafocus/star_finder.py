@@ -1,11 +1,204 @@
+import functools
+import warnings
+from typing import NamedTuple
+
 import astropy
+import astropy.stats
+import cv2
 import numpy as np
+from astropy.utils.exceptions import AstropyUserWarning
 from photutils.detection import DAOStarFinder
+from scipy import stats
 
 from astrafocus.utils.logger import get_logger
 from astrafocus.utils.typing import ImageType
 
 logger = get_logger()
+
+
+class PreparedImage(NamedTuple):
+    """An image with the sky and hot pixels removed, and a smoothed copy (see `prepare_image`)."""
+
+    data: np.ndarray
+    noise: float
+    smoothed: np.ndarray
+    smoothed_noise: float
+
+
+def replace_hot_pixels(image: ImageType, std: float, n_sigma: float = 5.0, ratio: float = 5.0) -> np.ndarray:
+    """
+    Replace hot pixels in a sky-subtracted image with the median of their 3x3 neighbourhood.
+
+    A pixel is hot if it is more than `n_sigma` * `std` above the sky and more than `ratio` times
+    the 3x3 median. A star with a FWHM of 1.3 pixels or more has a peak of less than 5 times its
+    3x3 median, so stars are not changed. Clusters of up to 4 hot pixels are also replaced,
+    because their 3x3 median is still the sky.
+
+    Examples
+    --------
+    >>> image = np.zeros((5, 5))
+    >>> image[2, 2] = 1000.0
+    >>> float(replace_hot_pixels(image, std=1.0)[2, 2])
+    0.0
+    """
+    image = np.asarray(image, dtype=np.float32)
+    median = cv2.medianBlur(image, 3)
+    hot = (image > n_sigma * std) & (image > ratio * np.maximum(median, 0))
+    return np.where(hot, median, image)
+
+
+# Sources that are masked before the sky is estimated: groups of touching
+# pixels where the smoothed image is above SKY_MASK_N_SIGMA times its noise, with at least
+# SKY_MASK_MIN_PIXELS pixels and a bounding box no more than SKY_MASK_MAX_ASPECT times longer than
+# wide. So large stars and donuts are masked, but not noise or row banding. The mask is grown by
+# SKY_MASK_GROW pixels to include the wings of the stars.
+SKY_MASK_N_SIGMA = 3.0
+SKY_MASK_MIN_PIXELS = 100
+SKY_MASK_MAX_ASPECT = 4.0
+SKY_MASK_GROW = 3
+# A row or column with less than this fraction of pixels outside the mask gets the sky of its
+# neighbours.
+SKY_MIN_FREE_FRACTION = 0.2
+# Number of times the mask is made and the sky estimated again, first with a plane as the sky and
+# then with the sky of each row and column. The mask only grows, so star light that is found stays
+# masked.
+SKY_MASK_ITERATIONS = 2
+# A search with a kernel at least twice this wide (FWHM in pixels) runs on a binned image, so that
+# the kernel is about this wide there.
+MAX_KERNEL_FWHM = 8.0
+
+
+def _plane_sky(data, mask, sample_step):
+    """Least-squares plane through `data`, without the pixels in `mask` and sigma-clipped at 3 sigma."""
+    rows, columns = np.mgrid[0 : data.shape[0] : sample_step, 0 : data.shape[1] : sample_step]
+    values = data[::sample_step, ::sample_step].ravel()
+    design = np.column_stack([np.ones(values.size), columns.ravel(), rows.ravel()])
+    good = ~mask[::sample_step, ::sample_step].ravel()
+    if np.count_nonzero(good) < design.shape[1]:
+        good[:] = True
+    for _ in range(5):
+        fit_design = design[good]  # normal equations: much faster than lstsq, and well-conditioned here
+        coefficients = np.linalg.solve(fit_design.T @ fit_design, fit_design.T @ values[good])
+        residual = values - design @ coefficients
+        std = astropy.stats.mad_std(residual[good])
+        clipped = good & (np.abs(residual) < 3.0 * std)
+        if np.count_nonzero(clipped) < design.shape[1] or np.array_equal(clipped, good):
+            break
+        good = clipped
+    rows, columns = np.arange(data.shape[0])[:, None], np.arange(data.shape[1])[None, :]
+    return (coefficients[0] + coefficients[1] * columns + coefficients[2] * rows).astype(np.float32)
+
+
+def _line_sky(data, mask, axis, sample_step):
+    """
+    Sigma-clipped median of `data` along `axis` (1: of each row, 0: of each column), without the
+    pixels in `mask`. Lines with too few pixels outside the mask are interpolated from the others.
+    """
+    index = (slice(None), slice(None, None, sample_step)) if axis == 1 else slice(None, None, sample_step)
+    values, free = data[index], ~mask[index]
+    sky = _clipped_median(np.where(free, values, np.nan), axis)
+    good = (np.mean(free, axis=axis) >= SKY_MIN_FREE_FRACTION) & np.isfinite(sky)
+    if not np.any(good):
+        return _clipped_median(values, axis)
+    if not np.all(good):
+        logger.debug(f"Sky of {np.count_nonzero(~good)} lines (axis {axis}) interpolated: masked by stars.")
+        lines = np.arange(sky.size)
+        sky = np.interp(lines, lines[good], sky[good])
+    return sky
+
+
+def _clipped_median(values, axis):
+    """
+    Median along `axis` of `values` sigma-clipped at 3 sigma, ignoring NaN, as in
+    `astropy.stats.sigma_clipped_stats`. The median is taken from one sort, which is much faster
+    than the masked-array median that `sigma_clipped_stats` uses.
+    """
+    clipped = astropy.stats.SigmaClip(sigma=3.0)(values, axis=axis, masked=False)
+    clipped = np.sort(clipped, axis=axis)  # NaN sorts last
+    n_valid = np.sum(np.isfinite(clipped), axis=axis, keepdims=True)
+    lower = np.take_along_axis(clipped, np.maximum(n_valid - 1, 0) // 2, axis=axis)
+    upper = np.take_along_axis(clipped, n_valid // 2, axis=axis)
+    median = np.where(n_valid > 0, (lower + upper) / 2, np.nan)
+    return np.squeeze(median, axis=axis)
+
+
+def _row_column_sky(raw, mask, sample_step):
+    """`raw` minus the sky of each row, and then minus the sky of each column of what is left."""
+    data = raw - _line_sky(raw, mask, 1, sample_step)[:, None].astype(np.float32)
+    data -= _line_sky(data, mask, 0, sample_step)[None, :].astype(np.float32)
+    return data
+
+
+def _background_noise(data, mask, sample_step):
+    """
+    Standard deviation of the background in `data`, from the pixels below the median, outside `mask`.
+    Stars only add light, so they hardly change this, also when they cover a large part of the image.
+    """
+    values = data[::sample_step, ::sample_step][~mask[::sample_step, ::sample_step]]
+    if values.size == 0:
+        values = data[::sample_step, ::sample_step].ravel()
+    median, lower = np.percentile(values, [50.0, 100 * stats.norm.cdf(-1.0)])
+    return float(median - lower)
+
+
+def _sky_mask(smoothed, smoothed_noise):
+    """Mask of the large, compact sources in `smoothed` (see `SKY_MASK_N_SIGMA`)."""
+    above = (smoothed > SKY_MASK_N_SIGMA * smoothed_noise).astype(np.uint8)
+    _, labels, group_stats, _ = cv2.connectedComponentsWithStats(above, connectivity=4)
+    width, height = group_stats[:, cv2.CC_STAT_WIDTH], group_stats[:, cv2.CC_STAT_HEIGHT]
+    compact = np.maximum(height, width) <= SKY_MASK_MAX_ASPECT * np.minimum(height, width)
+    keep = (group_stats[:, cv2.CC_STAT_AREA] >= SKY_MASK_MIN_PIXELS) & compact
+    keep[0] = False  # the background
+    if not np.any(keep):
+        return np.zeros(above.shape, dtype=bool)
+    # SKY_MASK_GROW times a 3x3 cross, as `ndimage.binary_dilation` does.
+    cross = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
+    return cv2.dilate(keep[labels].astype(np.uint8), cross, iterations=SKY_MASK_GROW).astype(bool)
+
+
+def prepare_image(image, remove_hot_pixels=True, smoothing=2.0, sample_step=4) -> PreparedImage:
+    """
+    Remove the sky and hot pixels from `image`, and make a smoothed copy to find faint star light in.
+
+    The sky is a plane fitted to the image, plus the sigma-clipped median of each row, plus that of
+    each column of what is left. This removes the sky level, gradients and row banding. Large stars
+    and donuts are masked before the sky is estimated (see `SKY_MASK_N_SIGMA`), so their light does
+    not raise the sky, also when they fill a large part of a row. The mask is first found with only
+    the plane as the sky, because the median of a row that a donut fills would remove the donut's
+    light before it can be found, and is then grown with the full sky. The noise is the
+    sigma-clipped standard deviation of the result. Hot pixels are then replaced (see
+    `replace_hot_pixels`). The copy is smoothed with a Gaussian of standard deviation `smoothing`
+    pixels. Every `sample_step`-th row and column is used for the statistics, to make it fast. A
+    `PreparedImage` is returned as it is.
+    """
+    if isinstance(image, PreparedImage):
+        return image
+
+    raw = np.asarray(image, dtype=np.float32)
+    mask = np.zeros(raw.shape, dtype=bool)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", AstropyUserWarning)
+        warnings.simplefilter("ignore", RuntimeWarning)  # lines that are fully masked
+        for row_column in (False, True):
+            for _ in range(SKY_MASK_ITERATIONS):
+                data = raw - _plane_sky(raw, mask, sample_step)
+                if row_column:
+                    data = _row_column_sky(data, mask, sample_step)
+                smoothed = cv2.GaussianBlur(data, (0, 0), smoothing)
+                mask |= _sky_mask(smoothed, _background_noise(smoothed, mask, sample_step))
+
+        data = _row_column_sky(raw - _plane_sky(raw, mask, sample_step), mask, sample_step)
+        sample = (slice(None, None, sample_step), slice(None, None, sample_step))
+        _, _, noise = astropy.stats.sigma_clipped_stats(
+            np.where(mask[sample], np.nan, data[sample]), sigma=3.0
+        )
+        if remove_hot_pixels:
+            data = replace_hot_pixels(data, noise)
+        smoothed = cv2.GaussianBlur(data, (0, 0), smoothing)
+        _, _, smoothed_noise = astropy.stats.sigma_clipped_stats(
+            np.where(mask[sample], np.nan, smoothed[sample]), sigma=3.0
+        )
+    return PreparedImage(data, float(noise), smoothed, float(smoothed_noise))
 
 
 class StarFinder:
@@ -41,6 +234,8 @@ class StarFinder:
     sharpness_range : tuple of float, optional
         (sharplo, sharphi) bounds passed to DAOStarFinder; see
         `find_sources` for details. Default is (0.05, 1.0).
+    remove_hot_pixels : bool, optional
+        Replace hot pixels before detection (see `replace_hot_pixels`). Default is True.
 
     Attributes
     ----------
@@ -48,6 +243,8 @@ class StarFinder:
         Sigma-clipped median background level of `ref_image`.
     ref_std : float
         Sigma-clipped standard deviation of `ref_image`.
+    prepared_ref_image : PreparedImage
+        `ref_image` with the sky and hot pixels removed (see `prepare_image`).
     selected_stars : astropy.table.QTable
         Table of detected sources with centroids and photometry.
 
@@ -63,6 +260,8 @@ class StarFinder:
     """
 
     FALLBACK_THRESHOLDS = np.array([4, 3, 2.5])
+    # Far from focus, stars are large donuts, which a wider kernel finds.
+    FWHM_FACTORS = (1, 4, 16)
 
     def __init__(
         self,
@@ -73,6 +272,7 @@ class StarFinder:
         saturation_threshold: float | None = None,
         max_stars: int = 50,
         sharpness_range: tuple[float, float] = (0.05, 1.0),
+        remove_hot_pixels: bool = True,
     ) -> None:
         self.fwhm = fwhm
         self.star_find_threshold = star_find_threshold
@@ -80,12 +280,16 @@ class StarFinder:
         self.saturation_threshold = saturation_threshold
         self.max_stars = max_stars
         self.sharpness_range = sharpness_range
+        self.remove_hot_pixels = remove_hot_pixels
 
-        mean, median, std = astropy.stats.sigma_clipped_stats(ref_image, sigma=3.0)
-        self.ref_background = median
-        self.ref_std = std
+        self._ref_image = ref_image
+        self.prepared_ref_image = prepare_image(ref_image, remove_hot_pixels=remove_hot_pixels)
 
-        self.selected_stars = self._find_sources(ref_image)
+        for fwhm_factor in self.FWHM_FACTORS:
+            self.fwhm_factor = fwhm_factor
+            self.selected_stars = self._find_sources(self.prepared_ref_image, fwhm_factor * self.fwhm)
+            if self.selected_stars is not None:
+                break
         if self.selected_stars is None:
             fallbacks = self.get_fallback_thresholds(self.star_find_threshold)
             min_tried = fallbacks[-1] if fallbacks.size > 0 else self.star_find_threshold
@@ -95,18 +299,45 @@ class StarFinder:
                 "(e.g. lower the star_find_threshold or absolute_detection_limit, or increase the fwhm)."
             )
 
-    def _find_sources(self, ref_image):
-        return self.find_sources(
-            ref_image=ref_image,
-            fwhm=self.fwhm,
+    # Kept for users. Detection removes the sky per row and column instead (see `prepare_image`),
+    # which also works with row banding and gradients.
+    @functools.cached_property
+    def _ref_stats(self):
+        return astropy.stats.sigma_clipped_stats(self._ref_image, sigma=3.0)
+
+    @property
+    def ref_background(self) -> float:
+        return self._ref_stats[1]
+
+    @property
+    def ref_std(self) -> float:
+        return self._ref_stats[2]
+
+    def _find_sources(self, ref_image, fwhm):
+        kwargs = dict(
             threshold=self.star_find_threshold,
-            std=self.ref_std,
-            background=self.ref_background,
             saturation_threshold=self.saturation_threshold,
             absolute_detection_limit=self.absolute_detection_limit,
             max_stars=self.max_stars,
             sharpness_range=self.sharpness_range,
         )
+        n_bin = int(fwhm // MAX_KERNEL_FWHM)
+        if n_bin < 2:
+            return self.find_sources(ref_image, fwhm, remove_hot_pixels=self.remove_hot_pixels, **kwargs)
+
+        # A wide kernel is slow on the full image, so search a binned copy and scale the positions.
+        data = prepare_image(ref_image, remove_hot_pixels=self.remove_hot_pixels).data
+        height, width = (n // n_bin * n_bin for n in data.shape)
+        binned = data[:height, :width].reshape(height // n_bin, n_bin, width // n_bin, n_bin)
+        binned = binned.mean(axis=(1, 3))
+        _, _, std = astropy.stats.sigma_clipped_stats(binned, sigma=3.0)
+        sources = self.find_sources(
+            binned, fwhm / n_bin, std=std, background=0.0, remove_hot_pixels=False, **kwargs
+        )
+        if sources is not None:
+            for column in ("x_centroid", "y_centroid"):
+                sources[column] = (sources[column] + 0.5) * n_bin - 0.5
+        return sources
 
     @classmethod
     def find_sources(
@@ -120,6 +351,7 @@ class StarFinder:
         absolute_detection_limit: float = 0.0,
         max_stars: int = 50,
         sharpness_range: tuple[float, float] = (0.05, 1.0),
+        remove_hot_pixels: bool = True,
     ):
         """
         Detect and locate stars using a tiered-threshold DAOFIND approach.
@@ -141,11 +373,10 @@ class StarFinder:
             Initial detection threshold in units of background standard
             deviation (sigma). Default is 4.0.
         std : float, optional
-            Background noise standard deviation. If None, estimated via
-            sigma-clipped statistics.
+            Background noise standard deviation. If `std` or `background` is None,
+            the sky is removed per row and column instead (see `prepare_image`).
         background : float, optional
-            Median background level. If None, estimated via sigma-clipped
-            statistics.
+            Median background level, subtracted from `ref_image`.
         saturation_threshold : float, optional
             Maximum allowed pixel value. Peaks above this are rejected
             (useful for excluding saturated stars that bias centroids).
@@ -162,6 +393,9 @@ class StarFinder:
             out-of-focus reference image. Loosening it further increases the
             risk of picking up non-stellar diffuse artifacts (e.g. hot-pixel
             clusters, cosmic rays, background blobs).
+        remove_hot_pixels : bool, optional
+            Replace hot pixels before detection (see `replace_hot_pixels`),
+            because they can pass the sharpness bounds. Default is True.
 
         Returns
         -------
@@ -179,10 +413,12 @@ class StarFinder:
         """
 
         if std is None or background is None:
-            mean, median, std = astropy.stats.sigma_clipped_stats(ref_image, sigma=3.0)
-            background = median
-
-        cleaned_image = ref_image - background
+            prepared = prepare_image(ref_image, remove_hot_pixels=remove_hot_pixels)
+            cleaned_image, std = prepared.data, prepared.noise
+        else:
+            cleaned_image = ref_image - background
+            if remove_hot_pixels:
+                cleaned_image = replace_hot_pixels(cleaned_image, std)
 
         sources = StarFinder._dao_star_finder(
             cleaned_image=cleaned_image,
@@ -204,6 +440,7 @@ class StarFinder:
                 threshold=np.maximum(absolute_detection_limit, std * threshold),
                 peak_max=saturation_threshold,
                 n_brightest=max_stars,
+                sharpness_range=sharpness_range,
             )
 
             if sources is not None:
@@ -237,6 +474,11 @@ class StarFinder:
             sharpness_range=sharpness_range,
         )
         sources = daofind(cleaned_image)
+        if sources is not None:
+            # A source with no positive flux is noise.
+            sources = sources[sources["flux"] > 0]
+            if len(sources) == 0:
+                sources = None
 
         return sources
 

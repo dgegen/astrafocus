@@ -321,8 +321,11 @@ class CabaretCameraSimulator(CameraSimulation):
         sources: cabaret.Sources | None = None,
         sleep_flag: bool = False,
         save_path: str | None = None,
+        seed: int | None = None,
     ):
         super().__init__(focuser=focuser, sleep_flag=sleep_flag)
+        # One generator for all observations, so that a seed makes a whole run reproducible.
+        self.rng = np.random.default_rng(seed)
         cabaret_focuser = cabaret.Focuser(
             position=11_000,
             best_position=10_000,
@@ -343,6 +346,7 @@ class CabaretCameraSimulator(CameraSimulation):
             dec=dec,
             exp_time=texp,
             sources=self.sources,
+            rng=self.rng,
         )
         return image
 
@@ -357,6 +361,7 @@ class CabaretDeviceSimulator(AutofocusDeviceSimulator):
         observatory: cabaret.Observatory | None = None,
         sources: cabaret.Sources | None = None,
         save_path: str | None = None,
+        seed: int | None = None,
     ):
         focuser = FocuserSimulation(
             current_position=current_position,
@@ -370,6 +375,7 @@ class CabaretDeviceSimulator(AutofocusDeviceSimulator):
             sources=sources,
             sleep_flag=sleep_flag,
             save_path=save_path,
+            seed=seed,
         )
         super().__init__(camera=camera, focuser=focuser, telescope=None, sleep_flag=sleep_flag)
 
@@ -378,7 +384,7 @@ class CabaretDeviceSimulator(AutofocusDeviceSimulator):
         """Return a simulator pre-loaded with a fixed set of sources near M31.
 
         The sources are a catalogue of 10 stars with known fluxes, so no
-        Gaia query is performed and results are fully reproducible.
+        Gaia query is performed. Pass `seed` to make the noise reproducible too.
 
         Parameters
         ----------
@@ -388,7 +394,9 @@ class CabaretDeviceSimulator(AutofocusDeviceSimulator):
         return cls(sources=DEFAULT_SOURCES, **kwargs)
 
     @classmethod
-    def generate_image(cls, focus_position: int = 10_000, texp: float = 1.0) -> np.ndarray:
+    def generate_image(
+        cls, focus_position: int = 10_000, texp: float = 1.0, seed: int | None = None
+    ) -> np.ndarray:
         """Generate a single synthetic sky image at the given focus position.
 
         Uses :meth:`default` sources so no Gaia query is required.
@@ -399,6 +407,8 @@ class CabaretDeviceSimulator(AutofocusDeviceSimulator):
             Focuser position at which to render the image.
         texp : float
             Exposure time in seconds.
+        seed : int, optional
+            Seed of the noise. By default, the noise is different in every call.
 
         Returns
         -------
@@ -412,4 +422,5 @@ class CabaretDeviceSimulator(AutofocusDeviceSimulator):
         >>> image.ndim
         2
         """
-        return cls.default().camera.sample_an_observation(desired_position=focus_position, texp=texp)
+        camera = cls.default(seed=seed).camera
+        return camera.sample_an_observation(desired_position=focus_position, texp=texp)

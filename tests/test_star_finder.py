@@ -108,4 +108,12 @@ class TestFindSourcesClassMethod:
         _, background, std = astropy.stats.sigma_clipped_stats(sky_image, sigma=3.0)
         sources_auto = StarFinder.find_sources(sky_image, fwhm=FWHM)
         sources_manual = StarFinder.find_sources(sky_image, fwhm=FWHM, std=std, background=background)
-        assert len(sources_auto) == len(sources_manual)
+        # Without a background, the sky is removed per row and column, which can find more faint
+        # sources. The brightest sources are the same.
+        n_brightest = 8
+        np.testing.assert_allclose(
+            sources_manual["x_centroid"][:n_brightest], sources_auto["x_centroid"][:n_brightest], atol=0.5
+        )
+        np.testing.assert_allclose(
+            sources_manual["y_centroid"][:n_brightest], sources_auto["y_centroid"][:n_brightest], atol=0.5
+        )

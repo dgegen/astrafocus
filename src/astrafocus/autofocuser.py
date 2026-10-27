@@ -16,6 +16,7 @@ from astrafocus.focus_measure_operators import (
 from astrafocus.interface.device_manager import AutofocusDeviceManager
 from astrafocus.star_size_focus_measure_operators import StarSizeFocusMeasure
 from astrafocus.utils.fits import load_fits_from_directory
+from astrafocus.utils.focus_curve import focus_curve_snr
 from astrafocus.utils.logger import get_logger
 
 logger = get_logger()
@@ -139,7 +140,8 @@ class AutofocuserBase(ABC):
 
     @property
     def focus_record(self):
-        df = self._focus_record.copy()
+        # Rows without a focus position are exposures that were not taken, e.g. after a failed run.
+        df = self._focus_record[self._focus_record["focus_pos"].notna()].copy()
         df["focus_pos"] = df["focus_pos"].astype(int)
 
         if len(self.secondary_focus_measure_operators) == 0:
@@ -355,6 +357,11 @@ class SweepingAutofocuser(AutofocuserBase):
     initial_position : Optional[int], optional
         Initial focus position for the autofocus algorithm (default is None,
         using the telescope's current position).
+    min_focus_curve_snr : float or None, optional
+        After each sweep, the spread of the focus measure must be at least this many times its
+        noise (see `focus_curve_snr`). If not, the curve is flat, the run fails, and the focuser
+        goes back to its initial position. Default is 8.0. For pure noise, the ratio is more than
+        8 in about 0.3% of sweeps with 20 points (2% with 10 points). Use None to turn off the check.
     **kwargs
         Additional keyword arguments.
 
@@ -391,10 +398,10 @@ class SweepingAutofocuser(AutofocuserBase):
     >>> from astrafocus.interface.simulation import CabaretDeviceSimulator
     >>> from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure
     >>> from astrafocus.autofocuser import AnalyticResponseAutofocuser
-    >>> sim = CabaretDeviceSimulator.default()
+    >>> sim = CabaretDeviceSimulator.default(seed=0)
     >>> saf = AnalyticResponseAutofocuser(
     ...     autofocus_device_manager=sim,
-    ...     exposure_time=1.0,
+    ...     exposure_time=3.0,
     ...     focus_measure_operator=HFRStarFocusMeasure,
     ...     n_steps=(20, 5),
     ...     n_exposures=1,
@@ -416,6 +423,7 @@ class SweepingAutofocuser(AutofocuserBase):
         search_range: tuple[int, int] | None = None,
         decrease_search_range=True,
         initial_position: int | None = None,
+        min_focus_curve_snr: float | None = 8.0,
         **kwargs,
     ):
         super().__init__(
@@ -439,14 +447,24 @@ class SweepingAutofocuser(AutofocuserBase):
                 f"({self.n_sweeps})."
             )
 
+        self.decrease_search_range = decrease_search_range
+        self.min_focus_curve_snr = min_focus_curve_snr
+        self._reset_records()
+
+    def _reset_records(self):
+        """Empty the records, so that each run starts afresh."""
         self._focus_record = pd.DataFrame(
-            np.full((np.sum(np.array(n_steps) * self.n_exposures), 2), np.nan),
+            np.full((np.sum(np.array(self.n_steps) * self.n_exposures), 2), np.nan),
             columns=self._focus_record.columns,
             dtype=np.float64,
         )
-        self.decrease_search_range = decrease_search_range
+        # Size of each star per focus record row, if the operator measures star sizes.
+        self._star_size_record: dict[int, np.ndarray] = {}
+        self._image_record = []
+        self.best_focus_position = None
 
     def _run(self):
+        self._reset_records()
         min_focus_pos, max_focus_pos = self.search_range
         initial_direction = self.get_initial_direction(min_focus_pos, max_focus_pos)
 
@@ -470,6 +488,9 @@ class SweepingAutofocuser(AutofocuserBase):
 
             if not success:
                 return False
+
+            self._update_star_size_focus_measures()
+            self._check_focus_curve_is_not_flat()
 
             if self.decrease_search_range:
                 min_focus_pos, max_focus_pos = self.update_search_range(min_focus_pos, max_focus_pos)
@@ -539,13 +560,15 @@ class SweepingAutofocuser(AutofocuserBase):
                 df_index = start_index + ind * n_exposures + exposure
                 self._focus_record.loc[df_index, "focus_pos"] = focus_position
                 self._focus_record.loc[df_index, "focus_measure"] = fm_value
+                if isinstance(self.focus_measure_operator, StarSizeFocusMeasure) and np.isfinite(fm_value):
+                    self._star_size_record[df_index] = self.focus_measure_operator.last_star_sizes
 
-            mean_fm_value = np.nanmean(
-                self._focus_record.loc[
-                    start_index + ind * n_exposures : start_index + (ind + 1) * n_exposures - 1,
-                    "focus_measure",
-                ]
-            )
+            fm_values = self._focus_record.loc[
+                start_index + ind * n_exposures : start_index + (ind + 1) * n_exposures - 1,
+                "focus_measure",
+            ].to_numpy()
+            fm_values = fm_values[np.isfinite(fm_values)]
+            mean_fm_value = np.mean(fm_values) if fm_values.size else np.nan
             if np.isnan(mean_fm_value):
                 logger.warning(
                     f"Focus Position: {focus_position:6d} | Mean Focus Measure: all exposures failed"
@@ -560,6 +583,41 @@ class SweepingAutofocuser(AutofocuserBase):
                 )
 
         return True
+
+    def _update_star_size_focus_measures(self):
+        """
+        Compute the focus measures again from the sizes of all stars over the sweeps so far.
+
+        This drops sources whose size does not follow the focus (see
+        `StarSizeFocusMeasure.combine_star_sizes`), e.g. hot pixels or noise selected as stars.
+        """
+        if not self._star_size_record:
+            return
+        indices = list(self._star_size_record)
+        star_sizes = np.vstack([self._star_size_record[i] for i in indices])
+        focus_pos = self._focus_record.loc[indices, "focus_pos"].to_numpy(dtype=float)
+        focus_measure = self.focus_measure_operator.combine_star_sizes(star_sizes, focus_pos)
+        self._focus_record.loc[indices, "focus_measure"] = focus_measure
+
+    def _check_focus_curve_is_not_flat(self):
+        """Raise a ValueError if the focus curve is flat (see `focus_curve_snr`)."""
+        if self.min_focus_curve_snr is None:
+            return
+        focus_pos, focus_measure = self.get_focus_record()
+        n_taken = np.count_nonzero(self._focus_record["focus_pos"].notna())
+        if focus_pos.size < min(5, n_taken):
+            raise ValueError(
+                f"Only {focus_pos.size} of {n_taken} focus positions could be measured. "
+                "Not moving the focuser to a best focus. Check the images and the star cutout size."
+            )
+        snr = focus_curve_snr(focus_pos, focus_measure)
+        if snr < self.min_focus_curve_snr:
+            raise ValueError(
+                f"The focus curve is flat: the focus measure changes by only {snr:.1f} times its noise "
+                f"(minimum {self.min_focus_curve_snr:.1f}) over the focus positions "
+                f"{np.min(focus_pos)} to {np.max(focus_pos)}. Not moving the focuser to a best focus. "
+                "Check the images, the star cutout size, and the search range."
+            )
 
     def update_search_range(self, min_focus_pos, max_focus_pos):
         return min_focus_pos, max_focus_pos
@@ -663,10 +721,10 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
     >>> from astrafocus.interface.simulation import CabaretDeviceSimulator
     >>> from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure
     >>> from astrafocus.autofocuser import AnalyticResponseAutofocuser
-    >>> sim = CabaretDeviceSimulator.default()
+    >>> sim = CabaretDeviceSimulator.default(seed=0)
     >>> araf = AnalyticResponseAutofocuser(
     ...     autofocus_device_manager=sim,
-    ...     exposure_time=1.0,
+    ...     exposure_time=3.0,
     ...     focus_measure_operator=HFRStarFocusMeasure,
     ...     n_steps=(20, 5),
     ...     n_exposures=1,

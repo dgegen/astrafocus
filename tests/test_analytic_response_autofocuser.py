@@ -104,6 +104,26 @@ class TestAutofocuserIdeal(unittest.TestCase):
         self.assertIsNotNone(df)
         self.assertIsInstance(df, pd.DataFrame)
 
+    def test_autofocuser_can_run_twice(self):
+        ARAF = AnalyticResponseAutofocuser(
+            autofocus_device_manager=CabaretDeviceSimulator(seed=0),
+            exposure_time=3.0,
+            focus_measure_operator=HFRStarFocusMeasure,
+            n_steps=(10, 5),
+            n_exposures=1,
+            decrease_search_range=True,
+            percent_to_cut=40,
+            keep_images=True,
+        )
+
+        self.assertTrue(ARAF.run())
+        first_record = ARAF.focus_record
+        self.assertTrue(ARAF.run())
+
+        # The second run starts from an empty record instead of appending to the first.
+        self.assertEqual(len(ARAF.focus_record), len(first_record))
+        self.assertEqual(len(ARAF._image_record), len(first_record))
+
 
 # if __name__ == "__main__":
 #     config = CONFIG
