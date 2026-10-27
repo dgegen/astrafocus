@@ -447,17 +447,24 @@ class SweepingAutofocuser(AutofocuserBase):
                 f"({self.n_sweeps})."
             )
 
+        self.decrease_search_range = decrease_search_range
+        self.min_focus_curve_snr = min_focus_curve_snr
+        self._reset_records()
+
+    def _reset_records(self):
+        """Empty the records, so that each run starts afresh."""
         self._focus_record = pd.DataFrame(
-            np.full((np.sum(np.array(n_steps) * self.n_exposures), 2), np.nan),
+            np.full((np.sum(np.array(self.n_steps) * self.n_exposures), 2), np.nan),
             columns=self._focus_record.columns,
             dtype=np.float64,
         )
-        self.decrease_search_range = decrease_search_range
-        self.min_focus_curve_snr = min_focus_curve_snr
         # Size of each star per focus record row, if the operator measures star sizes.
         self._star_size_record: dict[int, np.ndarray] = {}
+        self._image_record = []
+        self.best_focus_position = None
 
     def _run(self):
+        self._reset_records()
         min_focus_pos, max_focus_pos = self.search_range
         initial_direction = self.get_initial_direction(min_focus_pos, max_focus_pos)
 
