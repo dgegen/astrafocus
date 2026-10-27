@@ -182,7 +182,7 @@ class AutofocuserBase(ABC):
 
         for name, fm in self.secondary_focus_measure_operators.items():
             try:
-                df[name] = np.array([fm.measure_focus(image) for image in image_data])
+                df[name] = np.array([fm(image) for image in image_data])
             except Exception:
                 logger.warning(
                     "Error applying secondary focus measure operator '%s' to %s.",

@@ -71,6 +71,9 @@ class FocusMeasureOperator(ABC):
         """
         Compute the focus measure of the input image.
 
+        The image is converted to float64 first. Differences of unsigned integers wrap around, and
+        OpenCV's Laplacian and Sobel don't support every input type, e.g. int32.
+
         Parameters
         ----------
         image : np.ndarray
@@ -82,7 +85,8 @@ class FocusMeasureOperator(ABC):
             Computed focus measure.
         """
         self.validate_image(image)
-        return self.measure_focus(self.convert_to_grayscale(image), **kwargs)
+        image = np.asarray(self.convert_to_grayscale(image), dtype=np.float64)
+        return self.measure_focus(image, **kwargs)
 
     @abstractmethod
     def measure_focus(self, image: ImageType, **kwargs) -> float:
