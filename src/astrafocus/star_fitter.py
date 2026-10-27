@@ -269,6 +269,17 @@ class StarFitter:
         height, width = prepared.data.shape
         size = int(cutout_size)
         max_size = size if max_cutout_size is None else max(size, int(max_cutout_size))
+        threshold = N_SIGMA * prepared.smoothed_noise
+        if on_star:
+            # Most sources without star light are noise peaks. Rejecting them here, before the
+            # pixels are grouped in the large area below, saves most of the time.
+            wx0, wy0 = max(int(x - ON_STAR_DISTANCE), 0), max(int(y - ON_STAR_DISTANCE), 0)
+            wx1, wy1 = int(x + ON_STAR_DISTANCE) + 2, int(y + ON_STAR_DISTANCE) + 2
+            window = prepared.smoothed[wy0:wy1, wx0:wx1]
+            yy, xx = np.indices(window.shape)
+            close = np.hypot(wx0 + xx - x, wy0 + yy - y) <= ON_STAR_DISTANCE
+            if not np.any((window > threshold) & close):
+                raise ValueError("No star light above the noise in the cutout.")
 
         # 1. Choose the star light among the groups of touching pixels above the noise, in all of
         #    the area the cutout can reach. So the whole of a large donut competes with, for
@@ -278,7 +289,7 @@ class StarFitter:
         x0, y0 = max(int(x - reach), 0), max(int(y - reach), 0)
         x1, y1 = min(int(x + reach), width), min(int(y + reach), height)
         data = prepared.data[y0:y1, x0:x1]
-        above_noise = prepared.smoothed[y0:y1, x0:x1] > N_SIGMA * prepared.smoothed_noise
+        above_noise = prepared.smoothed[y0:y1, x0:x1] > threshold
         n_labels, labels = cv2.connectedComponents(above_noise.astype(np.uint8), connectivity=8)
         if n_labels == 1:  # only the background
             raise ValueError("No star light above the noise in the cutout.")

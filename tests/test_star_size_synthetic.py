@@ -152,6 +152,19 @@ class TestRobustness:
         measures = np.array([op.measure_focus(sweep_frames[pos]) for pos in SWEEP])
         assert SWEEP[np.argmin(measures)] == BEST_FOCUS
 
+    def test_noise_peak_does_not_hide_donuts(self):
+        # With this seed, the narrow kernel finds only one noise peak on the defocused reference,
+        # and the donuts are only found with the wider kernels.
+        reference = CabaretDeviceSimulator.generate_image(focus_position=9_550, texp=1.0, seed=3)
+        assert len(StarFinder(reference, fwhm=2.0, star_find_threshold=5.0).selected_stars) == 1
+        op = HFRStarFocusMeasure(ref_image=reference)
+        assert len(op.star_finder.selected_stars) >= 5
+        sizes = [
+            op.measure_focus(CabaretDeviceSimulator.generate_image(pos, texp=1.0, seed=pos))
+            for pos in (9_600, 10_000, 10_400)
+        ]
+        assert sizes[1] < 0.5 * min(sizes[0], sizes[2])
+
     def test_combine_star_sizes_does_not_fall_back_to_static_sources(self):
         faint_star = np.array([np.nan, np.nan, 3.0, 2.0, 3.0, np.nan, np.nan])
         hot_pixel = np.full(faint_star.size, 0.75)

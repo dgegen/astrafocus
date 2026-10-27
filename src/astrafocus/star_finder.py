@@ -63,6 +63,9 @@ SKY_MIN_FREE_FRACTION = 0.2
 # then with the sky of each row and column. The mask only grows, so star light that is found stays
 # masked.
 SKY_MASK_ITERATIONS = 2
+# A search with a kernel at least twice this wide (FWHM in pixels) runs on a binned image, so that
+# the kernel is about this wide there.
+MAX_KERNEL_FWHM = 8.0
 
 
 def _plane_sky(data, mask, sample_step):
@@ -257,6 +260,8 @@ class StarFinder:
     """
 
     FALLBACK_THRESHOLDS = np.array([4, 3, 2.5])
+    # Far from focus, stars are large donuts, which a wider kernel finds.
+    FWHM_FACTORS = (1, 4, 16)
 
     def __init__(
         self,
@@ -280,8 +285,8 @@ class StarFinder:
         self._ref_image = ref_image
         self.prepared_ref_image = prepare_image(ref_image, remove_hot_pixels=remove_hot_pixels)
 
-        # Far from focus, stars are large donuts, which a wider kernel finds.
-        for fwhm_factor in (1, 4, 16):
+        for fwhm_factor in self.FWHM_FACTORS:
+            self.fwhm_factor = fwhm_factor
             self.selected_stars = self._find_sources(self.prepared_ref_image, fwhm_factor * self.fwhm)
             if self.selected_stars is not None:
                 break
@@ -309,16 +314,30 @@ class StarFinder:
         return self._ref_stats[2]
 
     def _find_sources(self, ref_image, fwhm):
-        return self.find_sources(
-            ref_image=ref_image,
-            fwhm=fwhm,
+        kwargs = dict(
             threshold=self.star_find_threshold,
             saturation_threshold=self.saturation_threshold,
             absolute_detection_limit=self.absolute_detection_limit,
             max_stars=self.max_stars,
             sharpness_range=self.sharpness_range,
-            remove_hot_pixels=self.remove_hot_pixels,
         )
+        n_bin = int(fwhm // MAX_KERNEL_FWHM)
+        if n_bin < 2:
+            return self.find_sources(ref_image, fwhm, remove_hot_pixels=self.remove_hot_pixels, **kwargs)
+
+        # A wide kernel is slow on the full image, so search a binned copy and scale the positions.
+        data = prepare_image(ref_image, remove_hot_pixels=self.remove_hot_pixels).data
+        height, width = (n // n_bin * n_bin for n in data.shape)
+        binned = data[:height, :width].reshape(height // n_bin, n_bin, width // n_bin, n_bin)
+        binned = binned.mean(axis=(1, 3))
+        _, _, std = astropy.stats.sigma_clipped_stats(binned, sigma=3.0)
+        sources = self.find_sources(
+            binned, fwhm / n_bin, std=std, background=0.0, remove_hot_pixels=False, **kwargs
+        )
+        if sources is not None:
+            for column in ("x_centroid", "y_centroid"):
+                sources[column] = (sources[column] + 0.5) * n_bin - 0.5
+        return sources
 
     @classmethod
     def find_sources(

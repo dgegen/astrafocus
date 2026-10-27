@@ -398,7 +398,7 @@ class SweepingAutofocuser(AutofocuserBase):
     >>> from astrafocus.interface.simulation import CabaretDeviceSimulator
     >>> from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure
     >>> from astrafocus.autofocuser import AnalyticResponseAutofocuser
-    >>> sim = CabaretDeviceSimulator.default()
+    >>> sim = CabaretDeviceSimulator.default(seed=0)
     >>> saf = AnalyticResponseAutofocuser(
     ...     autofocus_device_manager=sim,
     ...     exposure_time=3.0,
@@ -714,7 +714,7 @@ class AnalyticResponseAutofocuser(SweepingAutofocuser):
     >>> from astrafocus.interface.simulation import CabaretDeviceSimulator
     >>> from astrafocus.star_size_focus_measure_operators import HFRStarFocusMeasure
     >>> from astrafocus.autofocuser import AnalyticResponseAutofocuser
-    >>> sim = CabaretDeviceSimulator.default()
+    >>> sim = CabaretDeviceSimulator.default(seed=0)
     >>> araf = AnalyticResponseAutofocuser(
     ...     autofocus_device_manager=sim,
     ...     exposure_time=3.0,

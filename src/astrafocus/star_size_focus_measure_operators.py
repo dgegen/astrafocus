@@ -172,26 +172,52 @@ class StarSizeFocusMeasure(AnalyticResponseFocusedMeasureOperator):
         """
         Find the stars in `image`, and move each one to the centre of its light.
 
+        The star finder only tries a wider kernel if the narrow one finds nothing. Far from focus,
+        the narrow kernel misses the donuts but can still find a few noise peaks. So the sources of
+        every kernel width in `StarFinder.FWHM_FACTORS` are used here, and a source with no star
+        light above the noise (see `StarFitter.star_centre`) is dropped as noise. If no source has
+        star light, the star finder's own sources are kept, and the measurements fail later.
+
         Far from focus, the star finder places sources on the ring of a donut, often several on the
         same donut. The cutouts must be centred on the donut's centre, where the star is at focus
-        (see `StarFitter.extract_star`). So each source moves to the centre of its star (see
-        `StarFitter.star_centre`), and sources that end up within `cutout_size` of a brighter one
-        are dropped. A source whose light is not found keeps its position.
+        (see `StarFitter.extract_star`). So each source moves to the centre of its star, and sources
+        that end up within `cutout_size` of a brighter star are dropped. Stars are ranked by the
+        flux of their light, because the source fluxes of different kernel widths can't be compared.
         """
         star_finder = StarFinder(image, **self._star_finder_kwargs)
-        stars = star_finder.selected_stars
         prepared = star_finder.prepared_ref_image
-        centres = np.column_stack([stars["x_centroid"], stars["y_centroid"]]).astype(float)
-        for i, (x, y) in enumerate(centres):
-            try:
-                centres[i] = StarFitter.star_centre(
-                    prepared, x, y, self.cutout_size, MAX_CUTOUT_FACTOR * self.cutout_size
-                )
-            except ValueError:  # no star light at this source
-                pass
+        max_cutout_size = MAX_CUTOUT_FACTOR * self.cutout_size
+        tables, centres, fluxes = [], [], []
+        for fwhm_factor in StarFinder.FWHM_FACTORS:
+            if fwhm_factor < star_finder.fwhm_factor:  # the star finder found nothing with these
+                continue
+            if fwhm_factor == star_finder.fwhm_factor:
+                sources = star_finder.selected_stars
+            else:
+                sources = star_finder._find_sources(prepared, fwhm_factor * star_finder.fwhm)
+            if sources is None:
+                continue
+            tables.append(sources)
+            for x, y in zip(sources["x_centroid"], sources["y_centroid"]):
+                try:
+                    light, x_centre, y_centre = StarFitter._find_star(
+                        prepared, x, y, self.cutout_size, max_cutout_size, on_star=True
+                    )
+                except ValueError:  # no star light at this source
+                    centres.append((np.nan, np.nan))
+                    fluxes.append(-np.inf)
+                else:
+                    centres.append((x_centre, y_centre))
+                    fluxes.append(np.sum(light))
+        if not np.isfinite(np.max(fluxes)):
+            return star_finder
 
+        stars = astropy.table.vstack(tables, metadata_conflicts="silent")
+        centres = np.array(centres)
         keep = []
-        for i in range(len(centres)):  # the sources are sorted by flux, brightest first
+        for i in np.argsort(fluxes)[::-1]:  # brightest first
+            if not np.isfinite(fluxes[i]) or len(keep) == self._star_finder_kwargs["max_stars"]:
+                break
             if all(np.hypot(*(centres[i] - centres[j])) > self.cutout_size for j in keep):
                 keep.append(i)
         stars["x_centroid"], stars["y_centroid"] = centres[:, 0], centres[:, 1]
