@@ -1,5 +1,7 @@
 """Tests of the star-size focus measures on synthetic frames with a high sky, banding and hot pixels."""
 
+import warnings
+
 import numpy as np
 import pytest
 from synthetic_frames import (
@@ -367,3 +369,17 @@ def test_too_few_measured_points_fails():
     )
     assert autofocuser.run() is False
     assert autofocuser.best_focus_position is None
+
+
+def test_sweep_with_failed_positions_does_not_warn():
+    autofocuser = NonParametricResponseAutofocuser(
+        autofocus_device_manager=CabaretDeviceSimulator(),
+        exposure_time=0.1,
+        focus_measure_operator=MostlyFailingFocusMeasure(),
+        n_steps=(10,),
+        n_exposures=2,
+    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", RuntimeWarning)
+        assert autofocuser._run_sweep(autofocuser.integer_linspace(*autofocuser.search_range, 10), 2)
+    assert autofocuser.focus_record["focus_measure"].isna().sum() == 16

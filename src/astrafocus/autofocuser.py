@@ -563,12 +563,12 @@ class SweepingAutofocuser(AutofocuserBase):
                 if isinstance(self.focus_measure_operator, StarSizeFocusMeasure) and np.isfinite(fm_value):
                     self._star_size_record[df_index] = self.focus_measure_operator.last_star_sizes
 
-            mean_fm_value = np.nanmean(
-                self._focus_record.loc[
-                    start_index + ind * n_exposures : start_index + (ind + 1) * n_exposures - 1,
-                    "focus_measure",
-                ]
-            )
+            fm_values = self._focus_record.loc[
+                start_index + ind * n_exposures : start_index + (ind + 1) * n_exposures - 1,
+                "focus_measure",
+            ].to_numpy()
+            fm_values = fm_values[np.isfinite(fm_values)]
+            mean_fm_value = np.mean(fm_values) if fm_values.size else np.nan
             if np.isnan(mean_fm_value):
                 logger.warning(
                     f"Focus Position: {focus_position:6d} | Mean Focus Measure: all exposures failed"
